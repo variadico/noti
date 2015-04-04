@@ -57,6 +57,7 @@ func main() {
 // sent to noti.
 func Exec(bin string, args []string) error {
 	cmd := exec.Command(bin, args...)
+	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
