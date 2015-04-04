@@ -43,19 +43,19 @@ func main() {
 		*title = flag.Args()[0]
 	}
 
-	if err := Exec(flag.Args()[0], flag.Args()[1:]); err != nil {
-		Notify(*title, "Failed. See terminal.", "Basso")
+	if err := run(flag.Args()[0], flag.Args()[1:]); err != nil {
+		notify(*title, "Failed. See terminal.", "Basso")
 		return
 	}
 
-	if err := Notify(*title, *mesg, *sound); err != nil {
+	if err := notify(*title, *mesg, *sound); err != nil {
 		log.Println(err)
 	}
 }
 
-// Exec executes a program. The stdin, stdout, and stderr of noti are passed to
-// the program that'll be executed.
-func Exec(bin string, args []string) error {
+// run executes a program and waits for it to finish. The stdin, stdout, and
+// stderr of noti are passed to the program.
+func run(bin string, args []string) error {
 	cmd := exec.Command(bin, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -64,9 +64,9 @@ func Exec(bin string, args []string) error {
 	return cmd.Run()
 }
 
-// Notify displays a notification in OS X's notification center with a given
+// notify displays a notification in OS X's notification center with a given
 // title, message, and sound.
-func Notify(title, mesg, sound string) error {
+func notify(title, mesg, sound string) error {
 	script := fmt.Sprintf("display notification %q with title %q sound name %q",
 		mesg, title, sound)
 
