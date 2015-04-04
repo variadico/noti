@@ -53,8 +53,8 @@ func main() {
 	}
 }
 
-// Exec executes a program. The stdout and stderr of the executing program are
-// sent to noti.
+// Exec executes a program. The stdin, stdout, and stderr of noti are passed to
+// the program that'll be executed.
 func Exec(bin string, args []string) error {
 	cmd := exec.Command(bin, args...)
 	cmd.Stdin = os.Stdin
