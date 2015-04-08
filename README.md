@@ -44,5 +44,5 @@ noti -t "Homebrew" -m "Up to date." brew update
 
 Add it at the end, if you forget.
 ````
-clang foo.c bar.c baz.c -Wall -lm -L/usr/X11R6/lib -lX11 -I/usr/X11R6/include -o bizz; noti
+clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -I/usr/X11R6/include -o bizz; noti
 ````
