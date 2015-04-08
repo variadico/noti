@@ -45,11 +45,12 @@ func main() {
 
 	if err := run(flag.Args()[0], flag.Args()[1:]); err != nil {
 		notify(*title, "Failed. See terminal.", "Basso")
-		return
+		os.Exit(1)
 	}
 
 	if err := notify(*title, *mesg, *sound); err != nil {
 		log.Println(err)
+		os.Exit(1)
 	}
 }
 
