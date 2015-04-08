@@ -16,7 +16,7 @@ var (
 
 func init() {
 	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, `Usage: noti [-tms] <utility> [args...]
+		fmt.Fprintln(os.Stderr, `Usage: noti [-tms] [utility [args...]]
 
     -t    Title of notification. Default is the utility name.
 
@@ -35,7 +35,13 @@ func main() {
 	flag.Parse()
 
 	if len(flag.Args()) == 0 {
-		flag.Usage()
+		if *title == "Utility Name" {
+			*title = "noti"
+		}
+		if err := notify(*title, *mesg, *sound); err != nil {
+			log.Println(err)
+			os.Exit(1)
+		}
 		return
 	}
 
