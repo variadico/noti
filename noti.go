@@ -18,7 +18,8 @@ func init() {
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, `Usage: noti [-tms] [utility [args...]]
 
-    -t    Title of notification. Default is the utility name.
+    -t    Title of notification. If no arguments passed, default is "noti",
+          else default is utility name.
 
     -m    Message notification will display. Default is "Done!"
 
