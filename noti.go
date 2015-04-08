@@ -25,7 +25,7 @@ func init() {
     -s    Sound to play when notified. Default is Ping. Possible options
           are Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping,
           Pop, Purr, Sosumi, Submarine, Tink. Check /System/Library/Sounds
-          for more info.
+          for available sounds.
 
     -h    Display usage information and exit.`)
 	}
