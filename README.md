@@ -26,14 +26,14 @@ noti [-tms] [utility [args...]]
 ````
 
 ## Examples
-Get notified when `curl` finishes downloading files.
-````
-noti curl -O https://wordpress.org/latest.tar.gz
-````
-
 Get notified when `tar` finishes compressing files.
 ````
 noti tar -cjf music.tar.bz2 Music/
+````
+
+Get notified when `apt-get` finishes updating on a remote server.
+````
+noti ssh you@server.com apt-get update
 ````
 
 Get notified when `brew` finishes updating. Set the notification title to
