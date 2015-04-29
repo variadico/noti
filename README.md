@@ -4,7 +4,7 @@ Display a notification in OS X after a program finishes running.
 ## Installation
 If you have Go installed, then you can do this.
 ````
-go get github.com/pi241a/noti
+go get github.com/variadico/noti
 ````
 
 ## Usage
