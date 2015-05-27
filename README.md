@@ -8,7 +8,7 @@ go get github.com/variadico/noti
 ````
 
 Otherwise, you can download the standalone binary on the
-[releases page](https://github.com/variadico/noti/releases/tag/v1.0.0).
+[releases page](https://github.com/variadico/noti/releases).
 
 ## Usage
 Just put `noti` at the beginning or end of your regular commands.
