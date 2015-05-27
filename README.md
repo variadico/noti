@@ -3,46 +3,69 @@ Display a notification in OS X after a program finishes running.
 
 ## Installation
 If you have Go installed, then you can do this.
-````
+
+``
 go get github.com/variadico/noti
-````
+``
+
+Otherwise, you can download the standalone binary on the
+[releases page](https://github.com/variadico/noti/releases/latest). Then give
+it execute permissions.
+
+```
+chmod u+x noti
+```
 
 ## Usage
 Just put `noti` at the beginning or end of your regular commands.
-````
-noti [-tms] [utility [args...]]
 
-    -t    Title of notification. If no arguments passed, default is "noti",
-          else default is utility name.
+```
+noti [options] [utility [args...]]
+```
 
-    -m    Message notification will display. Default is "Done!"
+### Options
+```
+-t, -title
+    Set the notification title. If no arguments passed, default is "noti",
+    else default is utility name.
 
-    -s    Sound to play when notified. Default is Ping. Possible options
-          are Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping,
-          Pop, Purr, Sosumi, Submarine, Tink. Check /System/Library/Sounds
-          for available sounds.
+-m, -message
+    Set notification message. Default is "Done!"
 
-    -h    Display usage information and exit.
-````
+-s, -sound
+    Set notification sound. Default is Ping. Possible options are Basso,
+    Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
+    Submarine, Tink. Check /System/Library/Sounds for available sounds.
+
+-v, -version
+    Print noti version and exit.
+
+-h, -help
+    Display usage information and exit.
+```
 
 ## Examples
-Get notified when `tar` finishes compressing files.
-````
+Display a notification when `tar` finishes compressing files.
+
+```
 noti tar -cjf music.tar.bz2 Music/
-````
+```
 
-Get notified when `apt-get` finishes updating on a remote server.
-````
+Display a notification when `apt-get` finishes updating on a remote server.
+
+```
 noti ssh you@server.com apt-get update
-````
+```
 
-Get notified when `brew` finishes updating. Set the notification title to
-"Homebrew" and the message to "Up to date."
-````
-noti -t "Homebrew" -m "Up to date." brew update
-````
+Set the notification title to "homebrew" and message to "Up to date" and
+display it after `brew` finishes updating.
 
-Add it at the end, if you forget.
-````
-clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -I/usr/X11R6/include -o bizz; noti
-````
+```
+noti -t "homebrew" -m "up to date" brew upgrade --all
+```
+
+You can also add `noti` after a command, in case you forgot at the beginning.
+
+```
+clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
+```
