@@ -8,8 +8,8 @@ go get github.com/variadico/noti
 ````
 
 Otherwise, you can download the standalone binary on the
-[releases page](https://github.com/variadico/noti/releases). Then give it
-execute permissions.
+[releases page](https://github.com/variadico/noti/releases/latest). Then give
+it execute permissions.
 ````
 chmod u+x noti
 ````
