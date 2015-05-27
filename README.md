@@ -8,12 +8,16 @@ go get github.com/variadico/noti
 ````
 
 Otherwise, you can download the standalone binary on the
-[releases page](https://github.com/variadico/noti/releases).
+[releases page](https://github.com/variadico/noti/releases). Then give it
+execute permissions.
+````
+chmod u+x noti
+````
 
 ## Usage
 Just put `noti` at the beginning or end of your regular commands.
 ````
-    noti [options] [utility [args...]]
+noti [options] [utility [args...]]
 
 OPTIONS
     -t, -title
