@@ -8,23 +8,7 @@ import (
 	"os/exec"
 )
 
-var (
-	title   = flag.String("t", "Utility Name", "")
-	mesg    = flag.String("m", "Done!", "")
-	sound   = flag.String("s", "Ping", "")
-	version = flag.Bool("v", false, "")
-	help    bool
-)
-
-func init() {
-	flag.StringVar(title, "title", "Utility Name", "")
-	flag.StringVar(mesg, "message", "Done!", "")
-	flag.StringVar(sound, "sound", "Ping", "")
-	flag.BoolVar(version, "version", false, "")
-	flag.BoolVar(&help, "help", false, "")
-
-	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, `NOTI
+const usageText = `NOTI
     display a notification in os x after a terminal process finishes.
 
 USAGE
@@ -62,48 +46,53 @@ EXAMPLES
 
     You can also add noti after a command, in case you forgot at the beginning.
         clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
-`)
-	}
-}
+`
 
 func main() {
+	title := flag.String("t", "", "")
+	mesg := flag.String("m", "Done!", "")
+	sound := flag.String("s", "Ping", "")
+	version := flag.Bool("v", false, "")
+	help := flag.Bool("h", false, "")
+	flag.StringVar(title, "title", "", "")
+	flag.StringVar(mesg, "message", "Done!", "")
+	flag.StringVar(sound, "sound", "Ping", "")
+	flag.BoolVar(version, "version", false, "")
+	flag.BoolVar(help, "help", false, "")
+	flag.Usage = func() { log.Println(usageText) }
 	flag.Parse()
 
-	if help {
-		flag.Usage()
-		os.Exit(1)
+	if *help {
+		fmt.Println(usageText)
+		return
 	}
 
 	if *version {
-		fmt.Println("noti version 1.0.0")
+		fmt.Println("noti version 1.0.1")
 		return
 	}
 
 	if len(flag.Args()) == 0 {
-		if *title == "Utility Name" {
-			*title = "noti"
-		}
-
-		if err := notify(*title, *mesg, *sound); err != nil {
-			log.Println(err)
-			os.Exit(1)
+		if err := notify("noti", *mesg, *sound); err != nil {
+			log.Fatal(err)
 		}
 
 		return
 	}
 
-	if *title == "Utility Name" {
+	if *title == "" {
+		// title = utility's name
 		*title = flag.Args()[0]
 	}
 
+	// run a binary and its arguments
 	if err := run(flag.Args()[0], flag.Args()[1:]); err != nil {
 		notify(*title, "Failed. See terminal.", "Basso")
 		os.Exit(1)
 	}
 
 	if err := notify(*title, *mesg, *sound); err != nil {
-		log.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }
 
