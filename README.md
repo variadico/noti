@@ -4,9 +4,9 @@ Display a notification in OS X after a program finishes running.
 ## Installation
 If you have Go installed, then you can do this.
 
-``
+```
 go get github.com/variadico/noti
-``
+```
 
 Otherwise, you can download the standalone binary on the
 [releases page](https://github.com/variadico/noti/releases/latest). Then give
