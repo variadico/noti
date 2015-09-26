@@ -27,7 +27,7 @@ noti [options] [utility [args...]]
 ```
 -t, -title
     Set the notification title. If no arguments passed, default is "noti",
-    else default is utility name.
+    otherwise default is utility name.
 
 -m, -message
     Set notification message. Default is "Done!"
@@ -36,6 +36,9 @@ noti [options] [utility [args...]]
     Set notification sound. Default is Ping. Possible options are Basso,
     Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
     Submarine, Tink. Check /System/Library/Sounds for available sounds.
+
+-f, -foreground
+    Bring the terminal to the foreground.
 
 -v, -version
     Print noti version and exit.
@@ -68,4 +71,10 @@ You can also add `noti` after a command, in case you forgot at the beginning.
 
 ```
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
+```
+
+Create a reminder to get back to a friend.
+
+```
+noti -t "Reply to Pedro" gsleep 5m &
 ```
