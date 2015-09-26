@@ -15,6 +15,9 @@ USAGE
     noti [options] [utility [args...]]
 
 OPTIONS
+    -f, -foreground
+        Bring the terminal to the foreground.
+
     -t, -title
         Set the notification title. If no arguments passed, default is "noti",
         else default is utility name.
@@ -48,12 +51,23 @@ EXAMPLES
         clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 `
 
+const (
+	activateReopen = `tell application "Terminal"
+	activate
+	reopen
+end tell`
+
+	displayNotification = "display notification %q with title %q sound name %q"
+)
+
 func main() {
+	foreground := flag.Bool("f", false, "")
 	title := flag.String("t", "", "")
 	mesg := flag.String("m", "Done!", "")
 	sound := flag.String("s", "Ping", "")
 	version := flag.Bool("v", false, "")
 	help := flag.Bool("h", false, "")
+	flag.BoolVar(foreground, "foreground", false, "")
 	flag.StringVar(title, "title", "", "")
 	flag.StringVar(mesg, "message", "Done!", "")
 	flag.StringVar(sound, "sound", "Ping", "")
@@ -68,12 +82,13 @@ func main() {
 	}
 
 	if *version {
-		fmt.Println("noti version 1.0.1")
+		fmt.Println("noti version 1.1.0")
 		return
 	}
 
+	// noti called by itself
 	if len(flag.Args()) == 0 {
-		if err := notify("noti", *mesg, *sound); err != nil {
+		if err := notify("noti", *mesg, *sound, *foreground); err != nil {
 			log.Fatal(err)
 		}
 
@@ -87,11 +102,11 @@ func main() {
 
 	// run a binary and its arguments
 	if err := run(flag.Args()[0], flag.Args()[1:]); err != nil {
-		notify(*title, "Failed. See terminal.", "Basso")
+		notify(*title, "Failed. See terminal.", "Basso", *foreground)
 		os.Exit(1)
 	}
 
-	if err := notify(*title, *mesg, *sound); err != nil {
+	if err := notify(*title, *mesg, *sound, *foreground); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -109,10 +124,15 @@ func run(bin string, args []string) error {
 
 // notify displays a notification in OS X's notification center with a given
 // title, message, and sound.
-func notify(title, mesg, sound string) error {
-	script := fmt.Sprintf("display notification %q with title %q sound name %q",
-		mesg, title, sound)
+func notify(title, mesg, sound string, foreground bool) error {
+	if foreground {
+		cmd := exec.Command("osascript", "-e", activateReopen)
+		if err := cmd.Run(); err != nil {
+			return err
+		}
+	}
 
+	script := fmt.Sprintf(displayNotification, mesg, title, sound)
 	cmd := exec.Command("osascript", "-e", script)
 	return cmd.Run()
 }
