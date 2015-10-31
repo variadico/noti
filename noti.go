@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 )
@@ -30,6 +33,10 @@ OPTIONS
     -f, -foreground
         Bring the terminal to the foreground.
 
+    -p, -pushbullet
+        Send a Pushbullet notification. Access token must be set in NOTI_PB
+        environment variable.
+
     -v, -version
         Print noti version and exit.
 
@@ -54,6 +61,9 @@ const (
 end tell`
 
 	displayNotification = "display notification %q with title %q sound name %q"
+
+	pushbulletEnv = "NOTI_PB"
+	pushbulletAPI = "https://api.pushbullet.com/v2/pushes"
 )
 
 func main() {
@@ -61,12 +71,14 @@ func main() {
 	title := flag.String("t", "noti", "")
 	mesg := flag.String("m", "Done!", "")
 	sound := flag.String("s", "Ping", "")
+	pbullet := flag.Bool("p", false, "")
 	version := flag.Bool("v", false, "")
 	help := flag.Bool("h", false, "")
 	flag.BoolVar(foreground, "foreground", false, "")
 	flag.StringVar(title, "title", "noti", "")
 	flag.StringVar(mesg, "message", "Done!", "")
 	flag.StringVar(sound, "sound", "Ping", "")
+	flag.BoolVar(pbullet, "pushbullet", false, "")
 	flag.BoolVar(version, "version", false, "")
 	flag.BoolVar(help, "help", false, "")
 	flag.Usage = func() { log.Println(usageText) }
@@ -78,7 +90,7 @@ func main() {
 	}
 
 	if *version {
-		fmt.Println("noti version 1.1.1")
+		fmt.Println("noti version 1.2.0")
 		return
 	}
 
@@ -97,12 +109,12 @@ func main() {
 
 		// run a binary and its arguments
 		if err := run(utilArgs[0], utilArgs[1:]); err != nil {
-			notify(*title, "Failed. See terminal.", "Basso", *foreground)
+			notify(*title, "Failed. See terminal.", "Basso", *foreground, *pbullet)
 			os.Exit(1)
 		}
 	}
 
-	if err := notify(*title, *mesg, *sound, *foreground); err != nil {
+	if err := notify(*title, *mesg, *sound, *foreground, *pbullet); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -120,7 +132,7 @@ func run(bin string, args []string) error {
 
 // notify displays a notification in OS X's notification center with a given
 // title, message, and sound.
-func notify(title, mesg, sound string, foreground bool) error {
+func notify(title, mesg, sound string, foreground, pbullet bool) error {
 	if foreground {
 		cmd := exec.Command("osascript", "-e", activateReopen)
 		if err := cmd.Run(); err != nil {
@@ -128,7 +140,37 @@ func notify(title, mesg, sound string, foreground bool) error {
 		}
 	}
 
+	if pbullet {
+		return pbulletNotify(title, mesg)
+	}
+
 	script := fmt.Sprintf(displayNotification, mesg, title, sound)
 	cmd := exec.Command("osascript", "-e", script)
 	return cmd.Run()
+}
+
+// pbulletNotify sends a Pushbullet notification to all devices associated with
+// a given access token.
+func pbulletNotify(title, mesg string) error {
+	apiKey := os.Getenv(pushbulletEnv)
+	if apiKey == "" {
+		return errors.New("Pushbullet access token is not set in environment")
+	}
+
+	payload := bytes.NewBuffer([]byte(
+		fmt.Sprintf(`{"body":"%s","title":"%s","type":"note"}`, mesg, title),
+	))
+
+	req, err := http.NewRequest("POST", pushbulletAPI, payload)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Access-Token", apiKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	if _, err = http.DefaultClient.Do(req); err != nil {
+		return err
+	}
+
+	return nil
 }
