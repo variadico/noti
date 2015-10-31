@@ -58,13 +58,13 @@ end tell`
 
 func main() {
 	foreground := flag.Bool("f", false, "")
-	title := flag.String("t", "", "")
+	title := flag.String("t", "noti", "")
 	mesg := flag.String("m", "Done!", "")
 	sound := flag.String("s", "Ping", "")
 	version := flag.Bool("v", false, "")
 	help := flag.Bool("h", false, "")
 	flag.BoolVar(foreground, "foreground", false, "")
-	flag.StringVar(title, "title", "", "")
+	flag.StringVar(title, "title", "noti", "")
 	flag.StringVar(mesg, "message", "Done!", "")
 	flag.StringVar(sound, "sound", "Ping", "")
 	flag.BoolVar(version, "version", false, "")
@@ -78,28 +78,28 @@ func main() {
 	}
 
 	if *version {
-		fmt.Println("noti version 1.1.0")
+		fmt.Println("noti version 1.1.1")
 		return
 	}
 
-	// noti called by itself
-	if len(flag.Args()) == 0 {
-		if err := notify("noti", *mesg, *sound, *foreground); err != nil {
-			log.Fatal(err)
+	// noti called with a utility
+	if utilArgs := flag.Args(); len(utilArgs) > 0 {
+		// "noti" is default, so flag probably wasn't passed.
+		if *title == "noti" {
+			// title = utility's name
+			*title = utilArgs[0]
+
+			// Also, show flag or subcommand, if long enough.
+			if len(utilArgs) > 1 {
+				*title += " " + utilArgs[1]
+			}
 		}
 
-		return
-	}
-
-	if *title == "" {
-		// title = utility's name
-		*title = flag.Args()[0]
-	}
-
-	// run a binary and its arguments
-	if err := run(flag.Args()[0], flag.Args()[1:]); err != nil {
-		notify(*title, "Failed. See terminal.", "Basso", *foreground)
-		os.Exit(1)
+		// run a binary and its arguments
+		if err := run(utilArgs[0], utilArgs[1:]); err != nil {
+			notify(*title, "Failed. See terminal.", "Basso", *foreground)
+			os.Exit(1)
+		}
 	}
 
 	if err := notify(*title, *mesg, *sound, *foreground); err != nil {
