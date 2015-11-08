@@ -26,25 +26,29 @@ noti [options] [utility [args...]]
 ### Options
 ```
 -t, -title
-    Set the notification title. If no arguments passed, default is "noti",
-    otherwise default is utility name.
+Set the notification title. If no arguments passed, default is "noti",
+otherwise default is utility name.
 
 -m, -message
-    Set notification message. Default is "Done!"
+Set notification message. Default is "Done!"
 
 -s, -sound
-    Set notification sound. Default is Ping. Possible options are Basso,
-    Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
-    Submarine, Tink. Check /System/Library/Sounds for available sounds.
+Set notification sound. Default is Ping. Possible options are Basso,
+Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
+Submarine, Tink. Check /System/Library/Sounds for available sounds.
 
 -f, -foreground
-    Bring the terminal to the foreground.
+Bring the terminal to the foreground.
+
+-p, -pushbullet
+Send a Pushbullet notification. Access token must be set in NOTI_PB
+environment variable.
 
 -v, -version
-    Print noti version and exit.
+Print noti version and exit.
 
 -h, -help
-    Display usage information and exit.
+Display usage information and exit.
 ```
 
 ## Examples
@@ -77,4 +81,10 @@ Create a reminder to get back to a friend.
 
 ```
 noti -t "Reply to Pedro" gsleep 5m &
+```
+
+Send a Pushbullet notification after tests finish.
+
+```
+noti -p go test ./...
 ```
