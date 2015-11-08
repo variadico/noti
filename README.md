@@ -1,12 +1,21 @@
 # noti
 Display a notification after a terminal process finishes.
 
-There are two notification flavors to choose from:
+## Types
+These are the different types of notifications currently available.
 
-* OS X. This is the default. This is great so you don't have to keep checking
+### OS X notifications
+This is the default. This is great so you don't have to keep checking
 the terminal to see if your process is done.
-* Pushbullet. This is great if you want to leave sight of your computer and
-grab some coffee.
+
+![OS X notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/osx.png)
+
+### Pushbullet notifications
+This is great if you want to leave sight of your computer and
+grab some coffee. These notifications will get sent to all your Pushbullet 
+devices, including your phone.
+
+![Pushbullet notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/pushbullet.png)
 
 ## Installation
 If you have Go installed, then you can do this.
