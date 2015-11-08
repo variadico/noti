@@ -1,5 +1,12 @@
 # noti
-Display a notification in OS X after a program finishes running.
+Display a notification after a terminal process finishes.
+
+There are two notification flavors to choose from:
+
+* OS X. This is the default. This is great so you don't have to keep checking
+the terminal to see if your process is done.
+* Pushbullet. This is great if you want to leave sight of your computer and
+grab some coffee.
 
 ## Installation
 If you have Go installed, then you can do this.
@@ -40,6 +47,10 @@ noti [options] [utility [args...]]
 -f, -foreground
     Bring the terminal to the foreground.
 
+-p, -pushbullet
+    Send a Pushbullet notification. Access token must be set in NOTI_PB
+    environment variable.
+
 -v, -version
     Print noti version and exit.
 
@@ -77,4 +88,10 @@ Create a reminder to get back to a friend.
 
 ```
 noti -t "Reply to Pedro" gsleep 5m &
+```
+
+Send a Pushbullet notification after tests finish.
+
+```
+noti -p go test ./...
 ```
