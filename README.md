@@ -12,10 +12,12 @@ the terminal to see if your process is done.
 
 ### Pushbullet notifications
 This is great if you want to leave sight of your computer and
-grab some coffee. These notifications will get sent to all your Pushbullet 
+grab some coffee. These notifications will get sent to all your Pushbullet
 devices, including your phone.
 
 ![Pushbullet notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/pushbullet.png)
+
+![Pushbullet Android notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/pushbullet_android.png)
 
 ## Installation
 If you have Go installed, then you can do this.
