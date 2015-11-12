@@ -130,25 +130,6 @@ func run(bin string, args []string) error {
 	return cmd.Run()
 }
 
-// notify displays a notification in OS X's notification center with a given
-// title, message, and sound.
-func notify(title, mesg, sound string, foreground, pbullet bool) error {
-	if foreground {
-		cmd := exec.Command("osascript", "-e", activateReopen)
-		if err := cmd.Run(); err != nil {
-			return err
-		}
-	}
-
-	if pbullet {
-		return pbulletNotify(title, mesg)
-	}
-
-	script := fmt.Sprintf(displayNotification, mesg, title, sound)
-	cmd := exec.Command("osascript", "-e", script)
-	return cmd.Run()
-}
-
 // pbulletNotify sends a Pushbullet notification to all devices associated with
 // a given access token.
 func pbulletNotify(title, mesg string) error {
