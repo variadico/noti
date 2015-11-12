@@ -13,5 +13,8 @@ func notify(title, mesg, _ string, _, pbullet bool) error {
 	if err != nil {
 		return fmt.Errorf("notify-send failed: %s\nOutput: %s", err, out)
 	}
+	if pbullet {
+		return pbulletNotify(title, mesg)
+	}
 	return nil
 }
