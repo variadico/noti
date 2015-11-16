@@ -5,6 +5,15 @@ import (
 	"os/exec"
 )
 
+const (
+	activateReopen = `tell application "Terminal"
+	activate
+	reopen
+end tell`
+
+	displayNotification = "display notification %q with title %q sound name %q"
+)
+
 // notify displays a notification in OS X's notification center with a given
 // title, message, and sound.
 func notify(title, mesg, sound string, foreground, pbullet bool) error {

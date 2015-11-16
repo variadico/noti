@@ -4,11 +4,18 @@ Display a notification after a terminal process finishes.
 ## Types
 These are the different types of notifications currently available.
 
-### OS X notifications
-This is the default. This is great so you don't have to keep checking
-the terminal to see if your process is done.
+### Desktop notifications
+This is the default. Supported on OS X and Linux/FreeBSD through libnotify.
+This is great so you don't have to keep checking the terminal to see if your process is done.
 
-![OS X notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/osx.png)
+
+![OS X notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/osx.png) (OS X)
+
+
+![Linux Mint notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/linux_mint.png) (Linux Mint 17.2)
+
+![Dunst](https://raw.githubusercontent.com/variadico/noti/master/screenshots/bsd_dunst.png) ([Dunst](http://knopwob.org/dunst/index.html))
+
 
 ### Pushbullet notifications
 This is great if you want to leave sight of your computer and
@@ -51,12 +58,13 @@ noti [options] [utility [args...]]
     Set notification message. Default is "Done!"
 
 -s, -sound
-    Set notification sound. Default is Ping. Possible options are Basso,
-    Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
-    Submarine, Tink. Check /System/Library/Sounds for available sounds.
+    Set notification sound (OS X only). Default is Ping.
+    Possible options are Basso, Blow, Bottle, Frog, Funk, Glass, Hero,
+    Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink.
+    Check /System/Library/Sounds for available sounds.
 
 -f, -foreground
-    Bring the terminal to the foreground.
+    Bring the terminal to the foreground. (OS X only)
 
 -p, -pushbullet
     Send a Pushbullet notification. Access token must be set in NOTI_PB

@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-// foreground and sound werent implemented for libnotify
+// foreground and sound are only implemented on darwin
 func notify(title, mesg, _ string, _, pbullet bool) error {
 	out, err := exec.Command("notify-send", title, mesg).CombinedOutput()
 	if err != nil {
