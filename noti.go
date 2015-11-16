@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"runtime"
 )
 
 const usageText = `NOTI
@@ -133,8 +134,14 @@ func run(bin string, args []string) error {
 // notify displays a notification in OS X's notification center with a given
 // title, message, and sound.
 func notify(title, mesg, sound string, foreground, pbullet bool) error {
+	osName := runtime.GOOS
+	var cmd *exec.Cmd
 	if foreground {
-		cmd := exec.Command("osascript", "-e", activateReopen)
+		if osName == "darwin" {
+			cmd = exec.Command("osascript", "-e", activateReopen)
+		} else if osName == "linux" {
+			cmd = exec.Command("notify-send", activateReopen)
+		}
 		if err := cmd.Run(); err != nil {
 			return err
 		}
@@ -144,8 +151,13 @@ func notify(title, mesg, sound string, foreground, pbullet bool) error {
 		return pbulletNotify(title, mesg)
 	}
 
-	script := fmt.Sprintf(displayNotification, mesg, title, sound)
-	cmd := exec.Command("osascript", "-e", script)
+	if osName == "darwin" {
+		script := fmt.Sprintf(displayNotification, mesg, title, sound)
+		cmd = exec.Command("osascript", "-e", script)
+	} else if osName == "linux" {
+		cmd = exec.Command("notify-send", title, mesg)
+	}
+
 	return cmd.Run()
 }
 
