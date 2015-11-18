@@ -12,7 +12,7 @@ import (
 )
 
 const usageText = `NOTI
-    display a notification in os x after a terminal process finishes.
+    display a notification after a terminal process finishes.
 
 USAGE
     noti [options] [utility [args...]]
@@ -26,12 +26,13 @@ OPTIONS
         Set notification message. Default is "Done!"
 
     -s, -sound
-        Set notification sound. Default is Ping. Possible options are Basso,
-        Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
-        Submarine, Tink. Check /System/Library/Sounds for available sounds.
+        Set notification sound (OS X only). Default is Ping.
+        Possible options are Basso, Blow, Bottle, Frog, Funk, Glass, Hero,
+        Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink.
+        Check /System/Library/Sounds for available sounds.
 
     -f, -foreground
-        Bring the terminal to the foreground.
+        Bring the terminal to the foreground. (OS X only)
 
     -p, -pushbullet
         Send a Pushbullet notification. Access token must be set in NOTI_PB
@@ -55,13 +56,6 @@ EXAMPLES
 `
 
 const (
-	activateReopen = `tell application "Terminal"
-	activate
-	reopen
-end tell`
-
-	displayNotification = "display notification %q with title %q sound name %q"
-
 	pushbulletEnv = "NOTI_PB"
 	pushbulletAPI = "https://api.pushbullet.com/v2/pushes"
 )
@@ -127,25 +121,6 @@ func run(bin string, args []string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	return cmd.Run()
-}
-
-// notify displays a notification in OS X's notification center with a given
-// title, message, and sound.
-func notify(title, mesg, sound string, foreground, pbullet bool) error {
-	if foreground {
-		cmd := exec.Command("osascript", "-e", activateReopen)
-		if err := cmd.Run(); err != nil {
-			return err
-		}
-	}
-
-	if pbullet {
-		return pbulletNotify(title, mesg)
-	}
-
-	script := fmt.Sprintf(displayNotification, mesg, title, sound)
-	cmd := exec.Command("osascript", "-e", script)
 	return cmd.Run()
 }
 
