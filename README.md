@@ -6,16 +6,17 @@ These are the different types of notifications currently available.
 
 ### Desktop notifications
 This is the default. Supported on OS X and Linux/FreeBSD through libnotify.
-This is great so you don't have to keep checking the terminal to see if your process is done.
+This is great so you don't have to keep checking the terminal to see if your
+process is done.
 
+![OS X notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/osx.png)
+(OS X)
 
-![OS X notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/osx.png) (OS X)
+![Linux Mint notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/linux_mint.png)
+(Linux Mint 17.2)
 
-
-![Linux Mint notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/linux_mint.png) (Linux Mint 17.2)
-
-![Dunst](https://raw.githubusercontent.com/variadico/noti/master/screenshots/bsd_dunst.png) ([Dunst](http://knopwob.org/dunst/index.html))
-
+![Dunst](https://raw.githubusercontent.com/variadico/noti/master/screenshots/bsd_dunst.png)
+([Dunst](http://knopwob.org/dunst/index.html))
 
 ### Pushbullet notifications
 This is great if you want to leave sight of your computer and
@@ -30,7 +31,7 @@ devices, including your phone.
 If you have Go installed, then you can do this.
 
 ```
-go get github.com/variadico/noti
+go get -u github.com/variadico/noti
 ```
 
 Otherwise, you can download the standalone binary on the
