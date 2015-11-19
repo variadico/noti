@@ -1,4 +1,18 @@
 language: go
+
+os:
+    - linux
+    - osx
+
+install:
+    - go install -v ./...
+
+before_script:
+    - go vet ./...
+
+script:
+    - go test -v -race ./...
+
 go:
     - 1.4
     - 1.5.1
