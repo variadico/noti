@@ -4,10 +4,18 @@
 // have libnotify and a notification server installed.
 package notify
 
-import (
-	"fmt"
-	"os/exec"
-)
+/*
+#include <libnotify/notify.h>
+
+void Notify(const char* summary, const char* body, const char* icon) {
+	notify_init("Hello world!");
+	NotifyNotification* note = notify_notification_new(summary, body, icon);
+	notify_notification_show(note, NULL);
+	g_object_unref(G_OBJECT(note));
+	notify_uninit();
+}
+*/
+import "C"
 
 type Notification struct {
 	Summary  string
@@ -32,10 +40,11 @@ func (n *Notification) SetMessage(m string) {
 }
 
 func (n *Notification) Notify() error {
-	out, err := exec.Command("notify-send", n.Summary, n.Body).CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("notify-send failed: %s\nOutput: %s", err, out)
-	}
+	C.Notify(
+		C.CString(n.Summary),
+		C.CString(n.Body),
+		C.CString(n.IconName),
+	)
 
 	return nil
 }
