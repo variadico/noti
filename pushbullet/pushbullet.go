@@ -1,3 +1,5 @@
+// package pushbullet can be used to trigger a Pushbullet notification on
+// registered devices.
 package pushbullet
 
 import (

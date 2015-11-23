@@ -1,6 +1,8 @@
 // +build linux freebsd
 
-package noti
+// package notify can be used to trigger NotifyNotifications on systems that
+// have libnotify and a notification server installed.
+package notify
 
 import (
 	"fmt"
