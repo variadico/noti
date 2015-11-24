@@ -25,7 +25,7 @@ func init() {
 }
 
 func notify(title, message string) error {
-	nt := notify.Notification{
+	nt := &notify.Notification{
 		Summary: title,
 		Body:    message,
 	}

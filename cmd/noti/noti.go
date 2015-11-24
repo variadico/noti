@@ -86,7 +86,7 @@ func run(bin string, args []string) error {
 
 // pushbulletNotify sends a pushbullet notification.
 func pushbulletNotify(title, message string) error {
-	nt := pushbullet.Notification{
+	nt := &pushbullet.Notification{
 		AccessToken: os.Getenv(pushbullet.AccessTokenEnv),
 		Title:       title,
 		Body:        message,
