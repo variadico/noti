@@ -5,6 +5,10 @@
 package notify
 
 /*
+#cgo pkg-config: --cflags glib-2.0
+#cgo pkg-config: --cflags gtk+-2.0
+#cgo LDFLAGS: -lnotify
+
 #include <libnotify/notify.h>
 
 void Notify(const char* summary, const char* body, const char* icon) {
