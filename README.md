@@ -1,42 +1,33 @@
 # noti
 
-Display a notification after a terminal process finishes.
+Trigger a notification after a terminal process finishes.
 
 ## Types
 
-These are the different types of notifications currently available.
+These are the different types of notifications currently available. The default
+type is a desktop notification.
 
-### Desktop notifications
+### Banner
 
-This is the default. Supported on OS X and Linux/FreeBSD through libnotify. This
-is great so you don't have to keep checking the terminal to see if your process
-is done.
+On OS X, `noti` will use the built-in NSUserNotifications that everyone expects.
+Meanwhile, on Linux and FreeBSD, `noti` will use libnotify.
 
-![OS X notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/osx.png)
-(OS X)
+### Smartphone
 
-![Linux Mint notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/linux_mint.png)
-(Linux Mint 17.2)
+For smartphones, `noti` will use Pushbullet. You'll have to get an access token
+from Pushbullet, under Settings, and set `PUSHBULLET_ACCESS_TOKEN` on your
+computer.
 
-![Dunst](https://raw.githubusercontent.com/variadico/noti/master/screenshots/bsd_dunst.png)
-([Dunst](http://knopwob.org/dunst/index.html))
+### Speech
 
-### Pushbullet notifications
+On OS X, this will use NSSpeechSynthesizer to speak the notification message.
 
-This is great if you want to leave sight of your computer and grab some coffee.
-These notifications will get sent to all your Pushbullet devices, including your
-phone.
-
-![Pushbullet notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/pushbullet.png)
-
-![Pushbullet Android notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/pushbullet_android.png)
-
-## Installation
+## Install
 
 If you have Go installed, then you can do this.
 
 ```
-go get -u github.com/variadico/noti
+go get -u github.com/variadico/noti/cmd/noti
 ```
 
 Otherwise, you can download the standalone binary on the
@@ -124,8 +115,8 @@ tests finish.
 noti -p go test ./...
 ```
 
-Have your Mac tell you what happened.
+Have your Mac tell you what happened. This will speak "docker pull done".
 
 ```
-noti -V alex -m 'Ubuntu download finished.' docker pull ubuntu
+noti -V alex docker pull ubuntu
 ```
