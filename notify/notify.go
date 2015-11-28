@@ -1,6 +1,6 @@
 // +build linux freebsd
 
-// package notify can be used to trigger NotifyNotifications on systems that
+// Package notify can be used to display a NotifyNotification on systems that
 // have libnotify and a notification server installed.
 package notify
 

@@ -1,6 +1,6 @@
 // +build darwin
 
-// package nsuser can be used to trigger a NSUserNotification on OS X.
+// Package nsuser can be used to display an NSUserNotification on OS X.
 package nsuser
 
 /*

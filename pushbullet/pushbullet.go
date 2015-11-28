@@ -1,4 +1,4 @@
-// package pushbullet can be used to trigger a Pushbullet notification on
+// Package pushbullet can be used to send a Pushbullet notification to
 // registered devices.
 package pushbullet
 
