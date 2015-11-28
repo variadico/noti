@@ -62,6 +62,8 @@ func main() {
 		return
 	}
 
+	processArgs(title, message, flag.Args())
+
 	if *pb {
 		if err := pushbulletNotify(*title, *message); err != nil {
 			log.Fatal(err)
@@ -73,10 +75,33 @@ func main() {
 	}
 }
 
+func processArgs(title, message *string, args []string) {
+	if len(args) < 1 {
+		return
+	}
+
+	if err := run(args); err != nil {
+		*message = fmt.Sprint(err)
+	}
+
+	if *title == "" {
+		*title = genTitle(args, 2)
+	}
+}
+
 // run executes a program and waits for it to finish. The stdin, stdout, and
 // stderr of noti are passed to the program.
-func run(bin string, args []string) error {
-	cmd := exec.Command(bin, args...)
+func run(args []string) error {
+	var cmd *exec.Cmd
+
+	if ln := len(args); ln < 1 {
+		return nil
+	} else if ln == 1 {
+		cmd = exec.Command(args[0])
+	} else {
+		cmd = exec.Command(args[0], args[1:]...)
+	}
+
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -93,4 +118,20 @@ func pushbulletNotify(title, message string) error {
 	}
 
 	return nt.Notify()
+}
+
+// genTitle takes a list of arguments and constructs a title by using the first
+// 2 arguments.
+func genTitle(args []string, max int) string {
+	var t string
+
+	for i, a := range args {
+		t += a + " "
+
+		if i+1 >= max {
+			break
+		}
+	}
+
+	return t
 }
