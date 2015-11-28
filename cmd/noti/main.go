@@ -75,6 +75,8 @@ func main() {
 	}
 }
 
+// processArgs executes any utility args. In addition, it also sets the
+// notification title and message, as necessary.
 func processArgs(title, message *string, args []string) {
 	if len(args) < 1 {
 		return
