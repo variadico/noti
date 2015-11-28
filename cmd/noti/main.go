@@ -58,7 +58,7 @@ func main() {
 	}
 
 	if *version {
-		fmt.Println("noti version dev")
+		fmt.Println("noti version v2dev")
 		return
 	}
 
