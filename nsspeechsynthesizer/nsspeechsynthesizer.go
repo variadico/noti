@@ -3,17 +3,16 @@ package nsspeechsynthesizer
 import "os/exec"
 
 type Notification struct {
-	Title   string
 	Message string
 	Voice   string
 }
 
 func (n *Notification) GetTitle() string {
-	return n.Title
+	return ""
 }
 
 func (n *Notification) SetTitle(t string) {
-	n.Title = t
+	// Doesn't support title.
 }
 
 func (n *Notification) GetMessage() string {
@@ -27,9 +26,9 @@ func (n *Notification) SetMessage(m string) {
 func (n *Notification) Notify() error {
 	var cmd *exec.Cmd
 	if n.Voice == "" {
-		cmd = exec.Command("say", n.Title, n.Message)
+		cmd = exec.Command("say", n.Message)
 	} else {
-		cmd = exec.Command("say", "-v", n.Voice, n.Title, n.Message)
+		cmd = exec.Command("say", "-v", n.Voice, n.Message)
 	}
 
 	return cmd.Run()
