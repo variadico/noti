@@ -13,18 +13,23 @@ import (
 
 const usageOSX = `
     -s, -sound
-        Set notification sound.`
+        Set notification sound. Default is Ping. Possible options are Basso,
+        Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
+        Submarine, Tink. Check /System/Library/Sounds for available sounds.
+    -V, -voice
+        Set voice. Check System Preferences > Dictation & Speech for available
+        voices.`
 
 var (
-	sound  *string
-	speech *bool
+	sound *string
+	voice *string
 )
 
 func init() {
 	sound = flag.String("s", "Ping", "")
 	flag.StringVar(sound, "sound", "Ping", "")
-	speech = flag.Bool("S", false, "")
-	flag.BoolVar(speech, "speech", false, "")
+	voice = flag.String("V", "", "")
+	flag.StringVar(voice, "voice", "", "")
 
 	usageText = fmt.Sprintf(usageTmpl, usageOSX)
 }
@@ -32,13 +37,17 @@ func init() {
 func notify(title, message string) error {
 	var nt noti.Notifier
 
-	if *speech {
-		nt = &nsspeechsynthesizer.Notification{}
+	if *voice != "" {
+		nt = &nsspeechsynthesizer.Notification{
+			Voice: *voice,
+		}
 	} else {
-		nt = &nsuser.Notification{}
+		nt = &nsuser.Notification{
+			Title:     title,
+			SoundName: *sound,
+		}
 	}
 
-	nt.SetTitle(title)
 	nt.SetMessage(message)
 
 	return nt.Notify()
