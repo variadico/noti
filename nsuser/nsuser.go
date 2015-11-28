@@ -6,6 +6,8 @@ package nsuser
 /*
 #cgo CFLAGS: -x objective-c
 #cgo LDFLAGS: -framework Cocoa
+
+#include <errno.h>
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 #include <AppKit/AppKit.h>
@@ -26,7 +28,8 @@ package nsuser
 }
 @end
 
-void Notify(const char* title, const char* subtitle, const char* text, const char* sound, const char* img) {
+void notify(const char* title, const char* subtitle, const char* text, const char* sound, const char* img) {
+	errno = 0;
     @autoreleasepool {
         Class nsBundle = objc_getClass("NSBundle");
         method_exchangeImplementations(
@@ -42,22 +45,22 @@ void Notify(const char* title, const char* subtitle, const char* text, const cha
 
 		NSString *nSound = [NSString stringWithUTF8String:sound];
 
-        NSUserNotification *noti = [[NSUserNotification alloc] init];
-        noti.title = [NSString stringWithUTF8String:title];
-        noti.informativeText = [NSString stringWithUTF8String:text];
-        noti.soundName = NSUserNotificationDefaultSoundName;
+        NSUserNotification *nt = [[NSUserNotification alloc] init];
+        nt.title = [NSString stringWithUTF8String:title];
+        nt.informativeText = [NSString stringWithUTF8String:text];
+        nt.soundName = NSUserNotificationDefaultSoundName;
 
         if ([[NSString stringWithUTF8String:sound] length] != 0) {
-			noti.soundName = [NSString stringWithUTF8String:sound];
+			nt.soundName = [NSString stringWithUTF8String:sound];
         }
 		if ([[NSString stringWithUTF8String:subtitle] length] != 0) {
-			noti.subtitle = [NSString stringWithUTF8String:subtitle];
+			nt.subtitle = [NSString stringWithUTF8String:subtitle];
 		}
 		if ([[NSString stringWithUTF8String:img] length] != 0) {
-			noti.contentImage = [[NSImage alloc] initWithContentsOfFile:[NSString stringWithUTF8String:img]];
+			nt.contentImage = [[NSImage alloc] initWithContentsOfFile:[NSString stringWithUTF8String:img]];
 		}
 
-        [nc deliverNotification:noti];
+        [nc deliverNotification:nt];
 
         while (delegate.delivered == NO) {
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
@@ -66,6 +69,8 @@ void Notify(const char* title, const char* subtitle, const char* text, const cha
 }
 */
 import "C"
+
+import "unsafe"
 
 type Notification struct {
 	Title           string
@@ -92,13 +97,18 @@ func (n *Notification) SetMessage(m string) {
 }
 
 func (n *Notification) Notify() error {
-	C.Notify(
-		C.CString(n.Title),
-		C.CString(n.Subtitle),
-		C.CString(n.InformativeText),
-		C.CString(n.SoundName),
-		C.CString(n.ContentImage),
-	)
+	t := C.CString(n.Title)
+	sb := C.CString(n.Subtitle)
+	i := C.CString(n.InformativeText)
+	sn := C.CString(n.SoundName)
+	c := C.CString(n.ContentImage)
+	defer C.free(unsafe.Pointer(t))
+	defer C.free(unsafe.Pointer(sb))
+	defer C.free(unsafe.Pointer(i))
+	defer C.free(unsafe.Pointer(sn))
+	defer C.free(unsafe.Pointer(c))
+
+	C.notify(t, sb, i, sn, c)
 
 	return nil
 }
