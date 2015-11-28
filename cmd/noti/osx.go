@@ -44,6 +44,8 @@ func notify(title, message string) error {
 		nt = &nsspeechsynthesizer.Notification{
 			Voice: *voice,
 		}
+
+		message = fmt.Sprintf("%s %s", title, message)
 	} else {
 		nt = &nsuser.Notification{
 			Title:     title,

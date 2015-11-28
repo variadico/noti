@@ -84,7 +84,7 @@ func processArgs(title, message *string, args []string) {
 		*message = fmt.Sprint(err)
 	}
 
-	if *title == "" {
+	if *title == "noti" {
 		*title = genTitle(args, 2)
 	}
 }
