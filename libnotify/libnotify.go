@@ -9,14 +9,25 @@ package libnotify
 #cgo pkg-config: --cflags gtk+-2.0
 #cgo LDFLAGS: -lnotify
 
+#include <stdlib.h>
+#include <errno.h>
+#include <glib.h>
 #include <libnotify/notify.h>
 
-void Notify(const char* summary, const char* body, const char* icon) {
-	notify_init("Hello world!");
-	NotifyNotification* note = notify_notification_new(summary, body, icon);
-	notify_notification_show(note, NULL);
-	g_object_unref(G_OBJECT(note));
+int notify(const char* summary, const char* body, const char* icon) {
+	errno = 0;
+	notify_init("noti");
+	NotifyNotification* nt = notify_notification_new(summary, body, icon);
+
+	notify_notification_set_timeout(nt, 3000);
+
+	if (!notify_notification_show(nt, NULL)) {
+		return 1;
+	}
+
+	g_object_unref(G_OBJECT(nt));
 	notify_uninit();
+	return 0;
 }
 */
 import "C"
