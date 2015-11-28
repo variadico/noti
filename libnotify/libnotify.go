@@ -32,6 +32,11 @@ int notify(const char* summary, const char* body, const char* icon) {
 */
 import "C"
 
+import (
+	"errors"
+	"unsafe"
+)
+
 type Notification struct {
 	Summary  string
 	Body     string
@@ -55,11 +60,17 @@ func (n *Notification) SetMessage(m string) {
 }
 
 func (n *Notification) Notify() error {
-	C.Notify(
-		C.CString(n.Summary),
-		C.CString(n.Body),
-		C.CString(n.IconName),
-	)
+	s := C.CString(n.Summary)
+	b := C.CString(n.Body)
+	i := C.CString(n.IconName)
+	defer C.free(unsafe.Pointer(s))
+	defer C.free(unsafe.Pointer(b))
+	defer C.free(unsafe.Pointer(i))
+
+	rt, _ := C.notify(s, b, i)
+	if rt == 1 {
+		return errors.New("NotifyNotification show failed")
+	}
 
 	return nil
 }
