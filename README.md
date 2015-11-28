@@ -79,7 +79,9 @@ noti [options] [utility [args...]]
 
 ```
 -i, -icon
-    Set icon name.
+    Set icon name. You can pass a name from /usr/share/icons/gnome/32x32/ or
+    /usr/share/notify-osd/icons/. Alternatively, you can specify a full
+    filepath.
 ```
 
 ## Examples
