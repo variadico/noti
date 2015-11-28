@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/variadico/noti/notify"
+	"github.com/variadico/noti/libnotify"
 )
 
 const usageLinuxBSD = `
@@ -25,7 +25,7 @@ func init() {
 }
 
 func notify(title, message string) error {
-	nt := &notify.Notification{
+	nt := &libnotify.Notification{
 		Summary: title,
 		Body:    message,
 	}
