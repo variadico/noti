@@ -7,14 +7,6 @@ type Notification struct {
 	Voice   string
 }
 
-func (n *Notification) GetTitle() string {
-	return ""
-}
-
-func (n *Notification) SetTitle(t string) {
-	// Doesn't support title.
-}
-
 func (n *Notification) GetMessage() string {
 	return n.Message
 }
