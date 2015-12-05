@@ -18,3 +18,8 @@ type Messager interface {
 	// SetMessage sets a notification's message.
 	SetMessage(string)
 }
+
+type NotifierMessager interface {
+	Notifier
+	Messager
+}

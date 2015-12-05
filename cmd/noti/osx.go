@@ -35,10 +35,7 @@ func init() {
 }
 
 func notify(title, message string) error {
-	var nt interface {
-		noti.Notifier
-		noti.Messager
-	}
+	var nt noti.NotifierMessager
 
 	if *voice != "" {
 		nt = &nsspeechsynthesizer.Notification{
