@@ -6,6 +6,8 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/variadico/noti"
+	"github.com/variadico/noti/espeak"
 	"github.com/variadico/noti/libnotify"
 )
 
@@ -13,24 +15,37 @@ const usageLinuxBSD = `
     -i, -icon
         Set icon name. You can pass a name from /usr/share/icons/gnome/32x32/ or
         /usr/share/notify-osd/icons/. Alternatively, you can specify a full
-        filepath.`
+        filepath.
+    -V, -voice
+        Set voice. Check espeak --voices for available voices.`
 
 var (
-	icon *string
+	icon  *string
+	voice *string
 )
 
 func init() {
 	icon = flag.String("i", "", "")
 	flag.StringVar(icon, "icon", "", "")
+	voice = flag.String("V", "", "")
+	flag.StringVar(voice, "voice", "", "")
 
 	usageText = fmt.Sprintf(usageTmpl, usageLinuxBSD)
 }
 
 func notify(title, message string) error {
-	nt := &libnotify.Notification{
-		Summary:  title,
-		Body:     message,
-		IconName: *icon,
+	var nt noti.NotifierMessager
+
+	if *voice != "" {
+		nt = &espeak.Notification{
+			Voice: *voice,
+		}
+	} else {
+		nt = &libnotify.Notification{
+			Summary:  title,
+			Body:     message,
+			IconName: *icon,
+		}
 	}
 
 	return nt.Notify()
