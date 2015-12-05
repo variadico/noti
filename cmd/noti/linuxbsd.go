@@ -41,6 +41,8 @@ func notify(title, message string) error {
 			Voice:   *voice,
 			Message: message,
 		}
+
+		message = fmt.Sprintf("%s %s", title, message)
 	} else {
 		nt = &libnotify.Notification{
 			Summary:  title,
@@ -48,6 +50,8 @@ func notify(title, message string) error {
 			IconName: *icon,
 		}
 	}
+
+	nt.SetMessage(message)
 
 	return nt.Notify()
 }
