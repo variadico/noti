@@ -38,7 +38,8 @@ func notify(title, message string) error {
 
 	if *voice != "" {
 		nt = &espeak.Notification{
-			Voice: *voice,
+			Voice:   *voice,
+			Message: message,
 		}
 	} else {
 		nt = &libnotify.Notification{
