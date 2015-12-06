@@ -100,9 +100,11 @@ func main() {
 func saveFlags() error {
 	config := make(map[string]string)
 	flag.VisitAll(func(f *flag.Flag) {
-		if f.Name == "save" || f.Name == "S" {
+		switch f.Name {
+		case "save", "S", "version", "v", "help", "h":
 			return
 		}
+
 		config[f.Name] = f.Value.String()
 	})
 
