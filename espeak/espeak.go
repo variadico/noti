@@ -1,17 +1,36 @@
 // +build linux freebsd
 
-// Package espeak speaks a notification using the espeak command on Linux and
+// Package espeak can be used to synthesize speech using eSpeak on Linux and
 // FreeBSD.
 //
-// In order to use this package, you'll need to have espeak installed.
-// On Ubuntu, espeak can be installed this way.
-//    sudo apt-get install espeak
-//
-// To view a list of available voices, use this command.
-//    espeak --voices
+// To compile this package, you'll need to install the eSpeak library. On
+// Ubuntu, you can install it with this command.
+//    sudo apt-get install libespeak-dev
 package espeak
 
-import "os/exec"
+/*
+#cgo LDFLAGS: -lespeak
+
+#include <stdlib.h>
+#include <errno.h>
+#include <espeak/speak_lib.h>
+#include <string.h>
+
+int notify2(const char* message, const char* voice) {
+	errno = 0;
+	espeak_Initialize(AUDIO_OUTPUT_PLAYBACK, 500, NULL, 0);
+
+	unsigned int sz = strlen(message)+1;
+	espeak_POSITION_TYPE pos_type;
+	espeak_Synth(message, sz, 0, pos_type, 0, espeakCHARS_UTF8, NULL, NULL);
+
+	espeak_Synchronize();
+}
+
+*/
+import "C"
+
+import "unsafe"
 
 // Notification is an espeak notification.
 type Notification struct {
@@ -29,16 +48,12 @@ func (n *Notification) SetMessage(m string) {
 	n.Message = m
 }
 
-// Notify speaks a notification's message. If the voice field is set, then it'll
-// use that voice. It'll return an error if there was a problem executing
-// espeak.
 func (n *Notification) Notify() error {
-	var cmd *exec.Cmd
-	if n.Voice == "" {
-		cmd = exec.Command("espeak", "--", n.Message)
-	} else {
-		cmd = exec.Command("espeak", "-v", n.Voice, "--", n.Message)
-	}
+	m := C.CString(n.Message)
+	v := C.CString("")
+	defer C.free(unsafe.Pointer(m))
+	defer C.free(unsafe.Pointer(v))
 
-	return cmd.Run()
+	C.notify2(m, v)
+	return nil
 }
