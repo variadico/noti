@@ -1,5 +1,9 @@
 // Package pushbullet can be used to send a Pushbullet notification to
 // registered devices.
+//
+// To receive notifications on your smartphone, make sure you have the
+// Pushbullet app installed. You can get an access token after logging into the
+// Pushbullet website.
 package pushbullet
 
 import (
