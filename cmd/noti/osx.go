@@ -17,8 +17,7 @@ const usageOSX = `
         Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
         Submarine, Tink. Check /System/Library/Sounds for available sounds.
     -V, -voice
-        Set voice. Check System Preferences > Dictation & Speech for available
-        voices.`
+        Set voice.`
 
 var (
 	sound *string
