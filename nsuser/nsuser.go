@@ -7,10 +7,10 @@ package nsuser
 #cgo CFLAGS: -x objective-c
 #cgo LDFLAGS: -framework Cocoa
 
-#include <errno.h>
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 #include <AppKit/AppKit.h>
+#include <errno.h>
 
 @implementation NSBundle(noti)
 - (NSString *)notiIdentifier {
