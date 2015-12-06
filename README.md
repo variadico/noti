@@ -76,7 +76,7 @@ noti [options] [utility [args...]]
     Send a Pushbullet notification. Access token must be set in
     PUSHBULLET_ACCESS_TOKEN environment variable.
 -s, -save
-    Save current flag set.
+    Save notification type, title, and message.
 -v, -version
     Print noti version and exit.
 -h, -help
@@ -165,6 +165,13 @@ Have your Mac tell you what happened. This will speak "docker pull done".
 
 ```
 noti -V zarvox docker pull ubuntu
+```
+
+Make Zarvox the default notification type. This will speak "brew update done".
+
+```
+noti -V zarvox -S
+noti brew update
 ```
 
 [releases page]: https://github.com/variadico/noti/releases/latest

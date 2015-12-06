@@ -11,6 +11,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Added
 
+* Ability to set default notification type.
 * Package espeak for speech notifications on Linux and FreeBSD.
 * Package libnotify for banner notifications on Linux and FreeBSD.
 * Package nsspeechsynthesizer for speech notifications on OS X.

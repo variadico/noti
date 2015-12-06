@@ -28,7 +28,7 @@ OPTIONS
         Send a Pushbullet notification. Access token must be set in
         PUSHBULLET_ACCESS_TOKEN environment variable.
     -s, -save
-        Save current flag set.
+        Save notification type, title, and message.
     -v, -version
         Print noti version and exit.
     -h, -help
