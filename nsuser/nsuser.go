@@ -72,6 +72,7 @@ import "C"
 
 import "unsafe"
 
+// Notification is an NSUserNotification.
 type Notification struct {
 	Title           string
 	Subtitle        string
@@ -80,22 +81,27 @@ type Notification struct {
 	ContentImage    string
 }
 
+// GetTitle returns a notification's title.
 func (n *Notification) GetTitle() string {
 	return n.Title
 }
 
+// SetTitle sets a notification's title.
 func (n *Notification) SetTitle(t string) {
 	n.Title = t
 }
 
+// GetMessage returns a notification's message.
 func (n *Notification) GetMessage() string {
 	return n.InformativeText
 }
 
+// SetMessage sets a notification's message.
 func (n *Notification) SetMessage(m string) {
 	n.InformativeText = m
 }
 
+// Notify displays a notification.
 func (n *Notification) Notify() error {
 	t := C.CString(n.Title)
 	sb := C.CString(n.Subtitle)

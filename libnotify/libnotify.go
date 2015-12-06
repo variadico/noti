@@ -1,7 +1,10 @@
 // +build linux freebsd
 
-// Package libnotify can be used to display a NotifyNotification on systems
-// that have libnotify and a notification server installed.
+// Package libnotify can be used to display a NotifyNotification on Linux and
+// FreeBSD. You'll need to have the Gnome desktop notification server running to
+// receive notifications.
+//
+// To compile this package locally, you'll require libnotify to be installed.
 package libnotify
 
 /*
@@ -37,28 +40,34 @@ import (
 	"unsafe"
 )
 
+// Notification is a NotifyNotification.
 type Notification struct {
 	Summary  string
 	Body     string
 	IconName string
 }
 
+// GetTitle returns a notification's title.
 func (n *Notification) GetTitle() string {
 	return n.Summary
 }
 
+// SetTitle sets a notification's title.
 func (n *Notification) SetTitle(t string) {
 	n.Summary = t
 }
 
+// GetMessage returns a notification's message.
 func (n *Notification) GetMessage() string {
 	return n.Body
 }
 
+// SetMessage sets a notification's message.
 func (n *Notification) SetMessage(m string) {
 	n.Body = m
 }
 
+// Notify displays a notification.
 func (n *Notification) Notify() error {
 	s := C.CString(n.Summary)
 	b := C.CString(n.Body)
