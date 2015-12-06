@@ -17,7 +17,7 @@ const usageLinuxBSD = `
         /usr/share/notify-osd/icons/. Alternatively, you can specify a full
         filepath.
     -V, -voice
-        Set voice. Check espeak --voices for available voices.`
+        Set voice.`
 
 var (
 	icon  *string
