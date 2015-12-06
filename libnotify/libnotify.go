@@ -40,6 +40,10 @@ import (
 	"unsafe"
 )
 
+var (
+	ErrFailed = errors.New("NotifyNotification failed")
+)
+
 // Notification is a NotifyNotification.
 type Notification struct {
 	Summary  string
@@ -78,7 +82,7 @@ func (n *Notification) Notify() error {
 
 	rt, _ := C.notify(s, b, i)
 	if rt == 1 {
-		return errors.New("NotifyNotification show failed")
+		return ErrFailed
 	}
 
 	return nil
