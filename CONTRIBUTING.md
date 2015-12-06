@@ -21,6 +21,9 @@ But before spending hours writing some code, make sure you voice your proposal
 with an issue. After you get the green light there, then you can start coding
 away!
 
+If you want to help, but aren't sure how, check out [bug reports][6] or [help
+wanted][7] issues.
+
 ### Set up dev environment
 
 The following steps are for hackers only. If you're a regular user, then follow
@@ -120,3 +123,5 @@ better!
 [3]: https://developer.gnome.org/libnotify/0.7/
 [4]: https://docs.pushbullet.com/
 [5]: https://fossies.org/dox/espeak-1.48.04-source/espeak_8cpp_source.html
+[6]: https://github.com/variadico/noti/issues?q=is%3Aopen+is%3Aissue+label%3Abug
+[7]: https://github.com/variadico/noti/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+
