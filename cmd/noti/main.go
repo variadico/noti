@@ -69,14 +69,8 @@ func main() {
 			log.Fatal(err)
 		}
 	} else {
-		usr, err := user.Current()
-		if err != nil {
+		if err := loadFlags(); err != nil {
 			log.Fatal(err)
-		}
-		if _, err := os.Stat(filepath.Join(usr.HomeDir, flagState)); err == nil {
-			if err := loadFlags(); err != nil {
-				log.Fatal(err)
-			}
 		}
 	}
 
@@ -136,7 +130,12 @@ func loadFlags() error {
 		return err
 	}
 
-	bs, err := ioutil.ReadFile(filepath.Join(usr.HomeDir, flagState))
+	configPath := filepath.Join(usr.HomeDir, flagState)
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		return nil
+	}
+
+	bs, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		return err
 	}
