@@ -12,6 +12,7 @@ package espeak
 #cgo LDFLAGS: -lespeak
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <errno.h>
 #include <espeak/speak_lib.h>
 #include <string.h>
@@ -27,12 +28,30 @@ int notify2(const char* message, const char* voice) {
 	espeak_Synchronize();
 }
 
+const char* availableVoices() {
+	const espeak_VOICE **voices = espeak_ListVoices(NULL);
+	const espeak_VOICE *v;
+	int i;
+	const char *p;
+
+	for (i = 0; (v = voices[i]) != NULL; i++) {
+		printf("%s\n", v->name);
+		printf("%s\n", v->languages);
+	}
+
+	int sz = sizeof(voices)/sizeof(voices[0]);
+
+	printf("size: %d\n", sz);
+	printf("DONE\n");
+	fflush(stdout);
+	return NULL;
+}
 */
 import "C"
 
 import "unsafe"
 
-// Notification is an espeak notification.
+// Notification is an eSpeak notification.
 type Notification struct {
 	Message string
 	Voice   string
@@ -48,12 +67,15 @@ func (n *Notification) SetMessage(m string) {
 	n.Message = m
 }
 
+// Notify speaks a notification's message. If the voice field is set, then Notify will
+// attempt to use that voice. Otherwise, it'll use the default voice.
 func (n *Notification) Notify() error {
 	m := C.CString(n.Message)
 	v := C.CString("")
 	defer C.free(unsafe.Pointer(m))
 	defer C.free(unsafe.Pointer(v))
 
+	C.availableVoices()
 	C.notify2(m, v)
 	return nil
 }
