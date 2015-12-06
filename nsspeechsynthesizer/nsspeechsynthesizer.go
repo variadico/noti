@@ -1,6 +1,7 @@
 // +build darwin
 
-// Package nsspeechsynthesizer speaks a notification using NSSpeechSynthesizer.
+// Package nsspeechsynthesizer can be used to synthesize speech using
+// NSSpeechSynthesizer on OS X.
 package nsspeechsynthesizer
 
 /*
