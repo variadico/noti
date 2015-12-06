@@ -76,8 +76,6 @@ func (n *Notification) SetMessage(m string) {
 	n.Message = m
 }
 
-// Notify speaks a notification's message. If the voice field is set, then it'll
-// use that voice. It'll return an error if there was a problem executing say.
 func (n *Notification) Notify() error {
 	m := C.CString(n.Message)
 	v := C.CString("")
