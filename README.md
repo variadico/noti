@@ -52,7 +52,8 @@ curl -LOk https://github.com/variadico/noti/releases/download/v2.0.0-rc.1/noti2.
 curl -LOk https://github.com/variadico/noti/releases/download/v2.0.0-rc.1/noti2.0.0-rc.1.linux-amd64.tar.gz
 ```
 
-Otherwise, if you have Go installed, then you can do this.
+Otherwise, if you have Go installed and want to compile `noti` from source, you
+can do this.
 
 ```
 go get -u github.com/variadico/noti
