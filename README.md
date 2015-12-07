@@ -28,18 +28,34 @@ devices, including your phone.
 ![Pushbullet Android notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/pushbullet_android.png)
 
 ## Installation
-If you have Go installed, then you can do this.
+
+Download the latest release for your OS and architecture from the
+[releases page](https://github.com/variadico/noti/releases/latest). Then, add
+it to your `PATH`.
+
+```
+# OS X
+curl -LOk https://github.com/variadico/noti/releases/download/v1.3.0/noti1.3.darwin-amd64.tar.gz
+
+# Linux
+curl -LOk https://github.com/variadico/noti/releases/download/v1.3.0/noti1.3.linux-amd64.tar.gz
+```
+
+If you're feeling adventurous, you could download a prerelease of `noti` version
+2, which includes speech notifications, among [other things](https://github.com/variadico/noti/blob/dev/CHANGELOG.md).
+
+```
+# OS X
+curl -LOk https://github.com/variadico/noti/releases/download/v2.0.0-rc.1/noti2.0.0-rc.1.darwin-amd64.tar.gz
+
+# Linux
+curl -LOk https://github.com/variadico/noti/releases/download/v2.0.0-rc.1/noti2.0.0-rc.1.linux-amd64.tar.gz
+```
+
+Otherwise, if you have Go installed, then you can do this.
 
 ```
 go get -u github.com/variadico/noti
-```
-
-Otherwise, you can download the standalone binary on the
-[releases page](https://github.com/variadico/noti/releases/latest). Then give
-it execute permissions.
-
-```
-chmod u+x noti
 ```
 
 ## Usage
