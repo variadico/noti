@@ -1,4 +1,4 @@
-# noti
+# noti [![Build Status](https://travis-ci.org/variadico/noti.svg?branch=master)](
 Display a notification after a terminal process finishes.
 
 ## Types
