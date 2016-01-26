@@ -22,8 +22,11 @@ package main
 @end
 
 @implementation NotiDelegate
-- (void)userNotificationCenter:(NSUserNotificationCenter *)center didDeliverNotification:(NSUserNotification *)notification {
+- (void) userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification {
 	self.delivered = YES;
+}
+- (void) userNotificationCenter:(NSUserNotificationCenter *)center didDeliverNotification:(NSUserNotification *)notification {
+	[NSApp activateIgnoringOtherApps:YES];
 }
 @end
 
