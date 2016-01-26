@@ -14,11 +14,12 @@ import (
 )
 
 const (
-	pushbulletEnv = "NOTI_PUSHBULLET_TOK"
-	slackEnv      = "NOTI_SLACK_TOK"
-	voiceEnv      = "NOTI_VOICE"
-	soundEnv      = "NOTI_SOUND"
-	defaultEnv    = "NOTI_DEFAULT"
+	pushbulletEnv   = "NOTI_PUSHBULLET_TOK"
+	slackEnv        = "NOTI_SLACK_TOK"
+	slackChannelEnv = "NOTI_SLACK_CHAN"
+	voiceEnv        = "NOTI_VOICE"
+	soundEnv        = "NOTI_SOUND"
+	defaultEnv      = "NOTI_DEFAULT"
 
 	version = "v2dev"
 )
@@ -123,7 +124,12 @@ func slackNotify() {
 	vals.Set("token", accessToken)
 	vals.Set("text", fmt.Sprintf("%s\n%s", *title, *message))
 	vals.Set("username", "noti")
-	vals.Set("channel", "#random")
+
+	if ch := os.Getenv(slackChannelEnv); ch == "" {
+		vals.Set("channel", "#random")
+	} else {
+		vals.Set("channel", ch)
+	}
 
 	resp, err := http.PostForm("https://slack.com/api/chat.postMessage", vals)
 	if err != nil {
