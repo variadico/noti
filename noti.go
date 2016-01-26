@@ -2,150 +2,121 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 )
-
-const usageText = `NOTI
-    display a notification after a terminal process finishes.
-
-USAGE
-    noti [options] [utility [args...]]
-
-OPTIONS
-    -t, -title
-        Set the notification title. If no arguments passed, default is "noti",
-        otherwise default is utility name.
-
-    -m, -message
-        Set notification message. Default is "Done!"
-
-    -s, -sound
-        Set notification sound (OS X only). Default is Ping.
-        Possible options are Basso, Blow, Bottle, Frog, Funk, Glass, Hero,
-        Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink.
-        Check /System/Library/Sounds for available sounds.
-
-    -f, -foreground
-        Bring the terminal to the foreground. (OS X only)
-
-    -p, -pushbullet
-        Send a Pushbullet notification. Access token must be set in NOTI_PB
-        environment variable.
-
-    -v, -version
-        Print noti version and exit.
-
-    -h, -help
-        Display usage information and exit.
-
-EXAMPLES
-    Display a notification when tar finishes compressing files.
-        noti tar -cjf music.tar.bz2 Music/
-
-    You can also add noti after a command, in case you forgot at the beginning.
-        clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
-
-    Create a reminder to get back to a friend.
-        noti -t "Reply to Pedro" gsleep 5m &
-`
 
 const (
-	pushbulletEnv = "NOTI_PB"
-	pushbulletAPI = "https://api.pushbullet.com/v2/pushes"
+	pushbulletEnv = "NOTI_PB_ACCESS"
+	voiceEnv      = "NOTI_VOICE"
+	soundEnv      = "NOTI_SOUND"
+	defaultEnv    = "NOTI_DEFAULT"
+
+	version = "v2dev"
 )
 
-func main() {
-	foreground := flag.Bool("f", false, "")
-	title := flag.String("t", "noti", "")
-	mesg := flag.String("m", "Done!", "")
-	sound := flag.String("s", "Ping", "")
-	pbullet := flag.Bool("p", false, "")
-	version := flag.Bool("v", false, "")
-	help := flag.Bool("h", false, "")
-	flag.BoolVar(foreground, "foreground", false, "")
+var (
+	title       = flag.String("t", "noti", "")
+	message     = flag.String("m", "Done!", "")
+	showVersion = flag.Bool("v", false, "")
+	showHelp    = flag.Bool("h", false, "")
+
+	// Notifications
+	pushbullet = flag.Bool("p", false, "")
+	speech     = flag.Bool("s", false, "")
+)
+
+func init() {
 	flag.StringVar(title, "title", "noti", "")
-	flag.StringVar(mesg, "message", "Done!", "")
-	flag.StringVar(sound, "sound", "Ping", "")
-	flag.BoolVar(pbullet, "pushbullet", false, "")
-	flag.BoolVar(version, "version", false, "")
-	flag.BoolVar(help, "help", false, "")
-	flag.Usage = func() { log.Println(usageText) }
+	flag.StringVar(message, "message", "Done!", "")
+	flag.BoolVar(showVersion, "version", false, "")
+	flag.BoolVar(showHelp, "help", false, "")
+
+	// Notifications
+	flag.BoolVar(speech, "speech", false, "")
+	flag.BoolVar(pushbullet, "pushbullet", false, "")
+}
+
+func main() {
+	log.SetFlags(0)
 	flag.Parse()
 
-	if *help {
-		fmt.Println(usageText)
+	if *showVersion {
+		fmt.Printf("noti version %s\n", version)
+		return
+	}
+	if *showHelp {
+		flag.Usage()
 		return
 	}
 
-	if *version {
-		fmt.Println("noti version 1.3.0")
+	switch strings.ToLower(os.Getenv(defaultEnv)) {
+	case "pushbullet":
+		pushbulletNotify()
+		return
+	case "speech":
+		speechNotify()
+		return
+	case "desktop":
+		desktopNotify()
 		return
 	}
 
-	// noti called with a utility
-	if utilArgs := flag.Args(); len(utilArgs) > 0 {
-		// "noti" is default, so flag probably wasn't passed.
-		if *title == "noti" {
-			// title = utility's name
-			*title = utilArgs[0]
+	switch {
+	case *pushbullet:
+		pushbulletNotify()
+	case *speech:
+		speechNotify()
+	default:
+		desktopNotify()
+	}
+}
 
-			// Also, show flag or subcommand, if long enough.
-			if len(utilArgs) > 1 {
-				*title += " " + utilArgs[1]
-			}
-		}
+func pushbulletNotify() {
+	runUtility()
 
-		// run a binary and its arguments
-		if err := run(utilArgs[0], utilArgs[1:]); err != nil {
-			notify(*title, "Failed. See terminal.", "Basso", *foreground, *pbullet)
-			os.Exit(1)
-		}
+	accessToken := os.Getenv(pushbulletEnv)
+	if accessToken == "" {
+		log.Fatal("Missing Pushbullet access token, NOTI_PB_ACCESS must be set")
 	}
 
-	if err := notify(*title, *mesg, *sound, *foreground, *pbullet); err != nil {
+	payload := bytes.NewBuffer([]byte(fmt.Sprintf(
+		`{"body":%q,"title":%q,"type":"note"}`, *message, *title,
+	)))
+
+	req, err := http.NewRequest("POST", "https://api.pushbullet.com/v2/pushes", payload)
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Access-Token", accessToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	if _, err = http.DefaultClient.Do(req); err != nil {
 		log.Fatal(err)
 	}
 }
 
-// run executes a program and waits for it to finish. The stdin, stdout, and
-// stderr of noti are passed to the program.
-func run(bin string, args []string) error {
-	cmd := exec.Command(bin, args...)
+func runUtility() {
+	var cmd *exec.Cmd
+
+	if args := flag.Args(); len(args) < 1 {
+		return
+	} else {
+		cmd = exec.Command(args[0], args[1:]...)
+		*title = args[0]
+	}
+
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	return cmd.Run()
-}
-
-// pbulletNotify sends a Pushbullet notification to all devices associated with
-// a given access token.
-func pbulletNotify(title, mesg string) error {
-	apiKey := os.Getenv(pushbulletEnv)
-	if apiKey == "" {
-		return errors.New("Pushbullet access token is not set in environment")
+	if err := cmd.Run(); err != nil {
+		*title = *title + " failed"
+		*message = err.Error()
 	}
-
-	payload := bytes.NewBuffer([]byte(
-		fmt.Sprintf(`{"body":"%s","title":"%s","type":"note"}`, mesg, title),
-	))
-
-	req, err := http.NewRequest("POST", pushbulletAPI, payload)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Access-Token", apiKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	if _, err = http.DefaultClient.Do(req); err != nil {
-		return err
-	}
-
-	return nil
 }
