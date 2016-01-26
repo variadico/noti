@@ -2,17 +2,20 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"strings"
 )
 
 const (
-	pushbulletEnv = "NOTI_PB_ACCESS"
+	pushbulletEnv = "NOTI_PUSHBULLET_TOK"
+	slackEnv      = "NOTI_SLACK_TOK"
 	voiceEnv      = "NOTI_VOICE"
 	soundEnv      = "NOTI_SOUND"
 	defaultEnv    = "NOTI_DEFAULT"
@@ -29,6 +32,7 @@ var (
 	// Notifications
 	pushbullet = flag.Bool("p", false, "")
 	speech     = flag.Bool("s", false, "")
+	slack      = flag.Bool("S", false, "")
 )
 
 func init() {
@@ -40,6 +44,7 @@ func init() {
 	// Notifications
 	flag.BoolVar(speech, "speech", false, "")
 	flag.BoolVar(pushbullet, "pushbullet", false, "")
+	flag.BoolVar(slack, "slack", false, "")
 }
 
 func main() {
@@ -56,6 +61,9 @@ func main() {
 	}
 
 	switch strings.ToLower(os.Getenv(defaultEnv)) {
+	case "slack":
+		slackNotify()
+		return
 	case "pushbullet":
 		pushbulletNotify()
 		return
@@ -68,6 +76,8 @@ func main() {
 	}
 
 	switch {
+	case *slack:
+		slackNotify()
 	case *pushbullet:
 		pushbulletNotify()
 	case *speech:
@@ -82,7 +92,7 @@ func pushbulletNotify() {
 
 	accessToken := os.Getenv(pushbulletEnv)
 	if accessToken == "" {
-		log.Fatal("Missing Pushbullet access token, NOTI_PB_ACCESS must be set")
+		log.Fatalf("Missing access token, %s must be set", pushbulletEnv)
 	}
 
 	payload := bytes.NewBuffer([]byte(fmt.Sprintf(
@@ -98,6 +108,37 @@ func pushbulletNotify() {
 
 	if _, err = http.DefaultClient.Do(req); err != nil {
 		log.Fatal(err)
+	}
+}
+
+func slackNotify() {
+	runUtility()
+
+	accessToken := os.Getenv(slackEnv)
+	if accessToken == "" {
+		log.Fatalf("Missing access token, %s must be set", slackEnv)
+	}
+
+	vals := make(url.Values)
+	vals.Set("token", accessToken)
+	vals.Set("text", fmt.Sprintf("%s\n%s", *title, *message))
+	vals.Set("username", "noti")
+	vals.Set("channel", "#random")
+
+	resp, err := http.PostForm("https://slack.com/api/chat.postMessage", vals)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	r := make(map[string]interface{})
+	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+		resp.Body.Close()
+		log.Fatal(err)
+	}
+	resp.Body.Close()
+
+	if r["ok"] == false {
+		log.Fatal("Slack API error: ", r["error"])
 	}
 }
 
