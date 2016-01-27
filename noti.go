@@ -17,7 +17,7 @@ const (
 	soundEnv        = "NOTI_SOUND"
 	defaultEnv      = "NOTI_DEFAULT"
 
-	version = "v2dev"
+	version = "2.0.0-rc2"
 )
 
 var (
