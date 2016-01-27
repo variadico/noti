@@ -5,8 +5,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"os/exec"
 	"os"
+	"os/exec"
 	"runtime"
 )
 

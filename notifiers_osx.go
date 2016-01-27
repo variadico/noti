@@ -27,6 +27,7 @@ package main
 }
 - (void) userNotificationCenter:(NSUserNotificationCenter *)center didDeliverNotification:(NSUserNotification *)notification {
 	[NSApp activateIgnoringOtherApps:YES];
+	self.delivered = YES;
 }
 @end
 
