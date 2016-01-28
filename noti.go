@@ -27,6 +27,7 @@ var (
 	showHelp    = flag.Bool("h", false, "")
 
 	// Notifications
+	desktop    = flag.Bool("d", false, "")
 	pushbullet = flag.Bool("p", false, "")
 	speech     = flag.Bool("s", false, "")
 	slack      = flag.Bool("S", false, "")
@@ -39,6 +40,7 @@ func init() {
 	flag.BoolVar(showHelp, "help", false, "")
 
 	// Notifications
+	flag.BoolVar(desktop, "desktop", false, "")
 	flag.BoolVar(speech, "speech", false, "")
 	flag.BoolVar(pushbullet, "pushbullet", false, "")
 	flag.BoolVar(slack, "slack", false, "")
@@ -57,6 +59,8 @@ func main() {
 		return
 	}
 
+	runUtility()
+
 	switch strings.ToLower(os.Getenv(defaultEnv)) {
 	case "slack":
 		slackNotify()
@@ -72,15 +76,17 @@ func main() {
 		return
 	}
 
-	switch {
-	case *slack:
-		slackNotify()
-	case *pushbullet:
-		pushbulletNotify()
-	case *speech:
-		speechNotify()
-	default:
+	if *desktop {
 		desktopNotify()
+	}
+	if *speech {
+		speechNotify()
+	}
+	if *pushbullet {
+		pushbulletNotify()
+	}
+	if *slack {
+		slackNotify()
 	}
 }
 
