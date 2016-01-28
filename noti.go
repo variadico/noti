@@ -61,19 +61,14 @@ func main() {
 
 	runUtility()
 
-	switch strings.ToLower(os.Getenv(defaultEnv)) {
-	case "slack":
-		slackNotify()
-		return
-	case "pushbullet":
-		pushbulletNotify()
-		return
-	case "speech":
-		speechNotify()
-		return
-	case "desktop":
-		desktopNotify()
-		return
+	defs := strings.TrimSpace(os.Getenv(defaultEnv))
+	if defs == "" {
+		*desktop = true
+	} else {
+		*desktop = strings.Contains(defs, "desktop")
+		*speech = strings.Contains(defs, "speech")
+		*pushbullet = strings.Contains(defs, "pushbullet")
+		*slack = strings.Contains(defs, "slack")
 	}
 
 	if *desktop {
