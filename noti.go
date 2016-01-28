@@ -90,7 +90,7 @@ func main() {
 	}
 
 	if *version {
-		fmt.Println("noti version 1.3.0")
+		fmt.Println("noti version 1.3.1")
 		return
 	}
 
