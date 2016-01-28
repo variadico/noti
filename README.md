@@ -88,6 +88,10 @@ noti [options] [utility [args...]]
     Send a Pushbullet notification. Access token must be set in NOTI_PB
     environment variable.
 
+-c  -cluster
+		Don't send a notification using notify-send or osascript. For usage
+		in environments w/o graphical user interface.
+
 -v, -version
     Print noti version and exit.
 
