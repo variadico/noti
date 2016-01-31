@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -61,14 +62,28 @@ func main() {
 
 	runUtility()
 
-	defs := strings.TrimSpace(os.Getenv(defaultEnv))
-	if defs == "" {
-		*desktop = true
-	} else {
+	if defs := strings.TrimSpace(os.Getenv(defaultEnv)); defs != "" {
 		*desktop = strings.Contains(defs, "desktop")
 		*speech = strings.Contains(defs, "speech")
 		*pushbullet = strings.Contains(defs, "pushbullet")
 		*slack = strings.Contains(defs, "slack")
+	} else {
+		var explicitSet bool
+		var val bool
+
+		flag.Visit(func(f *flag.Flag) {
+			if f.Name == "d" || f.Name == "desktop" {
+				explicitSet = true
+				// Ignoring error, false on error is fine.
+				val, _ = strconv.ParseBool(f.Value.String())
+			}
+		})
+
+		if explicitSet {
+			*desktop = val
+		} else {
+			*desktop = true
+		}
 	}
 
 	if *desktop {
