@@ -105,7 +105,8 @@ func main() {
 func runUtility() {
 	var cmd *exec.Cmd
 
-	if args := flag.Args(); len(args) < 1 {
+	args := flag.Args()
+	if len(args) < 1 {
 		return
 	}
 
