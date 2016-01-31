@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file. This
 project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.0.0]
 
 ## Added
 
@@ -27,4 +27,4 @@ Object-C, which shows (nicer) Terminal icon.
 * `-f` flag for OS X. This caused unexpected behavior for people who use iTerm2.
 * OS X-specific flags and usage text from Linux and FreeBSD help.
 
-[Unreleased]: https://github.com/variadico/noti/compare/master...dev
+[2.0.0]: https://github.com/variadico/noti/compare/v1.3.0...v2.0.0

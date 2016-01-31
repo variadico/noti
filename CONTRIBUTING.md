@@ -21,8 +21,8 @@ But before spending hours writing some code, make sure you voice your proposal
 with an issue. After you get the green light there, then you can start coding
 away!
 
-If you want to help, but aren't sure how, check out [bug reports][1] or [help
-wanted][2] issues.
+If you want to help, but aren't sure how, check out [bug reports] or [help
+wanted] issues.
 
 ### Code Quality
 
@@ -37,5 +37,5 @@ Clean up any warnings or errors these tools generate.
 After that, submit a pull request on GitHub! Thanks for helping make Noti
 better!
 
-[1]: https://github.com/variadico/noti/issues?q=is%3Aopen+is%3Aissue+label%3Abug
-[2]: https://github.com/variadico/noti/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+
+[bug reports]: https://github.com/variadico/noti/issues?q=is%3Aopen+is%3Aissue+label%3Abug
+[help wanted]: https://github.com/variadico/noti/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+

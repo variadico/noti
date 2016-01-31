@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	version = "2.0.0-rc2"
+	version = "2.0.0"
 
 	defaultEnv      = "NOTI_DEFAULT"
 	pushbulletEnv   = "NOTI_PUSHBULLET_TOK"
