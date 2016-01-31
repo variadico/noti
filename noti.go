@@ -13,7 +13,7 @@ import (
 const (
 	defaultEnv      = "NOTI_DEFAULT"
 	pushbulletEnv   = "NOTI_PUSHBULLET_TOK"
-	slackChannelEnv = "NOTI_SLACK_CHAN"
+	slackChannelEnv = "NOTI_SLACK_DEST"
 	slackEnv        = "NOTI_SLACK_TOK"
 	soundEnv        = "NOTI_SOUND"
 	voiceEnv        = "NOTI_VOICE"
@@ -31,7 +31,7 @@ var (
 	desktop    = flag.Bool("d", false, "")
 	pushbullet = flag.Bool("p", false, "")
 	speech     = flag.Bool("s", false, "")
-	slack      = flag.Bool("S", false, "")
+	slack      = flag.Bool("k", false, "")
 )
 
 func init() {

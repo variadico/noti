@@ -66,12 +66,33 @@ void DesktopNotify(const char* title, const char* message, const char* sound) {
 import "C"
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"unsafe"
 )
+
+const (
+	soundEnvDesc = `
+    NOTI_SOUND
+        Notification sound. Default is Ping. Possible options are Basso, Blow,
+        Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
+        Submarine, Tink. See /System/Library/Sounds for available sounds.
+    NOTI_VOICE
+        Name of voice used for speech notifications. See "say -v ?" for
+        available voices.
+
+BUGS
+    Desktop notifications don't work in tmux.`
+)
+
+func init() {
+	flag.Usage = func() {
+		fmt.Printf(manual, soundEnvDesc)
+	}
+}
 
 // desktopNotify triggers an NSUserNotification.
 func desktopNotify() {

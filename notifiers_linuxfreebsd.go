@@ -3,12 +3,19 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"runtime"
 )
+
+func init() {
+	flag.Usage = func() {
+		fmt.Printf(manual, "")
+	}
+}
 
 // desktopNotify triggers a Notify notification.
 func desktopNotify() {
