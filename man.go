@@ -11,8 +11,8 @@ OPTIONS
         Notification title. Default is utility name.
     -m, -message
         Notification message. Default is "Done!"
-    -d, -desktop
-        Trigger a desktop notification. Default is true. To disable this
+    -b, -banner
+        Trigger a banner notification. Default is true. To disable this
         notification set this flag to false.
     -s, -speech
         Trigger a speech notification. Optionally, customize the voice with
@@ -31,7 +31,7 @@ OPTIONS
 ENVIRONMENT
     NOTI_DEFAULT
         Notification types noti should trigger in a space-delimited list. For
-        example, set NOTI_DEFAULT="desktop speech pushbullet slack" to enable
+        example, set NOTI_DEFAULT="banner speech pushbullet slack" to enable
         all available notifications to fire sequentially.
     NOTI_PUSHBULLET_TOK
         Pushbullet access token. Log into your Pushbullet account and retrieve a

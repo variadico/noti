@@ -28,7 +28,7 @@ var (
 	showHelp    = flag.Bool("h", false, "")
 
 	// Notifications
-	desktop    = flag.Bool("d", false, "")
+	banner     = flag.Bool("b", false, "")
 	pushbullet = flag.Bool("p", false, "")
 	speech     = flag.Bool("s", false, "")
 	slack      = flag.Bool("k", false, "")
@@ -41,7 +41,7 @@ func init() {
 	flag.BoolVar(showHelp, "help", false, "")
 
 	// Notifications
-	flag.BoolVar(desktop, "desktop", false, "")
+	flag.BoolVar(banner, "banner", false, "")
 	flag.BoolVar(speech, "speech", false, "")
 	flag.BoolVar(pushbullet, "pushbullet", false, "")
 	flag.BoolVar(slack, "slack", false, "")
@@ -63,7 +63,7 @@ func main() {
 	runUtility()
 
 	if defs := strings.TrimSpace(os.Getenv(defaultEnv)); defs != "" {
-		*desktop = strings.Contains(defs, "desktop")
+		*banner = strings.Contains(defs, "banner")
 		*speech = strings.Contains(defs, "speech")
 		*pushbullet = strings.Contains(defs, "pushbullet")
 		*slack = strings.Contains(defs, "slack")
@@ -72,7 +72,7 @@ func main() {
 		var val bool
 
 		flag.Visit(func(f *flag.Flag) {
-			if f.Name == "d" || f.Name == "desktop" {
+			if f.Name == "b" || f.Name == "banner" {
 				explicitSet = true
 				// Ignoring error, false on error is fine.
 				val, _ = strconv.ParseBool(f.Value.String())
@@ -80,14 +80,14 @@ func main() {
 		})
 
 		if explicitSet {
-			*desktop = val
+			*banner = val
 		} else {
-			*desktop = true
+			*banner = true
 		}
 	}
 
-	if *desktop {
-		desktopNotify()
+	if *banner {
+		bannerNotify()
 	}
 	if *speech {
 		speechNotify()

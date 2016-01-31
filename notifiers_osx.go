@@ -31,7 +31,7 @@ package main
 }
 @end
 
-void DesktopNotify(const char* title, const char* message, const char* sound) {
+void BannerNotify(const char* title, const char* message, const char* sound) {
 	errno = 0;
 	@autoreleasepool {
 		Class nsBundle = objc_getClass("NSBundle");
@@ -85,7 +85,7 @@ const (
         available voices.
 
 BUGS
-    Desktop notifications don't work in tmux.`
+    Banner notifications don't work in tmux.`
 )
 
 func init() {
@@ -94,8 +94,8 @@ func init() {
 	}
 }
 
-// desktopNotify triggers an NSUserNotification.
-func desktopNotify() {
+// bannerNotify triggers an NSUserNotification.
+func bannerNotify() {
 	sound := os.Getenv(soundEnv)
 	if sound == "" {
 		sound = "Ping"
@@ -108,7 +108,7 @@ func desktopNotify() {
 	defer C.free(unsafe.Pointer(m))
 	defer C.free(unsafe.Pointer(s))
 
-	C.DesktopNotify(t, m, s)
+	C.BannerNotify(t, m, s)
 }
 
 // speechNotify triggers an NSSpeechSynthesizer notification.

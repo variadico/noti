@@ -17,8 +17,8 @@ func init() {
 	}
 }
 
-// desktopNotify triggers a Notify notification.
-func desktopNotify() {
+// bannerNotify triggers a Notify notification.
+func bannerNotify() {
 	_, err := exec.LookPath("notify-send")
 	if err != nil {
 		log.Fatal("Install 'notify-send' and try again")
