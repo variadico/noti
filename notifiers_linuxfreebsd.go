@@ -19,8 +19,6 @@ func init() {
 
 // desktopNotify triggers a Notify notification.
 func desktopNotify() {
-	runUtility()
-
 	_, err := exec.LookPath("notify-send")
 	if err != nil {
 		log.Fatal("Install 'notify-send' and try again")
@@ -34,8 +32,6 @@ func desktopNotify() {
 
 // speechNotify triggers an eSpeak notification.
 func speechNotify() {
-	runUtility()
-
 	_, err := exec.LookPath("espeak")
 	if err != nil {
 		log.Println("Install 'espeak' and try again")

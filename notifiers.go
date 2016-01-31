@@ -11,8 +11,6 @@ import (
 )
 
 func pushbulletNotify() {
-	runUtility()
-
 	accessToken := os.Getenv(pushbulletEnv)
 	if accessToken == "" {
 		log.Fatalf("Missing access token, %s must be set", pushbulletEnv)
@@ -35,8 +33,6 @@ func pushbulletNotify() {
 }
 
 func slackNotify() {
-	runUtility()
-
 	accessToken := os.Getenv(slackEnv)
 	if accessToken == "" {
 		log.Fatalf("Missing access token, %s must be set", slackEnv)

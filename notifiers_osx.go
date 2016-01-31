@@ -96,8 +96,6 @@ func init() {
 
 // desktopNotify triggers an NSUserNotification.
 func desktopNotify() {
-	runUtility()
-
 	sound := os.Getenv(soundEnv)
 	if sound == "" {
 		sound = "Ping"
@@ -115,8 +113,6 @@ func desktopNotify() {
 
 // speechNotify triggers an NSSpeechSynthesizer notification.
 func speechNotify() {
-	runUtility()
-
 	voice := os.Getenv(voiceEnv)
 	if voice == "" {
 		voice = "Alex"
