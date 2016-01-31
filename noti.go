@@ -79,6 +79,8 @@ func main() {
 			}
 		})
 
+		// If the user explicitly set -banner, then use the value that the user
+		// set, but if no banner flag was set, then the default is true.
 		if explicitSet {
 			*banner = val
 		} else {
