@@ -39,6 +39,8 @@ go get -u github.com/variadico/noti
 brew install noti
 ```
 
+You can also download a static binary from the [releases page][3].
+
 ## Usage
 Put `noti` at the beginning or end of your regular commands.
 
@@ -122,3 +124,4 @@ clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 
 [1]: https://www.pushbullet.com/#settings/account
 [2]: https://api.slack.com/web
+[3]: https://github.com/variadico/noti/releases
