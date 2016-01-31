@@ -105,10 +105,10 @@ func runUtility() {
 
 	if args := flag.Args(); len(args) < 1 {
 		return
-	} else {
-		cmd = exec.Command(args[0], args[1:]...)
-		*title = args[0]
 	}
+
+	cmd = exec.Command(args[0], args[1:]...)
+	*title = args[0]
 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
