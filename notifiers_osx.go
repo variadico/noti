@@ -85,7 +85,9 @@ const (
         available voices.
 
 BUGS
-    Banner notifications don't work in tmux.`
+    Banner notifications don't fire in tmux.
+
+    Clicking on banner notifications causes unexpected behavior.`
 )
 
 func init() {
