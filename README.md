@@ -1,134 +1,101 @@
 # noti
-Display a notification after a terminal process finishes.
+
+Trigger notifications when a process completes.
 
 ## Types
-These are the different types of notifications currently available.
 
-### Desktop notifications
-This is the default. Supported on OS X and Linux/FreeBSD through libnotify.
-This is great so you don't have to keep checking the terminal to see if your
-process is done.
-
-![OS X notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/osx.png)
-(OS X)
-
-![Linux Mint notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/linux_mint.png)
-(Linux Mint 17.2)
-
-![Dunst](https://raw.githubusercontent.com/variadico/noti/master/screenshots/bsd_dunst.png)
-([Dunst](http://knopwob.org/dunst/index.html))
-
-### Pushbullet notifications
-This is great if you want to leave sight of your computer and
-grab some coffee. These notifications will get sent to all your Pushbullet
-devices, including your phone.
-
-![Pushbullet notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/pushbullet.png)
-
-![Pushbullet Android notification](https://raw.githubusercontent.com/variadico/noti/master/screenshots/pushbullet_android.png)
+* Banner notifications
+* Speech notifications
+* Pushbullet notifications
+* Slack notifications
 
 ## Installation
 
-Download the latest release for your OS and architecture from the
-[releases page](https://github.com/variadico/noti/releases/latest). Then, add
-it to your `PATH`.
-
 ```
-# OS X
-curl -LOk https://github.com/variadico/noti/releases/download/v1.3.0/noti1.3.darwin-amd64.tar.gz
-
-# Linux
-curl -LOk https://github.com/variadico/noti/releases/download/v1.3.0/noti1.3.linux-amd64.tar.gz
-```
-
-If you're feeling adventurous, you could download a prerelease of `noti` version
-2, which includes speech notifications, among [other things](https://github.com/variadico/noti/blob/dev/CHANGELOG.md).
-
-```
-# OS X
-curl -LOk https://github.com/variadico/noti/releases/download/v2.0.0-rc.1/noti2.0.0-rc.1.darwin-amd64.tar.gz
-
-# Linux
-curl -LOk https://github.com/variadico/noti/releases/download/v2.0.0-rc.1/noti2.0.0-rc.1.linux-amd64.tar.gz
-```
-
-Otherwise, if you have Go installed and want to compile `noti` from source, you
-can do this.
-
-```
+# Anywhere
 go get -u github.com/variadico/noti
+
+# Alternatively on OS X
+brew install noti
 ```
 
 ## Usage
-Just put `noti` at the beginning or end of your regular commands.
+Put `noti` at the beginning or end of your regular commands.
 
 ```
 noti [options] [utility [args...]]
 ```
 
 ### Options
+
 ```
 -t, -title
-    Set the notification title. If no arguments passed, default is "noti",
-    otherwise default is utility name.
-
+    Notification title. Default is utility name.
 -m, -message
-    Set notification message. Default is "Done!"
-
--s, -sound
-    Set notification sound (OS X only). Default is Ping.
-    Possible options are Basso, Blow, Bottle, Frog, Funk, Glass, Hero,
-    Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink.
-    Check /System/Library/Sounds for available sounds.
-
--f, -foreground
-    Bring the terminal to the foreground. (OS X only)
-
+    Notification message. Default is "Done!"
+-b, -banner
+    Trigger a banner notification. Default is true. To disable this
+    notification set this flag to false.
+-s, -speech
+    Trigger a speech notification. Optionally, customize the voice with
+    NOTI_VOICE.
 -p, -pushbullet
-    Send a Pushbullet notification. Access token must be set in NOTI_PB
-    environment variable.
-
+    Trigger a Pushbullet notification. This requires NOTI_PUSHBULLET_TOK to
+    be set.
+-k, -slack
+    Trigger a Slack notification. This requires NOTI_SLACK_TOK and
+    NOTI_SLACK_DEST to be set.
 -v, -version
     Print noti version and exit.
-
 -h, -help
-    Display usage information and exit.
+    Display help information and exit.
+```
+
+### Environment
+
+You can further configure `noti` by setting the following environment variables.
+Some are required for specific notifications. For example, `NOTI_PUSHBULLET_TOK`
+**must** be set to use Pushbullet notifications. Others can be used to
+optionally change the default behavior, like setting `NOTI_VOICE` to change the
+voice used in speech notifications.
+
+```
+NOTI_DEFAULT
+    Notification types noti should trigger in a space-delimited list. For
+    example, set NOTI_DEFAULT="banner speech pushbullet slack" to enable
+    all available notifications to fire sequentially.
+NOTI_PUSHBULLET_TOK
+    Pushbullet access token. Log into your Pushbullet account and retrieve a
+    token from the Account Settings page.
+NOTI_SLACK_TOK
+    Slack access token. Log into your Slack account and retrieve a token
+    from the Slack Web API page.
+NOTI_SLACK_DEST
+    Slack channel to send message to. Can be either a #channel or a
+    @username.
+NOTI_VOICE
+    Name of voice used for speech notifications.
+```
+
+#### OS X
+
+```
+NOTI_SOUND
+    Banner notification sound. Default is Ping. Possible options are Basso,
+    Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
+    Submarine, Tink. See /System/Library/Sounds for available sounds.
 ```
 
 ## Examples
+
 Display a notification when `tar` finishes compressing files.
 
 ```
 noti tar -cjf music.tar.bz2 Music/
 ```
 
-Display a notification when `apt-get` finishes updating on a remote server.
-
-```
-noti ssh you@server.com apt-get update
-```
-
-Set the notification title to "homebrew" and message to "Up to date" and
-display it after `brew` finishes updating.
-
-```
-noti -t "homebrew" -m "up to date" brew upgrade --all
-```
-
 You can also add `noti` after a command, in case you forgot at the beginning.
 
 ```
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
-```
-
-Create a reminder to get back to a friend.
-
-```
-noti -t "Reply to Pedro" gsleep 5m &
-```
-
-Send a Pushbullet notification after tests finish.
-
-```
-noti -p go test ./...
 ```

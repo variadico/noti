@@ -1,7 +1,7 @@
 package main
 
 const manual = `NAME
-     noti - trigger notifications from your terminal
+     noti - trigger notifications when a process completes
 
 SYNOPSIS
      noti [options] [utility [args...]]
