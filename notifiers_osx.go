@@ -75,7 +75,7 @@ import (
 )
 
 const (
-	soundEnvDesc = `
+	specificPart = `
     NOTI_SOUND
         Notification sound. Default is Ping. Possible options are Basso, Blow,
         Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
@@ -90,7 +90,7 @@ BUGS
 
 func init() {
 	flag.Usage = func() {
-		fmt.Printf(manual, soundEnvDesc)
+		fmt.Printf(manual, specificPart)
 	}
 }
 

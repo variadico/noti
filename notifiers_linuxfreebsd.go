@@ -11,9 +11,16 @@ import (
 	"runtime"
 )
 
+const (
+	specificPart = `
+    NOTI_VOICE
+        Name of voice used for speech notifications. See "espeak --voices" for
+        available voices.`
+)
+
 func init() {
 	flag.Usage = func() {
-		fmt.Printf(manual, "")
+		fmt.Printf(manual, specificPart)
 	}
 }
 
