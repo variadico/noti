@@ -19,7 +19,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 * On OS X, the notification sound must now be set in the environment variable,
 `NOTI_SOUND`.
-* On OS X, instead of AppleScript banner notifications are triggered with
+* On OS X, instead of AppleScript, banner notifications are triggered with
 Object-C, which shows (nicer) Terminal icon.
 
 ## Removed
@@ -27,4 +27,4 @@ Object-C, which shows (nicer) Terminal icon.
 * `-f` flag for OS X. This caused unexpected behavior for people who use iTerm2.
 * OS X-specific flags and usage text from Linux and FreeBSD help.
 
-[Unreleased]: https://github.com/variadico/noti/compare/master...v2
+[Unreleased]: https://github.com/variadico/noti/compare/master...dev
