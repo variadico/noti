@@ -11,14 +11,14 @@ import (
 )
 
 const (
+	version = "2.0.0-rc2"
+
 	defaultEnv      = "NOTI_DEFAULT"
 	pushbulletEnv   = "NOTI_PUSHBULLET_TOK"
 	slackChannelEnv = "NOTI_SLACK_DEST"
 	slackEnv        = "NOTI_SLACK_TOK"
 	soundEnv        = "NOTI_SOUND"
 	voiceEnv        = "NOTI_VOICE"
-
-	version = "2.0.0-rc2"
 )
 
 var (
@@ -52,7 +52,7 @@ func main() {
 	flag.Parse()
 
 	if *showVersion {
-		fmt.Printf("noti version %s\n", version)
+		fmt.Println("noti version", version)
 		return
 	}
 	if *showHelp {
@@ -117,8 +117,13 @@ func runUtility() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	if err := cmd.Run(); err != nil {
-		*title = *title + " failed"
+	err := cmd.Run()
+	if exerr, is := err.(*exec.ExitError); is {
+		if !exerr.Success() {
+			*title = *title + " failed"
+		}
+	}
+	if err != nil {
 		*message = err.Error()
 	}
 }
