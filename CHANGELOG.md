@@ -9,8 +9,9 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 * Speech notifications.
 * Slack notifications.
+* Optionally set default notification type(s) through `NOTI_DEFAULT` env var.
 * Multi-notification support.
-* Configuration through environment variables.
+* Other configuration through environment variables.
 * Contributing document.
 * Change log.
 
