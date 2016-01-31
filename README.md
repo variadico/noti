@@ -2,12 +2,32 @@
 
 Trigger notifications when a process completes.
 
+Never sit and wait for some long-running process to finish! `noti` will alert
+you when it's done, so you can stop worrying about constantly checking the
+terminal.
+
 ## Types
 
-* Banner notifications
-* Speech notifications
-* Pushbullet notifications
-* Slack notifications
+### Banner notifications
+
+On OS X, these are the normal app notifications you already know. On Linux and
+FreeBSD, these are libnotify notifications and requre `notify-send` to be
+installed.
+
+### Speech notifications
+
+On OS X, these use the built-in speech command. On Linux and FreeBSD, these use
+`espeak` and requre `espeak` to be installed.
+
+### Pushbullet notifications
+
+These are sent to all devices registered with Pushbullet. You need to create a
+Pushbullet account and get an [access token][1].
+
+### Slack notifications
+
+These are sent to all devices that have the Slack app installed. You need to
+create a Slack account and get an [access token][2].
 
 ## Installation
 
@@ -99,3 +119,6 @@ You can also add `noti` after a command, in case you forgot at the beginning.
 ```
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 ```
+
+[1]: https://www.pushbullet.com/#settings/account
+[2]: https://api.slack.com/web
