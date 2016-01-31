@@ -3,8 +3,8 @@
 Trigger notifications when a process completes.
 
 Never sit and wait for some long-running process to finish! `noti` will alert
-you when it's done, so you can stop worrying about constantly checking the
-terminal.
+you when it's done—on your computer or smartphone—so you can stop worrying about
+constantly checking the terminal.
 
 ## Types
 
