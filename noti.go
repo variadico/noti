@@ -38,6 +38,10 @@ OPTIONS
         Send a Pushbullet notification. Access token must be set in NOTI_PB
         environment variable.
 
+		-c  -cluster
+				Don't send a notification using notify-send or osascript. For usage
+				in environments w/o graphical user interface.
+
     -v, -version
         Print noti version and exit.
 
@@ -66,6 +70,7 @@ func main() {
 	mesg := flag.String("m", "Done!", "")
 	sound := flag.String("s", "Ping", "")
 	pbullet := flag.Bool("p", false, "")
+	cluster := flag.Bool("c", false, "")
 	version := flag.Bool("v", false, "")
 	help := flag.Bool("h", false, "")
 	flag.BoolVar(foreground, "foreground", false, "")
@@ -73,6 +78,7 @@ func main() {
 	flag.StringVar(mesg, "message", "Done!", "")
 	flag.StringVar(sound, "sound", "Ping", "")
 	flag.BoolVar(pbullet, "pushbullet", false, "")
+	flag.BoolVar(cluster, "cluster", false, "")
 	flag.BoolVar(version, "version", false, "")
 	flag.BoolVar(help, "help", false, "")
 	flag.Usage = func() { log.Println(usageText) }
@@ -84,7 +90,7 @@ func main() {
 	}
 
 	if *version {
-		fmt.Println("noti version 1.3.0")
+		fmt.Println("noti version 1.3.1")
 		return
 	}
 
@@ -103,12 +109,12 @@ func main() {
 
 		// run a binary and its arguments
 		if err := run(utilArgs[0], utilArgs[1:]); err != nil {
-			notify(*title, "Failed. See terminal.", "Basso", *foreground, *pbullet)
+			notify(*title, "Failed. See terminal.", "Basso", *foreground, *pbullet, *cluster)
 			os.Exit(1)
 		}
 	}
 
-	if err := notify(*title, *mesg, *sound, *foreground, *pbullet); err != nil {
+	if err := notify(*title, *mesg, *sound, *foreground, *pbullet, *cluster); err != nil {
 		log.Fatal(err)
 	}
 }
