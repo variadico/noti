@@ -77,8 +77,12 @@ import (
 const (
 	specificPart = `
     NOTI_SOUND
-        Notification sound. Default is Ping. Possible options are Basso, Blow,
+        Banner success sound. Default is Ping. Possible options are Basso, Blow,
         Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
+        Submarine, Tink. See /System/Library/Sounds for available sounds.
+    NOTI_SOUND_FAIL
+        Banner failure sound. Default is Basso. Possible options are Basso,
+        Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
         Submarine, Tink. See /System/Library/Sounds for available sounds.
     NOTI_VOICE
         Name of voice used for speech notifications. See "say -v ?" for
