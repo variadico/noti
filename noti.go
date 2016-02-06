@@ -33,6 +33,8 @@ var (
 	pushbullet = flag.Bool("p", false, "")
 	speech     = flag.Bool("s", false, "")
 	slack      = flag.Bool("k", false, "")
+
+	utilityFailed bool
 )
 
 func init() {
@@ -125,6 +127,7 @@ func runUtility() {
 		}
 	}
 	if err != nil {
+		utilityFailed = true
 		*message = err.Error()
 	}
 }
