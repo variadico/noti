@@ -13,12 +13,13 @@ import (
 const (
 	version = "2.0.0"
 
-	defaultEnv      = "NOTI_DEFAULT"
-	pushbulletEnv   = "NOTI_PUSHBULLET_TOK"
-	slackChannelEnv = "NOTI_SLACK_DEST"
-	slackEnv        = "NOTI_SLACK_TOK"
-	soundEnv        = "NOTI_SOUND"
-	voiceEnv        = "NOTI_VOICE"
+	defaultEnv    = "NOTI_DEFAULT"
+	pushbulletEnv = "NOTI_PUSHBULLET_TOK"
+	slackDestEnv  = "NOTI_SLACK_DEST"
+	slackEnv      = "NOTI_SLACK_TOK"
+	soundEnv      = "NOTI_SOUND"
+	soundFailEnv  = "NOTI_SOUND_FAIL"
+	voiceEnv      = "NOTI_VOICE"
 )
 
 var (

@@ -43,7 +43,7 @@ func slackNotify() {
 	vals.Set("text", fmt.Sprintf("%s\n%s", *title, *message))
 	vals.Set("username", "noti")
 
-	if ch := os.Getenv(slackChannelEnv); ch == "" {
+	if ch := os.Getenv(slackDestEnv); ch == "" {
 		vals.Set("channel", "#random")
 	} else {
 		vals.Set("channel", ch)
