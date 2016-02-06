@@ -98,9 +98,18 @@ func init() {
 
 // bannerNotify triggers an NSUserNotification.
 func bannerNotify() {
-	sound := os.Getenv(soundEnv)
-	if sound == "" {
-		sound = "Ping"
+	var sound string
+
+	if utilityFailed {
+		sound = os.Getenv(soundFailEnv)
+		if sound == "" {
+			sound = "Basso"
+		}
+	} else {
+		sound = os.Getenv(soundEnv)
+		if sound == "" {
+			sound = "Ping"
+		}
 	}
 
 	t := C.CString(*title)
