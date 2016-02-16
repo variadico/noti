@@ -58,6 +58,9 @@ noti [options] [utility [args...]]
 -b, -banner
     Trigger a banner notification. Default is true. To disable this
     notification set this flag to false.
+-e, -error
+    Trigger the notification just when the provided command didn't run
+    successfully (with a zero exit status).
 -s, -speech
     Trigger a speech notification. Optionally, customize the voice with
     NOTI_VOICE.

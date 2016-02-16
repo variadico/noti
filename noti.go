@@ -26,6 +26,7 @@ var (
 	message     = flag.String("m", "Done!", "")
 	showVersion = flag.Bool("v", false, "")
 	showHelp    = flag.Bool("h", false, "")
+	onlyOnError = flag.Bool("e", false, "")
 
 	// Notifications
 	banner     = flag.Bool("b", false, "")
@@ -39,6 +40,7 @@ func init() {
 	flag.StringVar(message, "message", "Done!", "")
 	flag.BoolVar(showVersion, "version", false, "")
 	flag.BoolVar(showHelp, "help", false, "")
+	flag.BoolVar(onlyOnError, "error", false, "")
 
 	// Notifications
 	flag.BoolVar(banner, "banner", false, "")
@@ -60,54 +62,62 @@ func main() {
 		return
 	}
 
-	runUtility()
+	wasRunSuccessful := runUtility()
 
-	if defs := strings.TrimSpace(os.Getenv(defaultEnv)); defs != "" {
-		*banner = strings.Contains(defs, "banner")
-		*speech = strings.Contains(defs, "speech")
-		*pushbullet = strings.Contains(defs, "pushbullet")
-		*slack = strings.Contains(defs, "slack")
-	} else {
-		var explicitSet bool
-		var val bool
-
-		flag.Visit(func(f *flag.Flag) {
-			if f.Name == "b" || f.Name == "banner" {
-				explicitSet = true
-				// Ignoring error, false on error is fine.
-				val, _ = strconv.ParseBool(f.Value.String())
-			}
-		})
-
-		// If the user explicitly set -banner, then use the value that the user
-		// set, but if no banner flag was set, then the default is true.
-		if explicitSet {
-			*banner = val
+	if *onlyOnError != true || wasRunSuccessful != true {
+		if defs := strings.TrimSpace(os.Getenv(defaultEnv)); defs != "" {
+			*banner = strings.Contains(defs, "banner")
+			*speech = strings.Contains(defs, "speech")
+			*pushbullet = strings.Contains(defs, "pushbullet")
+			*slack = strings.Contains(defs, "slack")
 		} else {
-			*banner = true
-		}
-	}
+			var explicitSet bool
+			var val bool
 
-	if *banner {
-		bannerNotify()
-	}
-	if *speech {
-		speechNotify()
-	}
-	if *pushbullet {
-		pushbulletNotify()
-	}
-	if *slack {
-		slackNotify()
+			flag.Visit(func(f *flag.Flag) {
+				if f.Name == "b" || f.Name == "banner" {
+					explicitSet = true
+					// Ignoring error, false on error is fine.
+					val, _ = strconv.ParseBool(f.Value.String())
+				}
+			})
+
+			// If the user explicitly set -banner, then use the value that the user
+			// set, but if no banner flag was set, then the default is true.
+			if explicitSet {
+				*banner = val
+			} else {
+				*banner = true
+			}
+		}
+
+		if *banner {
+			bannerNotify()
+		}
+		if *speech {
+			speechNotify()
+		}
+		if *pushbullet {
+			pushbulletNotify()
+		}
+		if *slack {
+			slackNotify()
+		}
+
+		if wasRunSuccessful != true {
+			os.Exit(1)
+		}
 	}
 }
 
-func runUtility() {
+func runUtility() bool {
 	var cmd *exec.Cmd
+
+	wasRunSuccessful := true
 
 	args := flag.Args()
 	if len(args) < 1 {
-		return
+		return wasRunSuccessful
 	}
 
 	cmd = exec.Command(args[0], args[1:]...)
@@ -121,9 +131,12 @@ func runUtility() {
 	if exerr, is := err.(*exec.ExitError); is {
 		if !exerr.Success() {
 			*title = *title + " failed"
+			wasRunSuccessful = false
 		}
 	}
 	if err != nil {
 		*message = err.Error()
 	}
+
+	return wasRunSuccessful
 }
