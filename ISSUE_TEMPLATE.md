@@ -1,3 +1,5 @@
+You can omit non-relevant sections.
+
 #### Description
 What is this issue about?
 
@@ -12,5 +14,3 @@ What actually happened?
 
 #### Version
 What `go version` and `noti -version` are you using?
-
-You can omit non-relevant sections.
