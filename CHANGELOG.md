@@ -16,6 +16,7 @@ notifications.
 
 * On OS X, banner notifications will play different sounds depending on the
 utility's success or failure, instead of the same sound for both.
+* `NOTI_SLACK_DEST` no longer defaults to "#random". It must be manually set.
 
 ## [2.0.0]
 
