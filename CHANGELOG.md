@@ -11,6 +11,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 when a utility fails on OS X.
 * `NOTI_SOUND` and `NOTI_SOUND_FAIL` can be set to `_mute` for silent
 notifications.
+* HipChat notifications.
 
 ## Changed
 

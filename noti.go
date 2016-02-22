@@ -13,13 +13,15 @@ import (
 const (
 	version = "2.0.0"
 
-	defaultEnv    = "NOTI_DEFAULT"
-	pushbulletEnv = "NOTI_PUSHBULLET_TOK"
-	slackDestEnv  = "NOTI_SLACK_DEST"
-	slackEnv      = "NOTI_SLACK_TOK"
-	soundEnv      = "NOTI_SOUND"
-	soundFailEnv  = "NOTI_SOUND_FAIL"
-	voiceEnv      = "NOTI_VOICE"
+	defaultEnv       = "NOTI_DEFAULT"
+	hipChatDestEnv   = "NOTI_HIPCHAT_DEST"
+	hipChatTokEnv    = "NOTI_HIPCHAT_TOK"
+	pushbulletTokEnv = "NOTI_PUSHBULLET_TOK"
+	slackDestEnv     = "NOTI_SLACK_DEST"
+	slackTokEnv      = "NOTI_SLACK_TOK"
+	soundEnv         = "NOTI_SOUND"
+	soundFailEnv     = "NOTI_SOUND_FAIL"
+	voiceEnv         = "NOTI_VOICE"
 )
 
 var (
@@ -30,9 +32,10 @@ var (
 
 	// Notifications
 	banner     = flag.Bool("b", false, "")
+	hipChat    = flag.Bool("i", false, "")
 	pushbullet = flag.Bool("p", false, "")
-	speech     = flag.Bool("s", false, "")
 	slack      = flag.Bool("k", false, "")
+	speech     = flag.Bool("s", false, "")
 
 	utilityFailed bool
 )
@@ -45,6 +48,7 @@ func init() {
 
 	// Notifications
 	flag.BoolVar(banner, "banner", false, "")
+	flag.BoolVar(hipChat, "hipchat", false, "")
 	flag.BoolVar(speech, "speech", false, "")
 	flag.BoolVar(pushbullet, "pushbullet", false, "")
 	flag.BoolVar(slack, "slack", false, "")
@@ -67,8 +71,9 @@ func main() {
 
 	if defs := strings.TrimSpace(os.Getenv(defaultEnv)); defs != "" {
 		*banner = strings.Contains(defs, "banner")
-		*speech = strings.Contains(defs, "speech")
+		*hipChat = strings.Contains(defs, "hipchat")
 		*pushbullet = strings.Contains(defs, "pushbullet")
+		*speech = strings.Contains(defs, "speech")
 		*slack = strings.Contains(defs, "slack")
 	} else {
 		var explicitSet bool
@@ -94,11 +99,14 @@ func main() {
 	if *banner {
 		bannerNotify()
 	}
-	if *speech {
-		speechNotify()
+	if *hipChat {
+		hipChatNotify()
 	}
 	if *pushbullet {
 		pushbulletNotify()
+	}
+	if *speech {
+		speechNotify()
 	}
 	if *slack {
 		slackNotify()

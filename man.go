@@ -11,18 +11,22 @@ OPTIONS
         Notification title. Default is utility name.
     -m, -message
         Notification message. Default is "Done!"
+
     -b, -banner
         Trigger a banner notification. Default is true. To disable this
         notification set this flag to false.
-    -s, -speech
-        Trigger a speech notification. Optionally, customize the voice with
-        NOTI_VOICE.
+    -i, -hipchat
+        Trigger a HipChat notification. This requires NOTI_HIPCHAT_TOK and
+        NOTI_HIPCHAT_DEST to be set.
     -p, -pushbullet
         Trigger a Pushbullet notification. This requires NOTI_PUSHBULLET_TOK to
         be set.
     -k, -slack
         Trigger a Slack notification. This requires NOTI_SLACK_TOK and
         NOTI_SLACK_DEST to be set.
+    -s, -speech
+        Trigger a speech notification. Optionally, customize the voice with
+        NOTI_VOICE.
     -v, -version
         Print noti version and exit.
     -h, -help
@@ -36,12 +40,16 @@ ENVIRONMENT
     NOTI_PUSHBULLET_TOK
         Pushbullet access token. Log into your Pushbullet account and retrieve a
         token from the Account Settings page.
+    NOTI_HIPCHAT_TOK
+        HipChat access token. Log into your HipChat account and retrieve a token
+        from the Room Notification Tokens page.
+    NOTI_HIPCHAT_DEST
+        HipChat message destination. Can be either a Room name or ID.
     NOTI_SLACK_TOK
         Slack access token. Log into your Slack account and retrieve a token
         from the Slack Web API page.
     NOTI_SLACK_DEST
-        Slack channel to send message to. Can be either a #channel or a
-        @username.%s
+        Slack message destination. Can be either a #channel or a @username.%s
 
 EXAMPLES
     Display a notification when tar finishes compressing files.
