@@ -49,9 +49,8 @@ void BannerNotify(const char* title, const char* message, const char* sound) {
 		NSUserNotification *nt = [[NSUserNotification alloc] init];
 		nt.title = [NSString stringWithUTF8String:title];
 		nt.informativeText = [NSString stringWithUTF8String:message];
-		nt.soundName = NSUserNotificationDefaultSoundName;
 
-		if ([[NSString stringWithUTF8String:sound] length] != 0) {
+		if ([[NSString stringWithUTF8String:sound] isEqualToString: @"_mute"] == NO) {
 			nt.soundName = [NSString stringWithUTF8String:sound];
 		}
 

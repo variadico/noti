@@ -9,6 +9,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 * `NOTI_SOUND_FAIL` tells Noti which sound to play for banner notifications
 when a utility fails on OS X.
+* `NOTI_SOUND` and `NOTI_SOUND_FAIL` can be set to `_mute` for silent
+notifications.
 
 ## Changed
 
