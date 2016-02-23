@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 )
 
 func pushbulletNotify() error {
@@ -124,6 +125,52 @@ func hipChatNotify() error {
 
 	if m := r.Error.Message; m != "" {
 		return fmt.Errorf("HipChat API error: %s", m)
+	}
+
+	return nil
+}
+
+func pushoverNotify() error {
+	accessToken := os.Getenv(pushoverTokEnv)
+	if accessToken == "" {
+		return fmt.Errorf("Missing access token, %s must be set", pushoverTokEnv)
+	}
+
+	dest := os.Getenv(pushoverDestEnv)
+	if dest == "" {
+		return fmt.Errorf("Missing destination, %s must be set", pushoverDestEnv)
+	}
+
+	vals := make(url.Values)
+	vals.Set("token", accessToken)
+	vals.Set("user", dest)
+	vals.Set("message", *message)
+	vals.Set("title", *title)
+
+	resp, err := webClient.PostForm("https://api.pushover.net/1/messages.json", vals)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	var r struct {
+		Errors  []string
+		Info    string
+		Request string
+		Status  int
+		Token   string
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&r); err == io.EOF {
+		return nil
+	} else if err != nil {
+		return err
+	}
+
+	if r.Status != 1 {
+		return fmt.Errorf("Pushover API error: %s", strings.Join(r.Errors, ": "))
+	} else if strings.Contains(r.Info, "no active devices") {
+		return fmt.Errorf("Pushover API error: %s", r.Info)
 	}
 
 	return nil

@@ -21,6 +21,9 @@ OPTIONS
     -p, -pushbullet
         Trigger a Pushbullet notification. This requires NOTI_PUSHBULLET_TOK to
         be set.
+    -o, -pushover
+        Trigger a Pushover notification. This requires NOTI_PUSHOVER_TOK and
+        NOTI_PUSHOVER_DEST to be set.
     -k, -slack
         Trigger a Slack notification. This requires NOTI_SLACK_TOK and
         NOTI_SLACK_DEST to be set.
@@ -37,14 +40,19 @@ ENVIRONMENT
         Notification types noti should trigger in a space-delimited list. For
         example, set NOTI_DEFAULT="banner speech pushbullet slack" to enable
         all available notifications to fire sequentially.
-    NOTI_PUSHBULLET_TOK
-        Pushbullet access token. Log into your Pushbullet account and retrieve a
-        token from the Account Settings page.
     NOTI_HIPCHAT_TOK
         HipChat access token. Log into your HipChat account and retrieve a token
         from the Room Notification Tokens page.
     NOTI_HIPCHAT_DEST
         HipChat message destination. Can be either a Room name or ID.
+    NOTI_PUSHBULLET_TOK
+        Pushbullet access token. Log into your Pushbullet account and retrieve a
+        token from the Account Settings page.
+    NOTI_PUSHOVER_TOK
+        Pushover access token. Log into your Pushover account and create a
+        token from the Create New Application/Plugin page.
+    NOTI_PUSHOVER_DEST
+        Pushover message destination. Should be your User Key.
     NOTI_SLACK_TOK
         Slack access token. Log into your Slack account and retrieve a token
         from the Slack Web API page.

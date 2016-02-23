@@ -19,6 +19,8 @@ const (
 	hipChatDestEnv   = "NOTI_HIPCHAT_DEST"
 	hipChatTokEnv    = "NOTI_HIPCHAT_TOK"
 	pushbulletTokEnv = "NOTI_PUSHBULLET_TOK"
+	pushoverTokEnv   = "NOTI_PUSHOVER_TOK"
+	pushoverDestEnv  = "NOTI_PUSHOVER_DEST"
 	slackDestEnv     = "NOTI_SLACK_DEST"
 	slackTokEnv      = "NOTI_SLACK_TOK"
 	soundEnv         = "NOTI_SOUND"
@@ -38,6 +40,7 @@ var (
 	banner     = flag.Bool("b", false, "")
 	hipChat    = flag.Bool("i", false, "")
 	pushbullet = flag.Bool("p", false, "")
+	pushover   = flag.Bool("o", false, "")
 	slack      = flag.Bool("k", false, "")
 	speech     = flag.Bool("s", false, "")
 
@@ -57,6 +60,7 @@ func init() {
 	flag.BoolVar(hipChat, "hipchat", false, "")
 	flag.BoolVar(speech, "speech", false, "")
 	flag.BoolVar(pushbullet, "pushbullet", false, "")
+	flag.BoolVar(pushover, "pushover", false, "")
 	flag.BoolVar(slack, "slack", false, "")
 }
 
@@ -79,6 +83,7 @@ func main() {
 		*banner = strings.Contains(defs, "banner")
 		*hipChat = strings.Contains(defs, "hipchat")
 		*pushbullet = strings.Contains(defs, "pushbullet")
+		*pushover = strings.Contains(defs, "pushover")
 		*speech = strings.Contains(defs, "speech")
 		*slack = strings.Contains(defs, "slack")
 	} else {
@@ -109,6 +114,7 @@ func main() {
 		{*banner, bannerNotify},
 		{*hipChat, hipChatNotify},
 		{*pushbullet, pushbulletNotify},
+		{*pushover, pushoverNotify},
 		{*speech, speechNotify},
 		{*slack, slackNotify},
 	}

@@ -12,6 +12,7 @@ when a utility fails on OS X.
 * `NOTI_SOUND` and `NOTI_SOUND_FAIL` can be set to `_mute` for silent
 notifications.
 * HipChat notifications.
+* Pushover notifications.
 
 ## Changed
 
