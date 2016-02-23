@@ -5,16 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
 )
 
-func pushbulletNotify() {
+func pushbulletNotify() error {
 	accessToken := os.Getenv(pushbulletTokEnv)
 	if accessToken == "" {
-		log.Fatalf("Missing access token, %s must be set", pushbulletTokEnv)
+		return fmt.Errorf("Missing access token, %s must be set", pushbulletTokEnv)
 	}
 
 	payload := bytes.NewBuffer([]byte(fmt.Sprintf(
@@ -23,25 +22,29 @@ func pushbulletNotify() {
 
 	req, err := http.NewRequest("POST", "https://api.pushbullet.com/v2/pushes", payload)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	req.Header.Set("Access-Token", accessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	if _, err = webClient.Do(req); err != nil {
-		log.Fatal(err)
+	resp, err := webClient.Do(req)
+	if err != nil {
+		return err
 	}
+	defer resp.Body.Close()
+
+	return nil
 }
 
-func slackNotify() {
+func slackNotify() error {
 	accessToken := os.Getenv(slackTokEnv)
 	if accessToken == "" {
-		log.Fatalf("Missing access token, %s must be set", slackTokEnv)
+		return fmt.Errorf("Missing access token, %s must be set", slackTokEnv)
 	}
 
 	dest := os.Getenv(slackDestEnv)
 	if dest == "" {
-		log.Fatalf("Missing destination, %s must be set", slackDestEnv)
+		return fmt.Errorf("Missing destination, %s must be set", slackDestEnv)
 	}
 
 	vals := make(url.Values)
@@ -52,7 +55,7 @@ func slackNotify() {
 
 	resp, err := webClient.PostForm("https://slack.com/api/chat.postMessage", vals)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer resp.Body.Close()
 
@@ -62,27 +65,27 @@ func slackNotify() {
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&r); err == io.EOF {
-		return
+		return nil
 	} else if err != nil {
-		resp.Body.Close()
-		log.Fatal(err)
+		return err
 	}
 
 	if !r.OK {
-		resp.Body.Close()
-		log.Fatal("Slack API error: ", r.Error)
+		return fmt.Errorf("Slack API error: %s", r.Error)
 	}
+
+	return nil
 }
 
-func hipChatNotify() {
+func hipChatNotify() error {
 	accessToken := os.Getenv(hipChatTokEnv)
 	if accessToken == "" {
-		log.Fatalf("Missing access token, %s must be set", hipChatTokEnv)
+		return fmt.Errorf("Missing access token, %s must be set", hipChatTokEnv)
 	}
 
 	dest := os.Getenv(hipChatDestEnv)
 	if dest == "" {
-		log.Fatalf("Missing destination, %s must be set", hipChatDestEnv)
+		return fmt.Errorf("Missing destination, %s must be set", hipChatDestEnv)
 	}
 
 	payload := bytes.NewBuffer([]byte(fmt.Sprintf(
@@ -93,7 +96,7 @@ func hipChatNotify() {
 	ep := fmt.Sprintf("https://api.hipchat.com/v2/room/%s/notification", dest)
 	req, err := http.NewRequest("POST", ep, payload)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", accessToken))
@@ -101,7 +104,7 @@ func hipChatNotify() {
 
 	resp, err := webClient.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer resp.Body.Close()
 
@@ -114,15 +117,14 @@ func hipChatNotify() {
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&r); err == io.EOF {
-		return
+		return nil
 	} else if err != nil {
-		resp.Body.Close()
-		log.Fatal(err)
+		return err
 	}
 
 	if m := r.Error.Message; m != "" {
-		resp.Body.Close()
-		log.Fatal("HipChat API error: ", m)
+		return fmt.Errorf("HipChat API error: %s", m)
 	}
 
+	return nil
 }

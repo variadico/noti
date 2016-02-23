@@ -3,9 +3,10 @@
 package main
 
 import (
+	"bytes"
+	"errors"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -25,32 +26,35 @@ func init() {
 }
 
 // bannerNotify triggers a Notify notification.
-func bannerNotify() {
+func bannerNotify() error {
 	_, err := exec.LookPath("notify-send")
 	if err != nil {
-		log.Fatal("Install 'notify-send' and try again")
+		return errors.New("Install 'notify-send' and try again")
 	}
 
 	cmd := exec.Command("notify-send", *title, *message)
 	if err = cmd.Run(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
 
 // speechNotify triggers an eSpeak notification.
-func speechNotify() {
+func speechNotify() error {
 	_, err := exec.LookPath("espeak")
 	if err != nil {
-		log.Println("Install 'espeak' and try again")
+		buf := new(bytes.Buffer)
+		buf.WriteString("Install 'espeak' and try again\n")
 
 		var errStr string
 		if runtime.GOOS == "freebsd" {
-			errStr = "On FreeBSD this might be: 'sudo pkg install --yes espeak'"
+			buf.WriteString("On FreeBSD this might be: 'sudo pkg install --yes espeak'")
 		} else if runtime.GOOS == "linux" {
-			errStr = "On Linux this might be: 'sudo apt-get install --yes espeak'"
+			buf.WriteString("On Linux this might be: 'sudo apt-get install --yes espeak'")
 		}
 
-		log.Fatal(errStr)
+		return err
 	}
 
 	voice := os.Getenv(voiceEnv)
@@ -62,6 +66,8 @@ func speechNotify() {
 
 	cmd := exec.Command("espeak", "-v", voice, "--", *message)
 	if err = cmd.Run(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }

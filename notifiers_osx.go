@@ -67,7 +67,6 @@ import "C"
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"unsafe"
@@ -100,7 +99,7 @@ func init() {
 }
 
 // bannerNotify triggers an NSUserNotification.
-func bannerNotify() {
+func bannerNotify() error {
 	var sound string
 
 	if utilityFailed {
@@ -123,10 +122,12 @@ func bannerNotify() {
 	defer C.free(unsafe.Pointer(s))
 
 	C.BannerNotify(t, m, s)
+
+	return nil
 }
 
 // speechNotify triggers an NSSpeechSynthesizer notification.
-func speechNotify() {
+func speechNotify() error {
 	voice := os.Getenv(voiceEnv)
 	if voice == "" {
 		voice = "Alex"
@@ -135,6 +136,8 @@ func speechNotify() {
 
 	cmd := exec.Command("say", "-v", voice, *message)
 	if err := cmd.Run(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }

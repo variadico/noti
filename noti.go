@@ -102,20 +102,25 @@ func main() {
 		}
 	}
 
-	if *banner {
-		bannerNotify()
+	ns := []struct {
+		run bool
+		fn  func() error
+	}{
+		{*banner, bannerNotify},
+		{*hipChat, hipChatNotify},
+		{*pushbullet, pushbulletNotify},
+		{*speech, speechNotify},
+		{*slack, slackNotify},
 	}
-	if *hipChat {
-		hipChatNotify()
-	}
-	if *pushbullet {
-		pushbulletNotify()
-	}
-	if *speech {
-		speechNotify()
-	}
-	if *slack {
-		slackNotify()
+
+	for _, n := range ns {
+		if !n.run {
+			continue
+		}
+
+		if err := n.fn(); err != nil {
+			log.Println(err)
+		}
 	}
 }
 
