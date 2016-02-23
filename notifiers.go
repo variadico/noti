@@ -54,16 +54,23 @@ func slackNotify() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer resp.Body.Close()
 
-	r := make(map[string]interface{})
-	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+	var r struct {
+		OK    bool
+		Error string
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&r); err == io.EOF {
+		return
+	} else if err != nil {
 		resp.Body.Close()
 		log.Fatal(err)
 	}
-	resp.Body.Close()
 
-	if r["ok"] == false {
-		log.Fatal("Slack API error: ", r["error"])
+	if !r.OK {
+		resp.Body.Close()
+		log.Fatal("Slack API error: ", r.Error)
 	}
 }
 
@@ -96,20 +103,26 @@ func hipChatNotify() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer resp.Body.Close()
 
-	r := make(map[string]interface{})
+	var r struct {
+		Error struct {
+			Code    int
+			Message string
+			Type    string
+		}
+	}
+
 	if err := json.NewDecoder(resp.Body).Decode(&r); err == io.EOF {
 		return
 	} else if err != nil {
 		resp.Body.Close()
 		log.Fatal(err)
 	}
-	resp.Body.Close()
 
-	if err, exists := r["error"]; exists {
-		if m, is := err.(map[string]interface{}); is {
-			log.Fatal("HipChat API error: ", m["message"])
-		}
+	if m := r.Error.Message; m != "" {
+		resp.Body.Close()
+		log.Fatal("HipChat API error: ", m)
 	}
 
 }
