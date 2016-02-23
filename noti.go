@@ -4,10 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -22,6 +24,8 @@ const (
 	soundEnv         = "NOTI_SOUND"
 	soundFailEnv     = "NOTI_SOUND_FAIL"
 	voiceEnv         = "NOTI_VOICE"
+
+	webTimeout = 30 * time.Second
 )
 
 var (
@@ -38,6 +42,8 @@ var (
 	speech     = flag.Bool("s", false, "")
 
 	utilityFailed bool
+
+	webClient = &http.Client{Timeout: webTimeout}
 )
 
 func init() {

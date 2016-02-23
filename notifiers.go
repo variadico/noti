@@ -28,7 +28,7 @@ func pushbulletNotify() {
 	req.Header.Set("Access-Token", accessToken)
 	req.Header.Set("Content-Type", "application/json")
 
-	if _, err = http.DefaultClient.Do(req); err != nil {
+	if _, err = webClient.Do(req); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -50,7 +50,7 @@ func slackNotify() {
 	vals.Set("username", "noti")
 	vals.Set("channel", dest)
 
-	resp, err := http.PostForm("https://slack.com/api/chat.postMessage", vals)
+	resp, err := webClient.PostForm("https://slack.com/api/chat.postMessage", vals)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,7 +92,7 @@ func hipChatNotify() {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 	req.Header.Set("Content-Type", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := webClient.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -111,4 +111,5 @@ func hipChatNotify() {
 			log.Fatal("HipChat API error: ", m["message"])
 		}
 	}
+
 }
