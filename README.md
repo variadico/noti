@@ -8,26 +8,15 @@ constantly checking the terminal.
 
 ## Types
 
-### Banner notifications
+### Desktop
+* Banner
+* Speech
 
-On OS X, these are the normal app notifications you already know. On Linux and
-FreeBSD, these are libnotify notifications and requre `notify-send` to be
-installed.
-
-### Speech notifications
-
-On OS X, these use the built-in speech command. On Linux and FreeBSD, these use
-`espeak` and requre `espeak` to be installed.
-
-### Pushbullet notifications
-
-These are sent to all devices registered with Pushbullet. You need to create a
-Pushbullet account and get an [access token][1].
-
-### Slack notifications
-
-These are sent to all devices that have the Slack app installed. You need to
-create a Slack account and get an [access token][2].
+### Mobile
+* HipChat
+* Pushbullet
+* Pushover
+* Slack
 
 ## Installation
 
@@ -55,18 +44,27 @@ noti [options] [utility [args...]]
     Notification title. Default is utility name.
 -m, -message
     Notification message. Default is "Done!"
+
 -b, -banner
     Trigger a banner notification. Default is true. To disable this
     notification set this flag to false.
 -s, -speech
     Trigger a speech notification. Optionally, customize the voice with
     NOTI_VOICE.
+
+-i, -hipchat
+    Trigger a HipChat notification. Requires NOTI_HIPCHAT_TOK and
+    NOTI_HIPCHAT_DEST to be set.
 -p, -pushbullet
-    Trigger a Pushbullet notification. This requires NOTI_PUSHBULLET_TOK to
+    Trigger a Pushbullet notification. Requires NOTI_PUSHBULLET_TOK to
     be set.
+-o, -pushover
+    Trigger a Pushover notification. Requires NOTI_PUSHOVER_TOK and
+    NOTI_PUSHOVER_DEST to be set.
 -k, -slack
-    Trigger a Slack notification. This requires NOTI_SLACK_TOK and
+    Trigger a Slack notification. Requires NOTI_SLACK_TOK and
     NOTI_SLACK_DEST to be set.
+
 -v, -version
     Print noti version and exit.
 -h, -help
@@ -86,15 +84,24 @@ NOTI_DEFAULT
     Notification types noti should trigger in a space-delimited list. For
     example, set NOTI_DEFAULT="banner speech pushbullet slack" to enable
     all available notifications to fire sequentially.
+NOTI_HIPCHAT_TOK
+    HipChat access token. Log into your HipChat account and retrieve a token
+    from the Room Notification Tokens page.
+NOTI_HIPCHAT_DEST
+    HipChat message destination. Can be either a Room name or ID.
 NOTI_PUSHBULLET_TOK
     Pushbullet access token. Log into your Pushbullet account and retrieve a
     token from the Account Settings page.
+NOTI_PUSHOVER_TOK
+    Pushover access token. Log into your Pushover account and create a
+    token from the Create New Application/Plugin page.
+NOTI_PUSHOVER_DEST
+    Pushover message destination. Should be your User Key.
 NOTI_SLACK_TOK
     Slack access token. Log into your Slack account and retrieve a token
     from the Slack Web API page.
 NOTI_SLACK_DEST
-    Slack channel to send message to. Can be either a #channel or a
-    @username.
+    Slack message destination. Can be either a #channel or a @username.
 NOTI_VOICE
     Name of voice used for speech notifications.
 ```
@@ -126,6 +133,4 @@ You can also add `noti` after a command, in case you forgot at the beginning.
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 ```
 
-[1]: https://www.pushbullet.com/#settings/account
-[2]: https://api.slack.com/web
 [releases page]: https://github.com/variadico/noti/releases

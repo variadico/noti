@@ -13,6 +13,7 @@ when a utility fails on OS X.
 notifications.
 * HipChat notifications.
 * Pushover notifications.
+* Noti Wiki
 
 ## Changed
 

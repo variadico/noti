@@ -15,21 +15,23 @@ OPTIONS
     -b, -banner
         Trigger a banner notification. Default is true. To disable this
         notification set this flag to false.
-    -i, -hipchat
-        Trigger a HipChat notification. This requires NOTI_HIPCHAT_TOK and
-        NOTI_HIPCHAT_DEST to be set.
-    -p, -pushbullet
-        Trigger a Pushbullet notification. This requires NOTI_PUSHBULLET_TOK to
-        be set.
-    -o, -pushover
-        Trigger a Pushover notification. This requires NOTI_PUSHOVER_TOK and
-        NOTI_PUSHOVER_DEST to be set.
-    -k, -slack
-        Trigger a Slack notification. This requires NOTI_SLACK_TOK and
-        NOTI_SLACK_DEST to be set.
     -s, -speech
         Trigger a speech notification. Optionally, customize the voice with
         NOTI_VOICE.
+
+    -i, -hipchat
+        Trigger a HipChat notification. Requires NOTI_HIPCHAT_TOK and
+        NOTI_HIPCHAT_DEST to be set.
+    -p, -pushbullet
+        Trigger a Pushbullet notification. Requires NOTI_PUSHBULLET_TOK to
+        be set.
+    -o, -pushover
+        Trigger a Pushover notification. Requires NOTI_PUSHOVER_TOK and
+        NOTI_PUSHOVER_DEST to be set.
+    -k, -slack
+        Trigger a Slack notification. Requires NOTI_SLACK_TOK and
+        NOTI_SLACK_DEST to be set.
+
     -v, -version
         Print noti version and exit.
     -h, -help
