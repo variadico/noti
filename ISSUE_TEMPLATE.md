@@ -1,7 +1,10 @@
-You can omit non-relevant sections.
+Omit non-relevant sections.
 
 #### Description
 What is this issue about?
+
+#### Use case
+What use case would this solve?
 
 #### Steps to reproduce
 What steps did you take when you found this issue?
