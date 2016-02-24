@@ -139,7 +139,7 @@ You can also add `noti` after a command, in case you forgot at the beginning.
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 ```
 
-[OS X Banner Notification]: https://github.com/variadico/noti/blob/dev/.github/screenshots/osx_banner.png
+[OS X Banner Notification]: https://raw.githubusercontent.com/variadico/noti/master/.github/screenshots/osx_banner.png
 [Wiki]: https://github.com/variadico/noti/wiki
-[screenshots]: https://github.com/variadico/noti/tree/dev/.github/screenshots
+[screenshots]: https://github.com/variadico/noti/tree/master/.github/screenshots
 [releases page]: https://github.com/variadico/noti/releases
