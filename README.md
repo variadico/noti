@@ -6,6 +6,8 @@ Never sit and wait for some long-running process to finish! `noti` will alert
 you when it's done—on your computer or smartphone—so you can stop worrying about
 constantly checking the terminal.
 
+![OS X Banner Notification]
+
 ## Types
 
 ### Desktop
@@ -18,6 +20,10 @@ constantly checking the terminal.
 * Pushover
 * Slack
 
+Check out the [Wiki] for more information on how to configure mobile
+notifications. If you're curious, you can also browse the [screenshots]
+directory.
+
 ## Installation
 
 ```
@@ -28,7 +34,7 @@ go get -u github.com/variadico/noti
 brew install noti
 ```
 
-You can also download a static binary from the [releases page].
+If you only want a binary, get it from the [releases page].
 
 ## Usage
 Put `noti` at the beginning or end of your regular commands.
@@ -133,4 +139,7 @@ You can also add `noti` after a command, in case you forgot at the beginning.
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 ```
 
+[OS X Banner Notification]: https://github.com/variadico/noti/blob/dev/.github/screenshots/osx_banner.png
+[Wiki]: https://github.com/variadico/noti/wiki
+[screenshots]: https://github.com/variadico/noti/tree/dev/.github/screenshots
 [releases page]: https://github.com/variadico/noti/releases
