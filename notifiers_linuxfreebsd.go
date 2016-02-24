@@ -47,7 +47,6 @@ func speechNotify() error {
 		buf := new(bytes.Buffer)
 		buf.WriteString("Install 'espeak' and try again\n")
 
-		var errStr string
 		if runtime.GOOS == "freebsd" {
 			buf.WriteString("On FreeBSD this might be: 'sudo pkg install --yes espeak'")
 		} else if runtime.GOOS == "linux" {
