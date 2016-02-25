@@ -60,6 +60,7 @@ func slackNotify() error {
 	vals.Set("text", fmt.Sprintf("%s\n%s", *title, *message))
 	vals.Set("username", "noti")
 	vals.Set("channel", dest)
+	vals.Set("icon_emoji", ":rocket:")
 
 	resp, err := webClient.PostForm(slackAPI, vals)
 	if err != nil {
