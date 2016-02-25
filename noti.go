@@ -90,10 +90,7 @@ func main() {
 		var strVal string
 		var explicitSet bool
 
-		if userSet("b") {
-			strVal = flag.Lookup("b").Value.String()
-			explicitSet = true
-		} else if userSet("banner") {
+		if userSet("b") || userSet("banner") {
 			strVal = flag.Lookup("banner").Value.String()
 			explicitSet = true
 		}
@@ -139,6 +136,15 @@ func runUtility() {
 		return
 	}
 
+	var userTitle string
+	if userSet("t") || userSet("title") {
+		userTitle = flag.Lookup("title").Value.String()
+	}
+	var userMessage string
+	if userSet("m") || userSet("message") {
+		userMessage = flag.Lookup("message").Value.String()
+	}
+
 	cmd = exec.Command(args[0], args[1:]...)
 	*title = args[0]
 
@@ -155,6 +161,13 @@ func runUtility() {
 	if err != nil {
 		utilityFailed = true
 		*message = err.Error()
+	}
+
+	if userTitle != "" {
+		*title = userTitle
+	}
+	if userMessage != "" {
+		*message = userMessage
 	}
 }
 
