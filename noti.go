@@ -87,21 +87,22 @@ func main() {
 		*speech = strings.Contains(defs, "speech")
 		*slack = strings.Contains(defs, "slack")
 	} else {
+		var strVal string
 		var explicitSet bool
-		var val bool
 
-		flag.Visit(func(f *flag.Flag) {
-			if f.Name == "b" || f.Name == "banner" {
-				explicitSet = true
-				// Ignoring error, false on error is fine.
-				val, _ = strconv.ParseBool(f.Value.String())
-			}
-		})
+		if userSet("b") {
+			strVal = flag.Lookup("b").Value.String()
+			explicitSet = true
+		} else if userSet("banner") {
+			strVal = flag.Lookup("banner").Value.String()
+			explicitSet = true
+		}
 
 		// If the user explicitly set -banner, then use the value that the user
 		// set, but if no banner flag was set, then the default is true.
 		if explicitSet {
-			*banner = val
+			// Ignoring error, false on error is fine.
+			*banner, _ = strconv.ParseBool(strVal)
 		} else {
 			*banner = true
 		}
@@ -155,4 +156,16 @@ func runUtility() {
 		utilityFailed = true
 		*message = err.Error()
 	}
+}
+
+func userSet(target string) bool {
+	var set bool
+
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == target {
+			set = true
+		}
+	})
+
+	return set
 }
