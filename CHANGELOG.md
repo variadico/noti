@@ -5,6 +5,15 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## Added
+* Tests.
+
+## Fixed
+* Setting `-t` or `-m` will now take precedence over utility name.
+
+## Changed
+* Slackbot icon is now a rocket.
+
 ## [2.1.0]
 
 ## Added
