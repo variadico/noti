@@ -182,11 +182,14 @@ func runUtility(args []string) (string, error) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	if err := run(cmd); err != nil {
-		return args[0], err
+	err := run(cmd)
+
+	name := args[0]
+	if len(args) > 1 && args[1][0] != '-' {
+		name = fmt.Sprintf("%s %s", args[0], args[1])
 	}
 
-	return args[0], nil
+	return name, err
 }
 
 func userSet(target string) bool {
