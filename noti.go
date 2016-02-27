@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	version = "2.1.0"
+	version = "2.1.1"
 
 	defaultEnv       = "NOTI_DEFAULT"
 	hipChatDestEnv   = "NOTI_HIPCHAT_DEST"
