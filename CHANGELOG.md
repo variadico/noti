@@ -15,6 +15,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 * Slackbot icon is now a rocket.
 * If utility fails, noti will exit 1.
 * Utility name default now includes subcommand too.
+* Improved error handling for notifiers that shell out.
 
 ## [2.1.0]
 

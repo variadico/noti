@@ -86,7 +86,7 @@ func slackNotify(n notification) error {
 	}
 
 	if !r.OK {
-		return fmt.Errorf("Slack API error: %s", r.Error)
+		return fmt.Errorf("Slack API: %s", r.Error)
 	}
 
 	return nil
@@ -137,7 +137,7 @@ func hipChatNotify(n notification) error {
 	}
 
 	if m := r.Error.Message; m != "" {
-		return fmt.Errorf("HipChat API error: %s", m)
+		return fmt.Errorf("HipChat API: %s", m)
 	}
 
 	return nil
@@ -181,9 +181,9 @@ func pushoverNotify(n notification) error {
 	}
 
 	if r.Status != 1 {
-		return fmt.Errorf("Pushover API error: %s", strings.Join(r.Errors, ": "))
+		return fmt.Errorf("Pushover API: %s", strings.Join(r.Errors, ": "))
 	} else if strings.Contains(r.Info, "no active devices") {
-		return fmt.Errorf("Pushover API error: %s", r.Info)
+		return fmt.Errorf("Pushover API: %s", r.Info)
 	}
 
 	return nil

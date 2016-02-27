@@ -134,8 +134,9 @@ func speechNotify(n notification) error {
 	text := fmt.Sprintf("%s %s", n.title, n.message)
 
 	cmd := exec.Command("say", "-v", voice, text)
+	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		return err
+		return fmt.Errorf("Speech: %s", err)
 	}
 
 	return nil
