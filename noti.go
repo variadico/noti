@@ -126,6 +126,10 @@ func main() {
 			log.Println(err)
 		}
 	}
+
+	if n.failure {
+		os.Exit(1)
+	}
 }
 
 func newNotification(args []string) notification {
@@ -145,7 +149,6 @@ func newNotification(args []string) notification {
 		n.message = *message
 	} else {
 		if err != nil {
-			n.failure = true
 			n.message = err.Error()
 
 			if autoTitle {
@@ -154,6 +157,10 @@ func newNotification(args []string) notification {
 		} else {
 			n.message = "Done!"
 		}
+	}
+
+	if err != nil {
+		n.failure = true
 	}
 
 	return n
