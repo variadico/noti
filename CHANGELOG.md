@@ -13,6 +13,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Changed
 * Slackbot icon is now a rocket.
+* If utility fails, noti will exit 1.
 
 ## [2.1.0]
 
