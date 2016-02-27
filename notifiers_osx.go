@@ -99,10 +99,9 @@ func init() {
 }
 
 // bannerNotify triggers an NSUserNotification.
-func bannerNotify() error {
+func bannerNotify(n notification) error {
 	var sound string
-
-	if utilityFailed {
+	if n.failure {
 		sound = os.Getenv(soundFailEnv)
 		if sound == "" {
 			sound = "Basso"
@@ -114,8 +113,8 @@ func bannerNotify() error {
 		}
 	}
 
-	t := C.CString(*title)
-	m := C.CString(*message)
+	t := C.CString(n.title)
+	m := C.CString(n.message)
 	s := C.CString(sound)
 	defer C.free(unsafe.Pointer(t))
 	defer C.free(unsafe.Pointer(m))
@@ -127,14 +126,14 @@ func bannerNotify() error {
 }
 
 // speechNotify triggers an NSSpeechSynthesizer notification.
-func speechNotify() error {
+func speechNotify(n notification) error {
 	voice := os.Getenv(voiceEnv)
 	if voice == "" {
 		voice = "Alex"
 	}
-	*message = fmt.Sprintf("%s %s", *title, *message)
+	text := fmt.Sprintf("%s %s", n.title, n.message)
 
-	cmd := exec.Command("say", "-v", voice, *message)
+	cmd := exec.Command("say", "-v", voice, text)
 	if err := cmd.Run(); err != nil {
 		return err
 	}

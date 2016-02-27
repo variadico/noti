@@ -11,6 +11,12 @@ import (
 	"strings"
 )
 
+type notification struct {
+	title   string
+	message string
+	failure bool
+}
+
 var (
 	pushbulletAPI = "https://api.pushbullet.com/v2/pushes"
 	slackAPI      = "https://slack.com/api/chat.postMessage"
@@ -18,14 +24,14 @@ var (
 	pushoverAPI   = "https://api.pushover.net/1/messages.json"
 )
 
-func pushbulletNotify() error {
+func pushbulletNotify(n notification) error {
 	accessToken := os.Getenv(pushbulletTokEnv)
 	if accessToken == "" {
 		return fmt.Errorf("Missing access token, %s must be set", pushbulletTokEnv)
 	}
 
 	payload := bytes.NewBuffer([]byte(fmt.Sprintf(
-		`{"body":%q,"title":%q,"type":"note"}`, *message, *title,
+		`{"body":%q,"title":%q,"type":"note"}`, n.message, n.title,
 	)))
 
 	req, err := http.NewRequest("POST", pushbulletAPI, payload)
@@ -44,7 +50,7 @@ func pushbulletNotify() error {
 	return nil
 }
 
-func slackNotify() error {
+func slackNotify(n notification) error {
 	accessToken := os.Getenv(slackTokEnv)
 	if accessToken == "" {
 		return fmt.Errorf("Missing access token, %s must be set", slackTokEnv)
@@ -57,7 +63,7 @@ func slackNotify() error {
 
 	vals := make(url.Values)
 	vals.Set("token", accessToken)
-	vals.Set("text", fmt.Sprintf("%s\n%s", *title, *message))
+	vals.Set("text", fmt.Sprintf("%s\n%s", n.title, n.message))
 	vals.Set("username", "noti")
 	vals.Set("channel", dest)
 	vals.Set("icon_emoji", ":rocket:")
@@ -86,7 +92,7 @@ func slackNotify() error {
 	return nil
 }
 
-func hipChatNotify() error {
+func hipChatNotify(n notification) error {
 	accessToken := os.Getenv(hipChatTokEnv)
 	if accessToken == "" {
 		return fmt.Errorf("Missing access token, %s must be set", hipChatTokEnv)
@@ -99,7 +105,7 @@ func hipChatNotify() error {
 
 	payload := bytes.NewBuffer([]byte(fmt.Sprintf(
 		`{"message":%q,"message_format":"text"}`,
-		fmt.Sprintf("%s\n%s", *title, *message),
+		fmt.Sprintf("%s\n%s", n.title, n.message),
 	)))
 
 	req, err := http.NewRequest("POST", fmt.Sprintf(hipChatAPI, dest), payload)
@@ -137,7 +143,7 @@ func hipChatNotify() error {
 	return nil
 }
 
-func pushoverNotify() error {
+func pushoverNotify(n notification) error {
 	accessToken := os.Getenv(pushoverTokEnv)
 	if accessToken == "" {
 		return fmt.Errorf("Missing access token, %s must be set", pushoverTokEnv)
@@ -151,8 +157,8 @@ func pushoverNotify() error {
 	vals := make(url.Values)
 	vals.Set("token", accessToken)
 	vals.Set("user", dest)
-	vals.Set("message", *message)
-	vals.Set("title", *title)
+	vals.Set("message", n.message)
+	vals.Set("title", n.title)
 
 	resp, err := webClient.PostForm(pushoverAPI, vals)
 	if err != nil {

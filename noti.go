@@ -31,8 +31,8 @@ const (
 )
 
 var (
-	title       = flag.String("t", "noti", "")
-	message     = flag.String("m", "Done!", "")
+	title       = flag.String("t", "", "")
+	message     = flag.String("m", "", "")
 	showVersion = flag.Bool("v", false, "")
 	showHelp    = flag.Bool("h", false, "")
 
@@ -50,8 +50,8 @@ var (
 )
 
 func init() {
-	flag.StringVar(title, "title", "noti", "")
-	flag.StringVar(message, "message", "Done!", "")
+	flag.StringVar(title, "title", "", "")
+	flag.StringVar(message, "message", "", "")
 	flag.BoolVar(showVersion, "version", false, "")
 	flag.BoolVar(showHelp, "help", false, "")
 
@@ -77,7 +77,7 @@ func main() {
 		return
 	}
 
-	runUtility()
+	n := newNotification(flag.Args())
 
 	if defs := strings.TrimSpace(os.Getenv(defaultEnv)); defs != "" {
 		*banner = strings.Contains(defs, "banner")
@@ -105,9 +105,9 @@ func main() {
 		}
 	}
 
-	ns := []struct {
-		run bool
-		fn  func() error
+	notifyFuncs := []struct {
+		run    bool
+		notify func(notification) error
 	}{
 		{*banner, bannerNotify},
 		{*hipChat, hipChatNotify},
@@ -117,58 +117,69 @@ func main() {
 		{*slack, slackNotify},
 	}
 
-	for _, n := range ns {
-		if !n.run {
+	for _, nf := range notifyFuncs {
+		if !nf.run {
 			continue
 		}
 
-		if err := n.fn(); err != nil {
+		if err := nf.notify(n); err != nil {
 			log.Println(err)
 		}
 	}
 }
 
-func runUtility() {
+func newNotification(args []string) notification {
+	var n notification
+
+	util, err := runUtility(args)
+
+	var autoTitle bool
+	if userSet("t") || userSet("title") {
+		n.title = *title
+	} else {
+		n.title = util
+		autoTitle = true
+	}
+
+	if userSet("m") || userSet("message") {
+		n.message = *message
+	} else {
+		if err != nil {
+			n.failure = true
+			n.message = err.Error()
+
+			if autoTitle {
+				n.title = util + " failed"
+			}
+		} else {
+			n.message = "Done!"
+		}
+	}
+
+	return n
+}
+
+var run = func(c *exec.Cmd) error {
+	return c.Run()
+}
+
+func runUtility(args []string) (string, error) {
 	var cmd *exec.Cmd
 
-	args := flag.Args()
 	if len(args) < 1 {
-		return
-	}
-
-	var userTitle string
-	if userSet("t") || userSet("title") {
-		userTitle = flag.Lookup("title").Value.String()
-	}
-	var userMessage string
-	if userSet("m") || userSet("message") {
-		userMessage = flag.Lookup("message").Value.String()
+		return "noti", nil
 	}
 
 	cmd = exec.Command(args[0], args[1:]...)
-	*title = args[0]
-
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	err := cmd.Run()
-	if exerr, is := err.(*exec.ExitError); is {
-		if !exerr.Success() {
-			*title = *title + " failed"
-		}
-	}
-	if err != nil {
-		utilityFailed = true
-		*message = err.Error()
+	if err := run(cmd); err != nil {
+		return args[0], err
 	}
 
-	if userTitle != "" {
-		*title = userTitle
-	}
-	if userMessage != "" {
-		*message = userMessage
-	}
+	return args[0], nil
 }
 
 func userSet(target string) bool {

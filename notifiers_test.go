@@ -20,9 +20,10 @@ func TestPushbulletNotify(t *testing.T) {
 		pushbulletAPI = orig.url
 		os.Setenv(pushbulletTokEnv, orig.tok)
 	}()
+	n := notification{"title", "mesg", false}
 
 	os.Unsetenv(pushbulletTokEnv)
-	if err := pushbulletNotify(); err == nil {
+	if err := pushbulletNotify(n); err == nil {
 		t.Error("Missing access token.")
 	}
 
@@ -32,7 +33,7 @@ func TestPushbulletNotify(t *testing.T) {
 		hitServer = true
 
 		if r.Method != "POST" {
-			t.Error("HTTP method should be POST")
+			t.Error("HTTP method should be POST.")
 		}
 
 		if r.Header.Get("Access-Token") == "" {
@@ -54,7 +55,7 @@ func TestPushbulletNotify(t *testing.T) {
 	defer ts.Close()
 
 	pushbulletAPI = ts.URL
-	if err := pushbulletNotify(); err != nil {
+	if err := pushbulletNotify(n); err != nil {
 		t.Error(err)
 	}
 
@@ -78,14 +79,15 @@ func TestSlackNotify(t *testing.T) {
 		os.Setenv(slackTokEnv, orig.tok)
 		os.Setenv(slackDestEnv, orig.dest)
 	}()
+	n := notification{"title", "mesg", false}
 
 	os.Unsetenv(slackTokEnv)
-	if err := slackNotify(); err == nil {
+	if err := slackNotify(n); err == nil {
 		t.Error("Missing access token.")
 	}
 
 	os.Unsetenv(slackDestEnv)
-	if err := slackNotify(); err == nil {
+	if err := slackNotify(n); err == nil {
 		t.Error("Missing destination.")
 	}
 
@@ -97,7 +99,7 @@ func TestSlackNotify(t *testing.T) {
 		hitServer = true
 
 		if r.Method != "POST" {
-			t.Error("HTTP method should be POST")
+			t.Error("HTTP method should be POST.")
 		}
 
 		if r.FormValue("token") == "" {
@@ -110,7 +112,7 @@ func TestSlackNotify(t *testing.T) {
 	defer ts.Close()
 
 	slackAPI = ts.URL
-	if err := slackNotify(); err != nil {
+	if err := slackNotify(n); err != nil {
 		t.Error(err)
 	}
 
@@ -134,14 +136,15 @@ func TestHipChatNotify(t *testing.T) {
 		os.Setenv(hipChatTokEnv, orig.tok)
 		os.Setenv(hipChatDestEnv, orig.dest)
 	}()
+	n := notification{"title", "mesg", false}
 
 	os.Unsetenv(hipChatTokEnv)
-	if err := hipChatNotify(); err == nil {
+	if err := hipChatNotify(n); err == nil {
 		t.Error("Missing access token.")
 	}
 
 	os.Unsetenv(hipChatDestEnv)
-	if err := hipChatNotify(); err == nil {
+	if err := hipChatNotify(n); err == nil {
 		t.Error("Missing destination.")
 	}
 
@@ -152,7 +155,7 @@ func TestHipChatNotify(t *testing.T) {
 		hitServer = true
 
 		if r.Method != "POST" {
-			t.Error("HTTP method should be POST")
+			t.Error("HTTP method should be POST.")
 		}
 
 		if r.Header.Get("Authorization") == "" {
@@ -178,7 +181,7 @@ func TestHipChatNotify(t *testing.T) {
 	// is at ts.URL.
 	os.Setenv(hipChatDestEnv, ts.URL)
 	hipChatAPI = "%s"
-	if err := hipChatNotify(); err != nil {
+	if err := hipChatNotify(n); err != nil {
 		t.Error(err)
 	}
 
@@ -202,14 +205,15 @@ func TestPushoverNotify(t *testing.T) {
 		os.Setenv(pushoverTokEnv, orig.tok)
 		os.Setenv(pushoverDestEnv, orig.dest)
 	}()
+	n := notification{"title", "mesg", false}
 
 	os.Unsetenv(pushoverTokEnv)
-	if err := pushoverNotify(); err == nil {
+	if err := pushoverNotify(n); err == nil {
 		t.Error("Missing access token.")
 	}
 
 	os.Unsetenv(pushoverDestEnv)
-	if err := pushoverNotify(); err == nil {
+	if err := pushoverNotify(n); err == nil {
 		t.Error("Missing destination.")
 	}
 
@@ -221,7 +225,7 @@ func TestPushoverNotify(t *testing.T) {
 		hitServer = true
 
 		if r.Method != "POST" {
-			t.Error("HTTP method should be POST")
+			t.Error("HTTP method should be POST.")
 		}
 
 		if r.FormValue("token") == "" {
@@ -234,7 +238,7 @@ func TestPushoverNotify(t *testing.T) {
 	defer ts.Close()
 
 	pushoverAPI = ts.URL
-	if err := pushoverNotify(); err != nil {
+	if err := pushoverNotify(n); err != nil {
 		t.Error(err)
 	}
 

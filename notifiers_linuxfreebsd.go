@@ -26,13 +26,13 @@ func init() {
 }
 
 // bannerNotify triggers a Notify notification.
-func bannerNotify() error {
+func bannerNotify(n notification) error {
 	_, err := exec.LookPath("notify-send")
 	if err != nil {
 		return errors.New("Install 'notify-send' and try again")
 	}
 
-	cmd := exec.Command("notify-send", *title, *message)
+	cmd := exec.Command("notify-send", n.title, n.message)
 	if err = cmd.Run(); err != nil {
 		return err
 	}
@@ -41,7 +41,7 @@ func bannerNotify() error {
 }
 
 // speechNotify triggers an eSpeak notification.
-func speechNotify() error {
+func speechNotify(n notification) error {
 	_, err := exec.LookPath("espeak")
 	if err != nil {
 		buf := new(bytes.Buffer)
@@ -60,10 +60,9 @@ func speechNotify() error {
 	if voice == "" {
 		voice = "english-us"
 	}
+	text := fmt.Sprintf("%s %s", n.title, n.message)
 
-	*message = fmt.Sprintf("%s %s", *title, *message)
-
-	cmd := exec.Command("espeak", "-v", voice, "--", *message)
+	cmd := exec.Command("espeak", "-v", voice, "--", text)
 	if err = cmd.Run(); err != nil {
 		return err
 	}
