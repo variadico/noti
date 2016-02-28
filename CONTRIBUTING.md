@@ -18,24 +18,21 @@ bug report, use the bug tag; if it's a feature request use the enhancement tag.
 Wow. Thanks! You're awesome!
 
 But before spending hours writing some code, make sure you voice your proposal
-with an issue. After you get the green light there, then you can start coding
-away!
+with an issue. That way we can share background that could impact your proposal.
+After you get the green light there, then you can start coding away!
 
 If you want to help, but aren't sure how, check out [bug reports] or [help
 wanted] issues.
 
-### Code Quality
+### Submission checklist
 
-Before submitting a pull request, make sure you run these tools on your code.
-Clean up any warnings or errors these tools generate.
+* Branch off [dev]
+* Rebase before submitting
+* Run [qa.sh]
 
-* `gofmt`
-* `golint`
-* `go vet`
-* `gofmt -s *.go`
+Thanks for helping make Noti better!
 
-After that, submit a pull request on GitHub! Thanks for helping make Noti
-better!
-
+[dev]: https://github.com/variadico/noti/tree/dev
+[qa.sh]: https://github.com/variadico/noti/blob/master/qa.sh
 [bug reports]: https://github.com/variadico/noti/issues?q=is%3Aopen+is%3Aissue+label%3Abug
 [help wanted]: https://github.com/variadico/noti/issues?utf8=%E2%9C%93&q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+
