@@ -1,5 +1,7 @@
 # noti
 
+[![Join the chat at https://gitter.im/variadico/noti](https://badges.gitter.im/variadico/noti.svg)](https://gitter.im/variadico/noti?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Trigger notifications when a process completes.
 
 Never sit and wait for some long-running process to finish! `noti` will alert
