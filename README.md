@@ -1,5 +1,7 @@
 # noti
 
+[![Gitter]](https://gitter.im/variadico/noti?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Trigger notifications when a process completes.
 
 Never sit and wait for some long-running process to finish! `noti` will alert
@@ -143,3 +145,4 @@ clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 [Wiki]: https://github.com/variadico/noti/wiki
 [screenshots]: https://github.com/variadico/noti/tree/master/.github/screenshots
 [releases page]: https://github.com/variadico/noti/releases
+[Gitter]: https://badges.gitter.im/variadico/noti.svg
