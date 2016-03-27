@@ -1,6 +1,6 @@
 // +build darwin
 
-package main
+package banner
 
 /*
 #cgo CFLAGS: -x objective-c
@@ -63,81 +63,40 @@ void BannerNotify(const char* title, const char* message, const char* sound) {
 }
 */
 import "C"
-
 import (
-	"flag"
-	"fmt"
-	"os"
-	"os/exec"
 	"unsafe"
+
+	"github.com/variadico/noti"
 )
 
 const (
-	specificPart = `
-    NOTI_SOUND
-        Banner success sound. Default is Ping. Possible options are Basso, Blow,
-        Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
-        Submarine, Tink. See /System/Library/Sounds for available sounds.
-    NOTI_SOUND_FAIL
-        Banner failure sound. Default is Basso. Possible options are Basso,
-        Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
-        Submarine, Tink. See /System/Library/Sounds for available sounds.
-    NOTI_VOICE
-        Name of voice used for speech notifications. See "say -v ?" for
-        available voices.
-
-BUGS
-    Banner notifications don't fire in tmux.
-
-    Clicking on banner notifications causes unexpected behavior.`
+	soundEnv     = "NOTI_SOUND"
+	soundFailEnv = "NOTI_SOUND_FAIL"
 )
 
-func init() {
-	flag.Usage = func() {
-		fmt.Printf(manual, specificPart)
-	}
-}
-
 // bannerNotify triggers an NSUserNotification.
-func bannerNotify(n notification) error {
+func Notify(n noti.Notification) error {
 	var sound string
-	if n.failure {
-		sound = os.Getenv(soundFailEnv)
+	if n.Failure {
+		sound = n.Config.Get(soundFailEnv)
 		if sound == "" {
 			sound = "Basso"
 		}
 	} else {
-		sound = os.Getenv(soundEnv)
+		sound = n.Config.Get(soundEnv)
 		if sound == "" {
 			sound = "Ping"
 		}
 	}
 
-	t := C.CString(n.title)
-	m := C.CString(n.message)
+	t := C.CString(n.Title)
+	m := C.CString(n.Message)
 	s := C.CString(sound)
 	defer C.free(unsafe.Pointer(t))
 	defer C.free(unsafe.Pointer(m))
 	defer C.free(unsafe.Pointer(s))
 
 	C.BannerNotify(t, m, s)
-
-	return nil
-}
-
-// speechNotify triggers an NSSpeechSynthesizer notification.
-func speechNotify(n notification) error {
-	voice := os.Getenv(voiceEnv)
-	if voice == "" {
-		voice = "Alex"
-	}
-	text := fmt.Sprintf("%s %s", n.title, n.message)
-
-	cmd := exec.Command("say", "-v", voice, text)
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("Speech: %s", err)
-	}
 
 	return nil
 }
