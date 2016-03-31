@@ -10,17 +10,14 @@ import (
 
 func TestPushbulletNotify(t *testing.T) {
 	orig := struct {
-		url string
 		tok string
 	}{
-		url: pushbulletAPI,
 		tok: os.Getenv(pushbulletTokEnv),
 	}
 	defer func() {
-		pushbulletAPI = orig.url
 		os.Setenv(pushbulletTokEnv, orig.tok)
 	}()
-	n := notification{"title", "mesg", false}
+	n := notification{"title", "mesg", false, pushbulletAPI}
 
 	os.Unsetenv(pushbulletTokEnv)
 	if err := pushbulletNotify(n); err == nil {
@@ -54,7 +51,7 @@ func TestPushbulletNotify(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	pushbulletAPI = ts.URL
+	n.api = ts.URL
 	if err := pushbulletNotify(n); err != nil {
 		t.Error(err)
 	}
@@ -66,20 +63,17 @@ func TestPushbulletNotify(t *testing.T) {
 
 func TestSlackNotify(t *testing.T) {
 	orig := struct {
-		url  string
 		tok  string
 		dest string
 	}{
-		url:  slackAPI,
 		tok:  os.Getenv(slackTokEnv),
 		dest: os.Getenv(slackDestEnv),
 	}
 	defer func() {
-		slackAPI = orig.url
 		os.Setenv(slackTokEnv, orig.tok)
 		os.Setenv(slackDestEnv, orig.dest)
 	}()
-	n := notification{"title", "mesg", false}
+	n := notification{"title", "mesg", false, slackAPI}
 
 	os.Unsetenv(slackTokEnv)
 	if err := slackNotify(n); err == nil {
@@ -111,7 +105,7 @@ func TestSlackNotify(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	slackAPI = ts.URL
+	n.api = ts.URL
 	if err := slackNotify(n); err != nil {
 		t.Error(err)
 	}
@@ -123,20 +117,17 @@ func TestSlackNotify(t *testing.T) {
 
 func TestHipChatNotify(t *testing.T) {
 	orig := struct {
-		url  string
 		tok  string
 		dest string
 	}{
-		url:  hipChatAPI,
 		tok:  os.Getenv(hipChatTokEnv),
 		dest: os.Getenv(hipChatDestEnv),
 	}
 	defer func() {
-		hipChatAPI = orig.url
 		os.Setenv(hipChatTokEnv, orig.tok)
 		os.Setenv(hipChatDestEnv, orig.dest)
 	}()
-	n := notification{"title", "mesg", false}
+	n := notification{"title", "mesg", false, hipChatAPI}
 
 	os.Unsetenv(hipChatTokEnv)
 	if err := hipChatNotify(n); err == nil {
@@ -180,7 +171,7 @@ func TestHipChatNotify(t *testing.T) {
 	// destination env var into the URL. This just pretends that HipChat Room
 	// is at ts.URL.
 	os.Setenv(hipChatDestEnv, ts.URL)
-	hipChatAPI = "%s"
+	n.api = "%s"
 	if err := hipChatNotify(n); err != nil {
 		t.Error(err)
 	}
@@ -192,20 +183,17 @@ func TestHipChatNotify(t *testing.T) {
 
 func TestPushoverNotify(t *testing.T) {
 	orig := struct {
-		url  string
 		tok  string
 		dest string
 	}{
-		url:  pushoverAPI,
 		tok:  os.Getenv(pushoverTokEnv),
 		dest: os.Getenv(pushoverDestEnv),
 	}
 	defer func() {
-		slackAPI = orig.url
 		os.Setenv(pushoverTokEnv, orig.tok)
 		os.Setenv(pushoverDestEnv, orig.dest)
 	}()
-	n := notification{"title", "mesg", false}
+	n := notification{"title", "mesg", false, pushoverAPI}
 
 	os.Unsetenv(pushoverTokEnv)
 	if err := pushoverNotify(n); err == nil {
@@ -237,7 +225,7 @@ func TestPushoverNotify(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	pushoverAPI = ts.URL
+	n.api = ts.URL
 	if err := pushoverNotify(n); err != nil {
 		t.Error(err)
 	}

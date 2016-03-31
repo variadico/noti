@@ -15,9 +15,10 @@ type notification struct {
 	title   string
 	message string
 	failure bool
+	api     string
 }
 
-var (
+const (
 	pushbulletAPI = "https://api.pushbullet.com/v2/pushes"
 	slackAPI      = "https://slack.com/api/chat.postMessage"
 	hipChatAPI    = "https://api.hipchat.com/v2/room/%s/notification"
@@ -34,7 +35,7 @@ func pushbulletNotify(n notification) error {
 		`{"body":%q,"title":%q,"type":"note"}`, n.message, n.title,
 	)))
 
-	req, err := http.NewRequest("POST", pushbulletAPI, payload)
+	req, err := http.NewRequest("POST", n.api, payload)
 	if err != nil {
 		return err
 	}
@@ -68,7 +69,7 @@ func slackNotify(n notification) error {
 	vals.Set("channel", dest)
 	vals.Set("icon_emoji", ":rocket:")
 
-	resp, err := webClient.PostForm(slackAPI, vals)
+	resp, err := webClient.PostForm(n.api, vals)
 	if err != nil {
 		return err
 	}
@@ -108,7 +109,7 @@ func hipChatNotify(n notification) error {
 		fmt.Sprintf("%s\n%s", n.title, n.message),
 	)))
 
-	req, err := http.NewRequest("POST", fmt.Sprintf(hipChatAPI, dest), payload)
+	req, err := http.NewRequest("POST", fmt.Sprintf(n.api, dest), payload)
 	if err != nil {
 		return err
 	}
@@ -160,7 +161,7 @@ func pushoverNotify(n notification) error {
 	vals.Set("message", n.message)
 	vals.Set("title", n.title)
 
-	resp, err := webClient.PostForm(pushoverAPI, vals)
+	resp, err := webClient.PostForm(n.api, vals)
 	if err != nil {
 		return err
 	}

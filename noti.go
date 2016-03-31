@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	version = "2.1.1"
+	version = "2.1.2-dev"
 
 	defaultEnv       = "NOTI_DEFAULT"
 	hipChatDestEnv   = "NOTI_HIPCHAT_DEST"
@@ -107,20 +107,23 @@ func main() {
 
 	notifyFuncs := []struct {
 		run    bool
+		api    string
 		notify func(notification) error
 	}{
-		{*banner, bannerNotify},
-		{*hipChat, hipChatNotify},
-		{*pushbullet, pushbulletNotify},
-		{*pushover, pushoverNotify},
-		{*speech, speechNotify},
-		{*slack, slackNotify},
+		{*banner, "", bannerNotify},
+		{*hipChat, hipChatAPI, hipChatNotify},
+		{*pushbullet, pushbulletAPI, pushbulletNotify},
+		{*pushover, pushoverAPI, pushoverNotify},
+		{*speech, "", speechNotify},
+		{*slack, slackAPI, slackNotify},
 	}
 
 	for _, nf := range notifyFuncs {
 		if !nf.run {
 			continue
 		}
+
+		n.api = nf.api
 
 		if err := nf.notify(n); err != nil {
 			log.Println(err)

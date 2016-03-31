@@ -32,9 +32,9 @@ func TestNewNotification(t *testing.T) {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	flag.CommandLine.Parse([]string{})
 	tests = tc{
-		{[]string{}, notification{"noti", "Done!", false}},
-		{[]string{"ls"}, notification{"ls", "Done!", false}},
-		{[]string{"ls", "-al"}, notification{"ls", "Done!", false}},
+		{[]string{}, notification{"noti", "Done!", false, ""}},
+		{[]string{"ls"}, notification{"ls", "Done!", false, ""}},
+		{[]string{"ls", "-al"}, notification{"ls", "Done!", false, ""}},
 	}
 	for i, test := range tests {
 		n := newNotification(test.input)
@@ -47,9 +47,9 @@ func TestNewNotification(t *testing.T) {
 	}
 
 	tests = tc{
-		{[]string{}, notification{"fu", "Done!", false}},
-		{[]string{"ls"}, notification{"fu", "Done!", false}},
-		{[]string{"ls", "-al"}, notification{"fu", "Done!", false}},
+		{[]string{}, notification{"fu", "Done!", false, ""}},
+		{[]string{"ls"}, notification{"fu", "Done!", false, ""}},
+		{[]string{"ls", "-al"}, notification{"fu", "Done!", false, ""}},
 	}
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	title = flag.String("t", "", "")
@@ -78,9 +78,9 @@ func TestNewNotification(t *testing.T) {
 	}
 
 	tests = tc{
-		{[]string{}, notification{"noti", "fa", false}},
-		{[]string{"ls"}, notification{"ls", "fa", false}},
-		{[]string{"ls", "-al"}, notification{"ls", "fa", false}},
+		{[]string{}, notification{"noti", "fa", false, ""}},
+		{[]string{"ls"}, notification{"ls", "fa", false, ""}},
+		{[]string{"ls", "-al"}, notification{"ls", "fa", false, ""}},
 	}
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	message = flag.String("m", "", "")
