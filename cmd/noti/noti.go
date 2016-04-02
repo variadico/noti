@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"strings"
@@ -20,7 +22,7 @@ import (
 
 const (
 	defaultEnv = "NOTI_DEFAULT"
-	version    = "2.2.0-dev"
+	version    = "v2.2.0-dev"
 )
 
 func main() {
@@ -57,7 +59,8 @@ func main() {
 	flag.Parse()
 
 	if *showVersion {
-		fmt.Println("noti version", version)
+		fmt.Println("noti", version)
+		checkForUpdates()
 		return
 	}
 	if *showHelp {
@@ -105,6 +108,33 @@ func main() {
 	if n.Failure {
 		os.Exit(1)
 	}
+}
+
+func checkForUpdates() error {
+	// Draft releases and prereleases are not returned by this endpoint.
+	const releaseAPI = "https://api.github.com/repos/variadico/noti/releases/latest"
+	webClient := &http.Client{Timeout: 30 * time.Second}
+
+	resp, err := webClient.Get(releaseAPI)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	var r struct {
+		HTMLURL string `json:"html_url"`
+		TagName string `json:"tag_name"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+		return err
+	}
+
+	fmt.Println("latest:", r.TagName)
+	if r.TagName != version {
+		fmt.Println("download:", r.HTMLURL)
+	}
+
+	return nil
 }
 
 // setDefaultNotifications read the user's config and set their defaults on a
