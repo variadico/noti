@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func watchPID(pid int, d time.Duration) error {
+func pollPID(pid int, interval time.Duration) error {
 	proc, err := os.FindProcess(pid)
 	if err != nil {
 		return err
@@ -21,7 +21,7 @@ func watchPID(pid int, d time.Duration) error {
 			break
 		}
 
-		time.Sleep(d)
+		time.Sleep(interval)
 	}
 
 	return nil

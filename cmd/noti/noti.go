@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/variadico/noti"
 	"github.com/variadico/noti/banner"
@@ -29,6 +30,7 @@ func main() {
 	message := flag.String("m", "", "")
 	showVersion := flag.Bool("v", false, "")
 	showHelp := flag.Bool("h", false, "")
+	pid := flag.Int("w", -1, "")
 
 	// Notifications
 	bannerNoti := flag.Bool("b", true, "")
@@ -40,6 +42,7 @@ func main() {
 
 	flag.StringVar(title, "title", "", "")
 	flag.StringVar(message, "message", "", "")
+	flag.IntVar(pid, "pwait", -1, "")
 	flag.BoolVar(showVersion, "version", false, "")
 	flag.BoolVar(showHelp, "help", false, "")
 
@@ -64,13 +67,20 @@ func main() {
 
 	env := noti.OSEnv{}
 	setDefaultNotifications(flag.CommandLine, env)
-	n := newNotification(flag.CommandLine)
+
+	var n noti.Notification
+	if *pid == -1 {
+		n = utilityNotification(flag.CommandLine)
+	} else {
+		n = pwaitNotification(flag.CommandLine, *pid)
+	}
+
 	n.Config = env
 
 	notis := []struct {
-		run    bool
-		api    string
-		notify func(noti.Notification) error
+		trigger bool
+		api     string
+		notify  func(noti.Notification) error
 	}{
 		{*bannerNoti, "", banner.Notify},
 		{*hipChatNoti, hipchat.API, hipchat.Notify},
@@ -81,7 +91,7 @@ func main() {
 	}
 
 	for _, nt := range notis {
-		if !nt.run {
+		if !nt.trigger {
 			continue
 		}
 
@@ -114,7 +124,17 @@ func setDefaultNotifications(fl *flag.FlagSet, env noti.EnvGetter) {
 	fl.Set("slack", fmt.Sprintf("%t", has(defs, "slack")))
 }
 
-func newNotification(fl *flag.FlagSet) noti.Notification {
+func pwaitNotification(fl *flag.FlagSet, pid int) noti.Notification {
+	err := pollPID(pid, 1*time.Second)
+
+	return noti.Notification{
+		Title:   notiTitle(fl, "noti", err),
+		Message: notiMessage(fl, err),
+		Failure: (err != nil),
+	}
+}
+
+func utilityNotification(fl *flag.FlagSet) noti.Notification {
 	util, err := runUtility(fl.Args())
 
 	return noti.Notification{
