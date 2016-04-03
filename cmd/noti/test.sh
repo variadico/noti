@@ -1,34 +1,21 @@
 #!/bin/bash
-set -euo pipefail
-set -x
+set -xuo pipefail
 
-TITLE="test title"
-MESG="test message"
+go install
+noti -v
 
 noti
 sleep 3
 
-noti -t "$TITLE"
-sleep 3
-
-noti -m "$MESG"
-sleep 3
-
-noti -t "$TITLE" -m "$MESG" ls
-sleep 3
-
-noti -b=0 -speech ls
-sleep 3
-
-export NOTI_DEFAULT="slack"
-noti ls
-sleep 3
-
-unset NOTI_DEFAULT
-export NOTI_SOUND="Hero"
-noti ls
+noti ls -al
 sleep 3
 
 export NOTI_SOUND_FAIL="Funk"
 noti _badcmd
 sleep 3
+unset NOTI_SOUND_FAIL
+
+export NOTI_DEFAULT="banner speech"
+noti -t "hello" -m "world"
+sleep 3
+unset NOTI_DEFAULT
