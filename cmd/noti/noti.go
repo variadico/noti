@@ -44,7 +44,7 @@ func main() {
 
 	flag.StringVar(title, "title", "", "")
 	flag.StringVar(message, "message", "", "")
-	flag.IntVar(pid, "pwait", -1, "")
+	flag.IntVar(pid, "pwatch", -1, "")
 	flag.BoolVar(showVersion, "version", false, "")
 	flag.BoolVar(showHelp, "help", false, "")
 
@@ -75,7 +75,7 @@ func main() {
 	if *pid == -1 {
 		n = utilityNotification(flag.CommandLine)
 	} else {
-		n = pwaitNotification(flag.CommandLine, *pid)
+		n = pwatchNotification(flag.CommandLine, *pid)
 	}
 
 	n.Config = env
@@ -154,7 +154,7 @@ func setDefaultNotifications(fl *flag.FlagSet, env noti.EnvGetter) {
 	fl.Set("slack", fmt.Sprintf("%t", has(defs, "slack")))
 }
 
-func pwaitNotification(fl *flag.FlagSet, pid int) noti.Params {
+func pwatchNotification(fl *flag.FlagSet, pid int) noti.Params {
 	err := pollPID(pid, 1*time.Second)
 
 	return noti.Params{

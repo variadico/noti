@@ -17,7 +17,7 @@ OPTIONS
         Notification title. Default is utility name.
     -m <string>, -message <string>
         Notification message. Default is "Done!"
-    -w <pid>, -pwait <pid>
+    -w <pid>, -pwatch <pid>
         Trigger notification after PID disappears.
 
     -b, -banner
