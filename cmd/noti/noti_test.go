@@ -57,14 +57,14 @@ func TestSetDefaultNotifications(t *testing.T) {
 	}
 }
 
-func TestNewNotification(t *testing.T) {
+func TestUtilityNotification(t *testing.T) {
 	fl := &flag.FlagSet{Usage: func() {}}
 	fl.SetOutput(ioutil.Discard)
 	if err := fl.Parse([]string{}); err != nil {
 		t.Fatal(err)
 	}
 
-	n := newNotification(fl)
+	n := utilityNotification(fl)
 	want := noti.Notification{
 		Title:   "noti",
 		Message: "Done!",
@@ -78,7 +78,7 @@ func TestNewNotification(t *testing.T) {
 	}
 }
 
-func TestNotificationMessage(t *testing.T) {
+func TestNotiMessage(t *testing.T) {
 	cases := []struct {
 		flags *flag.FlagSet
 		args  []string
@@ -116,7 +116,7 @@ func TestNotificationMessage(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		title := notificationMessage(c.flags, c.err)
+		title := notiMessage(c.flags, c.err)
 		if title != c.want {
 			t.Error(i, "unexpected result")
 			t.Errorf(" got: %s", title)
@@ -125,7 +125,7 @@ func TestNotificationMessage(t *testing.T) {
 	}
 }
 
-func TestNotificationTitle(t *testing.T) {
+func TestNotiTitle(t *testing.T) {
 	cases := []struct {
 		flags *flag.FlagSet
 		args  []string
@@ -174,7 +174,7 @@ func TestNotificationTitle(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		title := notificationTitle(c.flags, c.util, c.err)
+		title := notiTitle(c.flags, c.util, c.err)
 		if title != c.want {
 			t.Error(i, "unexpected result")
 			t.Errorf(" got: %s", title)
