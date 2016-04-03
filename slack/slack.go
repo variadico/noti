@@ -14,6 +14,7 @@ const (
 	tokEnv  = "NOTI_SLACK_TOK"
 	destEnv = "NOTI_SLACK_DEST"
 
+	// API is the Slack API endpoint.
 	API = "https://slack.com/api/chat.postMessage"
 )
 
@@ -62,6 +63,7 @@ func envConfig(env noti.EnvGetter) (configuration, error) {
 	}, nil
 }
 
+// Notify sends a message request to the Slack API.
 func Notify(n noti.Notification) error {
 	config, err := envConfig(n.Config)
 	if err != nil {

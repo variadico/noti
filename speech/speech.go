@@ -12,7 +12,7 @@ import (
 	"github.com/variadico/noti"
 )
 
-// speechNotify triggers an eSpeak notification.
+// Notify speaks a notification using eSpeak.
 func Notify(n noti.Notification) error {
 	_, err := exec.LookPath("espeak")
 	if err != nil {

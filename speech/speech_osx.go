@@ -10,7 +10,7 @@ import (
 	"github.com/variadico/noti"
 )
 
-// speechNotify triggers an NSSpeechSynthesizer notification.
+// Notify speaks a notification using NSSpeechSynthesizer.
 func Notify(n noti.Notification) error {
 	voice := n.Config.Get(voiceEnv)
 	if voice == "" {

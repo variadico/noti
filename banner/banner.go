@@ -11,7 +11,7 @@ import (
 	"github.com/variadico/noti"
 )
 
-// bannerNotify triggers a Notify notification.
+// Notify displays a libnotify notification.
 func Notify(n noti.Notification) error {
 	_, err := exec.LookPath("notify-send")
 	if err != nil {

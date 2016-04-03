@@ -74,7 +74,7 @@ const (
 	soundFailEnv = "NOTI_SOUND_FAIL"
 )
 
-// bannerNotify triggers an NSUserNotification.
+// Notify displays a NSUserNotification.
 func Notify(n noti.Notification) error {
 	var sound string
 	if n.Failure {

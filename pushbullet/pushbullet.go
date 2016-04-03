@@ -13,6 +13,7 @@ import (
 const (
 	tokEnv = "NOTI_PUSHBULLET_TOK"
 
+	// API is the Pushbullet API endpoint.
 	API = "https://api.pushbullet.com/v2/pushes"
 )
 
@@ -67,6 +68,7 @@ func envConfig(env noti.EnvGetter) (configuration, error) {
 	}, nil
 }
 
+// Notify sends a push request to the Pushbullet API.
 func Notify(n noti.Notification) error {
 	config, err := envConfig(n.Config)
 	if err != nil {

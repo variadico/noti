@@ -15,6 +15,7 @@ const (
 	tokEnv  = "NOTI_PUSHOVER_TOK"
 	destEnv = "NOTI_PUSHOVER_DEST"
 
+	// API is the Pushover API endpoint.
 	API = "https://api.pushover.net/1/messages.json"
 )
 
@@ -53,6 +54,7 @@ func envConfig(env noti.EnvGetter) (configuration, error) {
 	}, nil
 }
 
+// Notify sends a push request to the Pushover API.
 func Notify(n noti.Notification) error {
 	config, err := envConfig(n.Config)
 	if err != nil {

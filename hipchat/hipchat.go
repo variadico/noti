@@ -15,6 +15,7 @@ const (
 	destEnv = "NOTI_HIPCHAT_DEST"
 	tokEnv  = "NOTI_HIPCHAT_TOK"
 
+	// API is the HipChat API endpoint.
 	API = "https://api.hipchat.com/v2/room/%s/notification"
 )
 
@@ -58,6 +59,7 @@ func envConfig(env noti.EnvGetter) (configuration, error) {
 	}, nil
 }
 
+// Notify sends a message request to the HipChat API.
 func Notify(n noti.Notification) error {
 	config, err := envConfig(n.Config)
 	if err != nil {
