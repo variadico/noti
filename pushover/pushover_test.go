@@ -59,7 +59,7 @@ func TestEnvConfig(t *testing.T) {
 }
 
 func TestNotify(t *testing.T) {
-	n := noti.Notification{
+	n := noti.Params{
 		Title:   "title",
 		Message: "mesg",
 		API:     API,

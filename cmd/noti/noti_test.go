@@ -65,7 +65,7 @@ func TestUtilityNotification(t *testing.T) {
 	}
 
 	n := utilityNotification(fl)
-	want := noti.Notification{
+	want := noti.Params{
 		Title:   "noti",
 		Message: "Done!",
 		Failure: false,

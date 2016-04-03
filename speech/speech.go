@@ -13,7 +13,7 @@ import (
 )
 
 // Notify speaks a notification using eSpeak.
-func Notify(n noti.Notification) error {
+func Notify(n noti.Params) error {
 	_, err := exec.LookPath("espeak")
 	if err != nil {
 		buf := new(bytes.Buffer)

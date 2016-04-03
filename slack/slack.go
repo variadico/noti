@@ -64,7 +64,7 @@ func envConfig(env noti.EnvGetter) (configuration, error) {
 }
 
 // Notify sends a message request to the Slack API.
-func Notify(n noti.Notification) error {
+func Notify(n noti.Params) error {
 	config, err := envConfig(n.Config)
 	if err != nil {
 		return err

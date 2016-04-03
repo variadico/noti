@@ -75,7 +75,7 @@ const (
 )
 
 // Notify displays a NSUserNotification.
-func Notify(n noti.Notification) error {
+func Notify(n noti.Params) error {
 	var sound string
 	if n.Failure {
 		sound = n.Config.Get(soundFailEnv)

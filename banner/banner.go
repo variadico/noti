@@ -12,7 +12,7 @@ import (
 )
 
 // Notify displays a libnotify notification.
-func Notify(n noti.Notification) error {
+func Notify(n noti.Params) error {
 	_, err := exec.LookPath("notify-send")
 	if err != nil {
 		return errors.New("Install 'notify-send' and try again")

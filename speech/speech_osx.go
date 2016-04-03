@@ -11,7 +11,7 @@ import (
 )
 
 // Notify speaks a notification using NSSpeechSynthesizer.
-func Notify(n noti.Notification) error {
+func Notify(n noti.Params) error {
 	voice := n.Config.Get(voiceEnv)
 	if voice == "" {
 		voice = "Alex"

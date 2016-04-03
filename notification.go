@@ -1,8 +1,7 @@
 package noti
 
-// Notification is a noti notification. It contains information that's used in a
-// notification's Notify function.
-type Notification struct {
+// Params are parameters that are passed to a notification's Notify function.
+type Params struct {
 	Title   string
 	Message string
 

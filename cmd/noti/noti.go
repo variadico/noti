@@ -71,7 +71,7 @@ func main() {
 	env := noti.OSEnv{}
 	setDefaultNotifications(flag.CommandLine, env)
 
-	var n noti.Notification
+	var n noti.Params
 	if *pid == -1 {
 		n = utilityNotification(flag.CommandLine)
 	} else {
@@ -83,7 +83,7 @@ func main() {
 	notis := []struct {
 		trigger bool
 		api     string
-		notify  func(noti.Notification) error
+		notify  func(noti.Params) error
 	}{
 		{*bannerNoti, "", banner.Notify},
 		{*hipChatNoti, hipchat.API, hipchat.Notify},
@@ -154,20 +154,20 @@ func setDefaultNotifications(fl *flag.FlagSet, env noti.EnvGetter) {
 	fl.Set("slack", fmt.Sprintf("%t", has(defs, "slack")))
 }
 
-func pwaitNotification(fl *flag.FlagSet, pid int) noti.Notification {
+func pwaitNotification(fl *flag.FlagSet, pid int) noti.Params {
 	err := pollPID(pid, 1*time.Second)
 
-	return noti.Notification{
+	return noti.Params{
 		Title:   notiTitle(fl, "noti", err),
 		Message: notiMessage(fl, err),
 		Failure: (err != nil),
 	}
 }
 
-func utilityNotification(fl *flag.FlagSet) noti.Notification {
+func utilityNotification(fl *flag.FlagSet) noti.Params {
 	util, err := runUtility(fl.Args())
 
-	return noti.Notification{
+	return noti.Params{
 		Title:   notiTitle(fl, util, err),
 		Message: notiMessage(fl, err),
 		Failure: (err != nil),
