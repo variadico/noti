@@ -5,6 +5,10 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## Added
+* `-pwatch` flag to trigger notification after PID disappears.
+* Check for updates during `-v` flag.
+
 ## [2.1.1]
 
 ## Added

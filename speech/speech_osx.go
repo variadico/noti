@@ -21,7 +21,7 @@ func Notify(n noti.Params) error {
 	cmd := exec.Command("say", "-v", voice, text)
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("Speech: %s", err)
+		return fmt.Errorf("speech: %s", err)
 	}
 
 	return nil

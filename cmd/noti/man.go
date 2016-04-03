@@ -1,5 +1,11 @@
 package main
 
+import (
+	"flag"
+	"fmt"
+	"runtime"
+)
+
 const manual = `NAME
      noti - trigger notifications when a process completes
 
@@ -7,10 +13,12 @@ SYNOPSIS
      noti [options] [utility [args...]]
 
 OPTIONS
-    -t, -title
+    -t <string>, -title <string>
         Notification title. Default is utility name.
-    -m, -message
+    -m <string>, -message <string>
         Notification message. Default is "Done!"
+    -w <pid>, -pwait <pid>
+        Trigger notification after PID disappears.
 
     -b, -banner
         Trigger a banner notification. Default is true. To disable this
@@ -67,3 +75,33 @@ EXAMPLES
     You can also add noti after a command, in case you forgot at the beginning.
         clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 `
+
+const osxManual = `
+    NOTI_SOUND
+        Banner success sound. Default is Ping. Possible options are Basso, Blow,
+        Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
+        Submarine, Tink. See /System/Library/Sounds for available sounds.
+    NOTI_SOUND_FAIL
+        Banner failure sound. Default is Basso. Possible options are Basso,
+        Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi,
+        Submarine, Tink. See /System/Library/Sounds for available sounds.
+    NOTI_VOICE
+        Name of voice used for speech notifications. See "say -v ?" for
+        available voices.
+BUGS
+    Banner notifications don't fire in tmux.
+    Clicking on banner notifications causes unexpected behavior.`
+
+const linuxFreeBSDManual = `
+    NOTI_VOICE
+        Name of voice used for speech notifications. See "espeak --voices" for
+        available voices.`
+
+func init() {
+	switch runtime.GOOS {
+	case "darwin":
+		flag.Usage = func() { fmt.Printf(manual, osxManual) }
+	case "linux", "freebsd":
+		flag.Usage = func() { fmt.Printf(manual, linuxFreeBSDManual) }
+	}
+}

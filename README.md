@@ -13,10 +13,16 @@ constantly checking the terminal.
 ## Types
 
 ### Desktop
+
+Supported on OS X, Linux, and FreeBSD.
+
 * Banner
 * Speech
 
 ### Mobile
+
+Supported on any platform.
+
 * HipChat
 * Pushbullet
 * Pushover
@@ -48,10 +54,12 @@ noti [options] [utility [args...]]
 ### Options
 
 ```
--t, -title
+-t <string>, -title <string>
     Notification title. Default is utility name.
--m, -message
+-m <string>, -message <string>
     Notification message. Default is "Done!"
+-w <pid>, -pwatch <pid>
+    Trigger notification after PID disappears.
 
 -b, -banner
     Trigger a banner notification. Default is true. To disable this
@@ -114,7 +122,7 @@ NOTI_VOICE
     Name of voice used for speech notifications.
 ```
 
-#### OS X
+#### OS X only
 
 ```
 NOTI_SOUND
@@ -139,6 +147,13 @@ You can also add `noti` after a command, in case you forgot at the beginning.
 
 ```
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
+```
+
+If you already started a command, but forgot to use `noti`, then you can do this
+to get notified when that process' PID disappears.
+
+```
+noti -pwatch $(pgrep docker-machine)
 ```
 
 [OS X Banner Notification]: https://raw.githubusercontent.com/variadico/noti/master/.github/screenshots/osx_banner.png
