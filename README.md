@@ -1,6 +1,7 @@
 # noti
 
 [![Gitter]](https://gitter.im/variadico/noti?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Open Hub]](https://www.openhub.net/p/variadico-noti)
 
 Trigger notifications when a process completes.
 
@@ -161,3 +162,4 @@ noti -pwatch $(pgrep docker-machine)
 [screenshots]: https://github.com/variadico/noti/tree/master/.github/screenshots
 [releases page]: https://github.com/variadico/noti/releases
 [Gitter]: https://badges.gitter.im/variadico/noti.svg
+[Open Hub]: https://img.shields.io/badge/open%20hub-metrics-blue.svg
