@@ -9,6 +9,9 @@ project adheres to [Semantic Versioning](http://semver.org/).
 * `-pwatch` flag to trigger notification after PID disappears.
 * Check for updates during `-v` flag.
 
+## Changed
+* Install command changed to: `go get -u github.com/variadico/noti/cmd/noti`
+
 ## [2.1.1]
 
 ## Added
