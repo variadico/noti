@@ -1,6 +1,6 @@
 # noti
 
-[![Gitter]](https://gitter.im/variadico/noti?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter]](https://gitter.im/variadico/noti)
 [![Open Hub]](https://www.openhub.net/p/variadico-noti)
 
 Trigger notifications when a process completes.
@@ -37,7 +37,7 @@ directory.
 
 ```
 # Anywhere, latest
-go get -u github.com/variadico/noti
+go get -u github.com/variadico/noti/cmd/noti
 
 # Alternatively on OS X
 brew install noti
