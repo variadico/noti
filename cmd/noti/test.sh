@@ -1,7 +1,7 @@
 #!/bin/bash
 set -xuo pipefail
 
-go install
+go install github.com/variadico/noti/cmd/noti
 noti -v
 
 noti
