@@ -24,11 +24,16 @@ After you get the green light there, then you can start coding away!
 If you want to help, but aren't sure how, check out [bug reports] or [help
 wanted] issues.
 
-### Submission checklist
+### Submission flow
 
+* Fork Noti on GitHub
+* `cd variadico/noti`
+* `git remote add fork git@github.com:YOU/noti.git`
 * Branch off [dev]
+* Make changes
 * Rebase before submitting
 * Run [lint.sh]
+* `git push fork dev`
 
 Thanks for helping make Noti better!
 
