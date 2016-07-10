@@ -5,6 +5,8 @@
 
 Trigger notifications when a process completes.
 
+**Warning:** [macOS Sierra users] will experience problems.
+
 Never sit and wait for some long-running process to finish! `noti` will alert
 you when it's done—on your computer or smartphone—so you can stop worrying about
 constantly checking the terminal.
@@ -163,3 +165,4 @@ noti -pwatch $(pgrep docker-machine)
 [releases page]: https://github.com/variadico/noti/releases
 [Gitter]: https://badges.gitter.im/variadico/noti.svg
 [Open Hub]: https://img.shields.io/badge/open%20hub-metrics-blue.svg
+[macOS Sierra users]: https://github.com/variadico/noti/issues/29
