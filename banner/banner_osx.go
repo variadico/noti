@@ -3,64 +3,12 @@
 package banner
 
 /*
-#cgo CFLAGS: -x objective-c
-#cgo LDFLAGS: -framework Cocoa
+// Compiler flags.
+#cgo CFLAGS: -Wall -x objective-c -arch x86_64 -std=gnu99 -fobjc-arc
+// Linker flags.
+#cgo LDFLAGS: -framework Foundation -arch x86_64
 
-#import <Foundation/Foundation.h>
-#import <objc/runtime.h>
-#include <AppKit/AppKit.h>
-#include <errno.h>
-
-@implementation NSBundle(noti)
-- (NSString *)notiIdentifier {
-	return @"com.apple.terminal";
-}
-@end
-
-@interface NotiDelegate : NSObject<NSUserNotificationCenterDelegate>
-@property (nonatomic, assign) BOOL delivered;
-@end
-
-@implementation NotiDelegate
-- (void) userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification {
-	self.delivered = YES;
-}
-- (void) userNotificationCenter:(NSUserNotificationCenter *)center didDeliverNotification:(NSUserNotification *)notification {
-	[NSApp activateIgnoringOtherApps:YES];
-	self.delivered = YES;
-}
-@end
-
-void BannerNotify(const char* title, const char* message, const char* sound) {
-	errno = 0;
-	@autoreleasepool {
-		Class nsBundle = objc_getClass("NSBundle");
-		method_exchangeImplementations(
-			class_getInstanceMethod(nsBundle, @selector(bundleIdentifier)),
-			class_getInstanceMethod(nsBundle, @selector(notiIdentifier))
-		);
-
-		NotiDelegate *notiDel = [[NotiDelegate alloc]init];
-		notiDel.delivered = NO;
-
-		NSUserNotificationCenter *nc = [NSUserNotificationCenter defaultUserNotificationCenter];
-		nc.delegate = notiDel;
-
-		NSUserNotification *nt = [[NSUserNotification alloc] init];
-		nt.title = [NSString stringWithUTF8String:title];
-		nt.informativeText = [NSString stringWithUTF8String:message];
-
-		if ([[NSString stringWithUTF8String:sound] isEqualToString: @"_mute"] == NO) {
-			nt.soundName = [NSString stringWithUTF8String:sound];
-		}
-
-		[nc deliverNotification:nt];
-
-		while (notiDel.delivered == NO) {
-			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-		}
-	}
-}
+#import "banner_osx.h"
 */
 import "C"
 import (
