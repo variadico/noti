@@ -5,6 +5,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.1]
+
 ## Added
 
 * Add notification config docs to repo.
@@ -78,7 +80,8 @@ Object-C, which shows (nicer) Terminal icon.
 * `-f` flag for OS X. This caused unexpected behavior for people who use iTerm2.
 * OS X-specific flags and usage text from Linux and FreeBSD help.
 
-[Unreleased]: https://github.com/variadico/noti/compare/v2.2.0...dev
+[Unreleased]: https://github.com/variadico/noti/compare/v2.2.1...dev
+[2.2.1]: https://github.com/variadico/noti/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/variadico/noti/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/variadico/noti/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/variadico/noti/compare/v2.0.0...v2.1.0
