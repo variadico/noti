@@ -1,12 +1,18 @@
 package banner
 
 import (
-	"errors"
-
+	toast "github.com/jacobmarshall/go-toast"
 	"github.com/variadico/noti"
 )
 
-// Notify displays a notification. This will always return an error on Windows.
+// Notify displays a Windows 10 Toast Notification.
 func Notify(n noti.Params) error {
-	return errors.New("banner notification not supported on this platform")
+	notification := toast.Notification{
+		AppID:   "noti",
+		Title:   n.Title,
+		Message: n.Message,
+		Icon:    "",
+		Actions: nil}
+
+	return notification.Push()
 }
