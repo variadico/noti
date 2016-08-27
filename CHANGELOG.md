@@ -5,6 +5,14 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## Added
+
+* Add notification config docs to repo.
+
+## Fixed
+
+* Bug that caused noti to not work on macOS Sierra.
+
 ## [2.2.0]
 
 ## Added
