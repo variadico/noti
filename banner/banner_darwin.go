@@ -1,5 +1,3 @@
-// +build darwin
-
 package banner
 
 /*
@@ -8,7 +6,7 @@ package banner
 // Linker flags.
 #cgo LDFLAGS: -framework Foundation -arch x86_64
 
-#import "banner_osx.h"
+#import "banner_darwin.h"
 */
 import "C"
 import (
