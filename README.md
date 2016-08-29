@@ -22,15 +22,14 @@ Supported on macOS, Linux, and FreeBSD.
 
 ### Mobile
 
-Supported on any platform that supports Go and has an internet connection,
-including macOS, Linux, FreeBSD, and Windows.
+Supported on macOS, Linux, FreeBSD, and Windows.
 
 * HipChat
 * Pushbullet
 * Pushover
 * Slack
 
-Check out the [Wiki] for more information on how to configure mobile
+Check out the [docs] for more information on how to configure mobile
 notifications. If you're curious, you can also browse the [screenshots]
 directory.
 
@@ -159,7 +158,7 @@ noti -pwatch $(pgrep docker-machine)
 ```
 
 [OS X Banner Notification]: https://raw.githubusercontent.com/variadico/noti/master/.github/screenshots/osx_banner.png
-[Wiki]: https://github.com/variadico/noti/wiki
+[docs]: https://github.com/variadico/noti/blob/master/docs/noti.md
 [screenshots]: https://github.com/variadico/noti/tree/master/.github/screenshots
 [releases page]: https://github.com/variadico/noti/releases
 [Gitter]: https://badges.gitter.im/variadico/noti.svg
