@@ -22,7 +22,7 @@ import (
 
 const (
 	defaultEnv = "NOTI_DEFAULT"
-	version    = "v2.2.1"
+	version    = "v2.2.2"
 )
 
 func main() {
