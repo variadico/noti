@@ -7,7 +7,23 @@ go:
 
 os:
     - linux
-    - osx
+
+before_install:
+    - go get -u honnef.co/go/staticcheck/cmd/staticcheck
+    - go get -u github.com/golang/lint/golint
+    - go get -u honnef.co/go/simple/cmd/gosimple
+
+cache:
+    directories:
+        - $GOPATH/src/honnef.co/go/staticcheck
+        - $GOPATH/src/github.com/golang/lint
+        - $GOPATH/src/honnef.co/go/simple
 
 script:
-    - go test -v ./...
+    - go build -race ./...
+    - go test -race -cover $(go list ./... | grep -v "vendor")
+    - go vet $(go list ./... | grep -v "vendor")
+    - staticcheck $(go list ./... | grep -v "vendor")
+    - out=$(golint $(go list ./... | grep -v "vendor"))
+    - if [ "$out" ]; then echo "$out"; exit 1; fi
+    - gosimple $(go list ./... | grep -v "vendor")
