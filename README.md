@@ -36,15 +36,27 @@ directory.
 
 ## Installation
 
-```
-# Anywhere, latest
+```shell
+# Anywhere, latest.
 go get -u github.com/variadico/noti/cmd/noti
 
-# Alternatively on OS X
+# Alternatively on macOS.
 brew install noti
 ```
 
-If you only want a binary, get it from the [releases page].
+If you only want a binary, get it from the [releases page]. You can download it
+with your browser or just use `curl`!
+
+```shell
+# For macOS.
+curl -L https://github.com/variadico/noti/releases/download/v2.2.2/noti2.2.2.darwin-amd64.tar.gz | tar -xz
+
+# For Linux.
+curl -L https://github.com/variadico/noti/releases/download/v2.2.2/noti2.2.2.linux-amd64.tar.gz | tar -xz
+
+# For Windows.
+curl -L https://github.com/variadico/noti/releases/download/v2.2.2/noti2.2.2.windows-amd64.tar.gz | tar -xz
+```
 
 ## Usage
 Put `noti` at the beginning or end of your regular commands.
