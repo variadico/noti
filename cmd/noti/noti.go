@@ -218,6 +218,15 @@ func runUtility(args []string) (string, error) {
 		return name, nil
 	}
 
+	if _, err := exec.LookPath(args[0]); err != nil {
+		exp, expErr := expandAlias(args[0])
+		if expErr != nil {
+			return "", err
+		}
+
+		args = append(exp, args[1:]...)
+	}
+
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -256,4 +265,20 @@ func userSet(fl *flag.FlagSet, target string) bool {
 	})
 
 	return explicitlySet
+}
+
+func expandAlias(a string) ([]string, error) {
+	shell := os.Getenv("SHELL")
+
+	cmd := exec.Command(shell, "-l", "-i", "-c", "which "+a)
+	e, err := cmd.Output()
+	if err != nil {
+		return nil, err
+	}
+
+	exp := strings.TrimSpace(string(e))
+	trimLen := fmt.Sprintf("%s: aliased to ", a)
+	exp = exp[len(trimLen):]
+
+	return strings.Split(exp, " "), nil
 }
