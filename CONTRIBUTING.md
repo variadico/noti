@@ -10,8 +10,7 @@ of opening.
 
 Create an issue if you notice some unexpected behavior with Noti or if you think
 the documentation (readme, code comments, etc) is lacking. New notification type
-requests are also fine. Try to tag your issue appropriately. If the issue is a
-bug report, use the bug tag; if it's a feature request use the enhancement tag.
+requests are also fine.
 
 ## Submit a pull request
 
