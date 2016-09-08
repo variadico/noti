@@ -16,6 +16,7 @@ go test ./...
 
 * CHANGELOG.md
 * noti.go
+* README.md
 
 ## Merge to mainline
 

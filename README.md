@@ -14,21 +14,18 @@ constantly checking the terminal.
 
 ## Types
 
-### Desktop
+These are the different notification types `noti` supports and on which OSes.
 
-Supported on macOS, Linux, and FreeBSD.
-
-* Banner
-* Speech
-
-### Mobile
-
-Supported on macOS, Linux, FreeBSD, and Windows.
-
-* HipChat
-* Pushbullet
-* Pushover
-* Slack
+```
+type       | macOS | Linux | FreeBSD | Windows
+------------------------------------------------
+Banner     |   ✔   |   ✔   |    ✔    |    ✔
+Speech     |   ✔   |   ✔   |    ✔    |
+HipChat    |   ✔   |   ✔   |    ✔    |    ✔
+Pushbullet |   ✔   |   ✔   |    ✔    |    ✔
+Pushover   |   ✔   |   ✔   |    ✔    |    ✔
+Slack      |   ✔   |   ✔   |    ✔    |    ✔
+```
 
 Check out the [docs] for more information on how to configure mobile
 notifications. If you're curious, you can also browse the [screenshots]
@@ -168,6 +165,20 @@ to get notified when that process' PID disappears.
 
 ```
 noti -pwatch $(pgrep docker-machine)
+```
+
+An easier alternative is to press `ctrl+z` after you started a process. This
+will put it in the background. Then, you can bring it back and append `noti`.
+
+```
+$ dd if=/dev/zero of=foo bs=1M count=2000
+^Z
+zsh: suspended  dd if=/dev/zero of=foo bs=1M count=2000
+$ fg; noti
+[1]  + continued  dd if=/dev/zero of=foo bs=1M count=2000
+2000+0 records in
+2000+0 records out
+2097152000 bytes (2.1 GB, 2.0 GiB) copied, 12 s, 175 MB/s
 ```
 
 [OS X Banner Notification]: https://raw.githubusercontent.com/variadico/noti/master/.github/screenshots/osx_banner.png
