@@ -5,6 +5,14 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## Added
+
+* Banner support for Windows 10.
+
+## Fixed
+
+* Aliases in Bash and ZSH now work.
+
 ## [2.2.2]
 
 ## Fixed
