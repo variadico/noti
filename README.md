@@ -46,13 +46,13 @@ with your browser or just use `curl`!
 
 ```shell
 # For macOS.
-curl -L https://github.com/variadico/noti/releases/download/v2.2.2/noti2.2.2.darwin-amd64.tar.gz | tar -xz
+curl -L https://github.com/variadico/noti/releases/download/v2.3.0/noti2.3.0.darwin-amd64.tar.gz | tar -xz
 
 # For Linux.
-curl -L https://github.com/variadico/noti/releases/download/v2.2.2/noti2.2.2.linux-amd64.tar.gz | tar -xz
+curl -L https://github.com/variadico/noti/releases/download/v2.3.0/noti2.3.0.linux-amd64.tar.gz | tar -xz
 
 # For Windows.
-curl -L https://github.com/variadico/noti/releases/download/v2.2.2/noti2.2.2.windows-amd64.tar.gz | tar -xz
+curl -L https://github.com/variadico/noti/releases/download/v2.3.0/noti2.3.0.windows-amd64.tar.gz | tar -xz
 ```
 
 ## Usage
