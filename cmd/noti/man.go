@@ -39,6 +39,9 @@ OPTIONS
     -k, -slack
         Trigger a Slack notification. Requires NOTI_SLACK_TOK and
         NOTI_SLACK_DEST to be set.
+    -c, -bearychat
+        Trigger a BearyChat notification. Requries NOTI_BC_INCOMING_URI
+        to be set.
 
     -v, -version
         Print noti version and exit.
@@ -68,6 +71,8 @@ ENVIRONMENT
         from the Slack Web API page.
     NOTI_SLACK_DEST
         Slack message destination. Can be either a #channel or a @username.%s
+    NOTI_BC_INCOMING_URI
+        BearyChat incoming uri.
 
 EXAMPLES
     Display a notification when tar finishes compressing files.
