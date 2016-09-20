@@ -71,8 +71,15 @@ The variable `NOTI_SLACK_DEST` can be set to a channel like `#general` or
 `#random`. You can also set it to someone's username, like `@juan` or
 `@variadico`.
 
+## Using BearyChat
+
+Log into your BearyChat account. Then create an [incoming robot][bc-incoming].
+Next, look for the "Hook Address" (or "Hook 地址" in Chinese), this is what
+you'll set `NOTI_BC_INCOMING_URI` to.
+
 
 [Settings]: https://www.pushbullet.com/#settings
 [Pushover]: https://pushover.net
 [create a new application]: https://pushover.net/apps/build
 [OAuth Tokens for Testing and Development]: https://api.slack.com/docs/oauth-test-tokens
+[bc-incoming]: https://bearychat.com/integrations/incoming
