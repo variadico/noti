@@ -13,6 +13,7 @@ import (
 
 	"github.com/variadico/noti"
 	"github.com/variadico/noti/banner"
+	"github.com/variadico/noti/bearychat"
 	"github.com/variadico/noti/hipchat"
 	"github.com/variadico/noti/pushbullet"
 	"github.com/variadico/noti/pushover"
@@ -41,6 +42,7 @@ func main() {
 	pushoverNoti := flag.Bool("o", false, "")
 	slackNoti := flag.Bool("k", false, "")
 	speechNoti := flag.Bool("s", false, "")
+	bearychatNoti := flag.Bool("c", false, "")
 
 	flag.StringVar(title, "title", "", "")
 	flag.StringVar(message, "message", "", "")
@@ -55,6 +57,7 @@ func main() {
 	flag.BoolVar(pushbulletNoti, "pushbullet", false, "")
 	flag.BoolVar(pushoverNoti, "pushover", false, "")
 	flag.BoolVar(slackNoti, "slack", false, "")
+	flag.BoolVar(bearychatNoti, "bearychat", false, "")
 
 	flag.Parse()
 
@@ -91,6 +94,7 @@ func main() {
 		{*pushoverNoti, pushover.API, pushover.Notify},
 		{*speechNoti, "", speech.Notify},
 		{*slackNoti, slack.API, slack.Notify},
+		{*bearychatNoti, "", bearychat.Notify},
 	}
 
 	for _, nt := range notis {
