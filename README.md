@@ -21,6 +21,7 @@ type       | macOS | Linux | FreeBSD | Windows
 ------------------------------------------------
 Banner     |   ✔   |   ✔   |    ✔    |    ✔
 Speech     |   ✔   |   ✔   |    ✔    |
+BearyChat  |   ✔   |   ✔   |    ✔    |    ✔
 HipChat    |   ✔   |   ✔   |    ✔    |    ✔
 Pushbullet |   ✔   |   ✔   |    ✔    |    ✔
 Pushover   |   ✔   |   ✔   |    ✔    |    ✔
