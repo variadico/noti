@@ -2,10 +2,10 @@
 	"version": 0,
 	"dependencies": [
 		{
-			"importpath": "github.com/jacobmarshall/go-toast",
-			"repository": "https://github.com/jacobmarshall/go-toast",
+			"importpath": "github.com/go-toast/toast",
+			"repository": "https://github.com/go-toast/toast",
 			"vcs": "git",
-			"revision": "9b2be825351ca03182be1ea3c49fc01f27eb2c97",
+			"revision": "a15160ce66bc230d0f3041f29ed29f7c69c85de3",
 			"branch": "master",
 			"notests": true
 		},
