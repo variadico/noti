@@ -1,7 +1,7 @@
 package banner
 
 import (
-	toast "github.com/jacobmarshall/go-toast"
+	"github.com/go-toast/toast"
 	"github.com/variadico/noti"
 )
 
