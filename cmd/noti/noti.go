@@ -17,6 +17,7 @@ import (
 	"github.com/variadico/noti/hipchat"
 	"github.com/variadico/noti/pushbullet"
 	"github.com/variadico/noti/pushover"
+	"github.com/variadico/noti/simplepush"
 	"github.com/variadico/noti/slack"
 	"github.com/variadico/noti/speech"
 )
@@ -40,6 +41,7 @@ func main() {
 	hipChatNoti := flag.Bool("i", false, "")
 	pushbulletNoti := flag.Bool("p", false, "")
 	pushoverNoti := flag.Bool("o", false, "")
+	simplepushNoti := flag.Bool("l", false, "")
 	slackNoti := flag.Bool("k", false, "")
 	speechNoti := flag.Bool("s", false, "")
 	bearychatNoti := flag.Bool("c", false, "")
@@ -56,6 +58,7 @@ func main() {
 	flag.BoolVar(speechNoti, "speech", false, "")
 	flag.BoolVar(pushbulletNoti, "pushbullet", false, "")
 	flag.BoolVar(pushoverNoti, "pushover", false, "")
+	flag.BoolVar(simplepushNoti, "simplepush", false, "")
 	flag.BoolVar(slackNoti, "slack", false, "")
 	flag.BoolVar(bearychatNoti, "bearychat", false, "")
 
@@ -92,6 +95,7 @@ func main() {
 		{*hipChatNoti, hipchat.API, hipchat.Notify},
 		{*pushbulletNoti, pushbullet.API, pushbullet.Notify},
 		{*pushoverNoti, pushover.API, pushover.Notify},
+		{*simplepushNoti, simplepush.API, simplepush.Notify},
 		{*speechNoti, "", speech.Notify},
 		{*slackNoti, slack.API, slack.Notify},
 		{*bearychatNoti, "", bearychat.Notify},
@@ -154,6 +158,7 @@ func setDefaultNotifications(fl *flag.FlagSet, env noti.EnvGetter) {
 	fl.Set("hipchat", fmt.Sprintf("%t", has(defs, "hipchat")))
 	fl.Set("pushbullet", fmt.Sprintf("%t", has(defs, "pushbullet")))
 	fl.Set("pushover", fmt.Sprintf("%t", has(defs, "pushover")))
+	fl.Set("simplepush", fmt.Sprintf("%t", has(defs, "simplepush")))
 	fl.Set("speech", fmt.Sprintf("%t", has(defs, "speech")))
 	fl.Set("slack", fmt.Sprintf("%t", has(defs, "slack")))
 }

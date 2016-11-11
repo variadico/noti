@@ -62,6 +62,16 @@ Next [create a new application]. Fill in the fields. Under "Type", select
 "Script". Finally, go to the application page. Look for "API Token/Key". This is
 what you'll set `NOTI_PUSHOVER_TOK` to.
 
+# Using Simplepush
+
+Install the Simplepush Android app to get your Simplepush key.
+That's the key you'll set to `NOTI_SIMPLEPUSH_KEY`.
+Simplepush requires no registration and sending notifications is completely free.
+
+In the app you can create events to customize ringtone and vibration patterns for
+different kinds of notifications.
+The event id you can set in the app, translates to `NOTI_SIMPLEPUSH_EVENT` in noti.
+
 ## Using Slack
 
 Log into your Slack account. Then go to the [OAuth Tokens for Testing and
