@@ -25,6 +25,7 @@ BearyChat  |   ✔   |   ✔   |    ✔    |    ✔
 HipChat    |   ✔   |   ✔   |    ✔    |    ✔
 Pushbullet |   ✔   |   ✔   |    ✔    |    ✔
 Pushover   |   ✔   |   ✔   |    ✔    |    ✔
+Simplepush |   ✔   |   ✔   |    ✔    |    ✔
 Slack      |   ✔   |   ✔   |    ✔    |    ✔
 ```
 
@@ -89,6 +90,10 @@ noti [options] [utility [args...]]
 -o, -pushover
     Trigger a Pushover notification. Requires NOTI_PUSHOVER_TOK and
     NOTI_PUSHOVER_DEST to be set.
+-l, -simplepush
+    Trigger a Simplepush notification. Requires NOTI_SIMPLEPUSH_KEY
+    to be set. Optionally, customize ringtone and vibration with 
+    NOTI_SIMPLEPUSH_EVENT.
 -k, -slack
     Trigger a Slack notification. Requires NOTI_SLACK_TOK and
     NOTI_SLACK_DEST to be set.
@@ -125,6 +130,8 @@ NOTI_PUSHOVER_TOK
     token from the Create New Application/Plugin page.
 NOTI_PUSHOVER_DEST
     Pushover message destination. Should be your User Key.
+NOTI_SIMPLEPUSH_KEY
+    Simplepush key. Install the Simplepush app and retrieve your key there.
 NOTI_SLACK_TOK
     Slack access token. Log into your Slack account and retrieve a token
     from the Slack Web API page.
