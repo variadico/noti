@@ -5,6 +5,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.5.0]
+
 ## Added
 
 * Support for Simplepush.
@@ -111,7 +113,8 @@ Object-C, which shows (nicer) Terminal icon.
 * `-f` flag for OS X. This caused unexpected behavior for people who use iTerm2.
 * OS X-specific flags and usage text from Linux and FreeBSD help.
 
-[Unreleased]: https://github.com/variadico/noti/compare/v2.4.0...dev
+[Unreleased]: https://github.com/variadico/noti/compare/v2.5.0...dev
+[2.5.0]: https://github.com/variadico/noti/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/variadico/noti/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/variadico/noti/compare/v2.2.2...v2.3.0
 [2.2.2]: https://github.com/variadico/noti/compare/v2.2.1...v2.2.2

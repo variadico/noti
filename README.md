@@ -48,13 +48,13 @@ with your browser or just use `curl`!
 
 ```shell
 # For macOS.
-curl -L https://github.com/variadico/noti/releases/download/v2.4.0/noti2.4.0.darwin-amd64.tar.gz | tar -xz
+curl -L https://github.com/variadico/noti/releases/download/v2.5.0/noti2.5.0.darwin-amd64.tar.gz | tar -xz
 
 # For Linux.
-curl -L https://github.com/variadico/noti/releases/download/v2.4.0/noti2.4.0.linux-amd64.tar.gz | tar -xz
+curl -L https://github.com/variadico/noti/releases/download/v2.5.0/noti2.5.0.linux-amd64.tar.gz | tar -xz
 
 # For Windows.
-curl -L https://github.com/variadico/noti/releases/download/v2.4.0/noti2.4.0.windows-amd64.tar.gz | tar -xz
+curl -L https://github.com/variadico/noti/releases/download/v2.5.0/noti2.5.0.windows-amd64.tar.gz | tar -xz
 ```
 
 ## Usage
@@ -92,11 +92,14 @@ noti [options] [utility [args...]]
     NOTI_PUSHOVER_DEST to be set.
 -l, -simplepush
     Trigger a Simplepush notification. Requires NOTI_SIMPLEPUSH_KEY
-    to be set. Optionally, customize ringtone and vibration with 
+    to be set. Optionally, customize ringtone and vibration with
     NOTI_SIMPLEPUSH_EVENT.
 -k, -slack
     Trigger a Slack notification. Requires NOTI_SLACK_TOK and
     NOTI_SLACK_DEST to be set.
+-c, -bearychat
+    Trigger a BearyChat notification. Requries NOTI_BC_INCOMING_URI
+    to be set.
 
 -v, -version
     Print noti version and exit.
@@ -117,6 +120,8 @@ NOTI_DEFAULT
     Notification types noti should trigger in a space-delimited list. For
     example, set NOTI_DEFAULT="banner speech pushbullet slack" to enable
     all available notifications to fire sequentially.
+NOTI_BC_INCOMING_URI
+    BearyChat incoming URI.
 NOTI_HIPCHAT_TOK
     HipChat access token. Log into your HipChat account and retrieve a token
     from the Room Notification Tokens page.
