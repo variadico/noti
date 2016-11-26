@@ -5,11 +5,19 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## Added
+
+* Support for Simplepush.
+
+## Fixed
+
+* Formatting bug in help.
+
 ## [2.4.0]
 
 ## Added
 
-* Support for BearyChat
+* Support for BearyChat.
 
 ## [2.3.0]
 
@@ -55,6 +63,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 * Setting `-t` or `-m` will now take precedence over utility name.
 
 ## Changed
+
 * Slackbot icon is now a rocket.
 * If utility fails, noti will exit 1.
 * Utility name default now includes subcommand too.
