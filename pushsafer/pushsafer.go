@@ -71,8 +71,6 @@ func Notify(n noti.Params) error {
 
 	if r.Status != 1 {
 		return noti.APIError{Site: "Pushsafer", Msg: strings.Join(r.Errors, ": ")}
-	} else if strings.Contains(r.Info, "no active devices") {
-		return noti.APIError{Site: "Pushsafer", Msg: r.Info}
 	}
 
 	return nil
