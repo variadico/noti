@@ -92,10 +92,4 @@ func TestNotify(t *testing.T) {
 	if err := Notify(n); err == nil {
 		t.Error("unexpected success")
 	}
-
-	mockResp.Status = 1 // failure
-	mockResp.Info = "no active devices to send to"
-	if err := Notify(n); err == nil {
-		t.Error("unexpected success")
-	}
 }
