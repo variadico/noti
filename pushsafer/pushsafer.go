@@ -19,7 +19,7 @@ const (
 )
 
 var (
-	errNoTok  = noti.ConfigErrror{Env: keyEnv, Reason: "missing"}
+	errNoKey  = noti.ConfigErrror{Env: keyEnv, Reason: "missing"}
 )
 
 type apiResponse struct {
@@ -37,7 +37,7 @@ type configuration struct {
 func envConfig(env noti.EnvGetter) (configuration, error) {
 	key := env.Get(keyEnv)
 	if key == "" {
-		return configuration{}, errNoTok
+		return configuration{}, errNoKey
 	}
 
 	return configuration{
