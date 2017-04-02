@@ -42,7 +42,7 @@ func main() {
 	hipChatNoti := flag.Bool("i", false, "")
 	pushbulletNoti := flag.Bool("p", false, "")
 	pushoverNoti := flag.Bool("o", false, "")
-	pushsaferNoti := flag.Bool("o", false, "")
+	pushsaferNoti := flag.Bool("u", false, "")
 	simplepushNoti := flag.Bool("l", false, "")
 	slackNoti := flag.Bool("k", false, "")
 	speechNoti := flag.Bool("s", false, "")
