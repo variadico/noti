@@ -24,7 +24,7 @@ func TestEnvConfig(t *testing.T) {
 		},
 		{
 			env:     noti.MockEnv{keyEnv: "fu"},
-			config:  configuration{key: "fu"},
+			config:  configuration{},
 			wantErr: false,
 			err:     nil,
 		},
