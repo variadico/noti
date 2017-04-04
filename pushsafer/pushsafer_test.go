@@ -69,7 +69,7 @@ func TestNotify(t *testing.T) {
 			t.Error("HTTP method should be POST")
 		}
 
-		if r.FormValue("key") == "" {
+		if r.FormValue("privateKey") == "" {
 			t.Error("missing private or alias key")
 		}
 
