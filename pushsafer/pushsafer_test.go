@@ -23,8 +23,8 @@ func TestEnvConfig(t *testing.T) {
 			err:     errNoKey,
 		},
 		{
-			env:     noti.MockEnv{privateKey: "fu"},
-			config:  configuration{},
+			env:     noti.MockEnv{keyEnv: "fu"},
+			config:  configuration{privateKey: "fu"},
 			wantErr: false,
 			err:     nil,
 		},
