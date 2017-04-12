@@ -62,6 +62,11 @@ Next [create a new application]. Fill in the fields. Under "Type", select
 "Script". Finally, go to the application page. Look for "API Token/Key". This is
 what you'll set `NOTI_PUSHOVER_TOK` to.
 
+## Using Pushsafer
+
+Log into your [Pushsafer] account. Next, look for the "Private or Alias Key".
+That's what you'll set `NOTI_PUSHSAFER_KEY` to.
+
 # Using Simplepush
 
 Install the Simplepush Android app to get your Simplepush key.
@@ -91,5 +96,6 @@ you'll set `NOTI_BC_INCOMING_URI` to.
 [Settings]: https://www.pushbullet.com/#settings
 [Pushover]: https://pushover.net
 [create a new application]: https://pushover.net/apps/build
+[Pushsafer]: https://www.pushsafer.com
 [OAuth Tokens for Testing and Development]: https://api.slack.com/docs/oauth-test-tokens
 [bc-incoming]: https://bearychat.com/integrations/incoming

@@ -17,6 +17,7 @@ func TestSetDefaultNotifications(t *testing.T) {
 	fl.Bool("hipchat", false, "")
 	fl.Bool("pushbullet", false, "")
 	fl.Bool("pushover", false, "")
+	fl.Bool("pushsafer", false, "")
 	fl.Bool("simplepush", false, "")
 	fl.Bool("speech", false, "")
 	fl.Bool("slack", false, "")
@@ -29,6 +30,7 @@ func TestSetDefaultNotifications(t *testing.T) {
 		"hipchat",
 		"pushbullet",
 		"pushover",
+		"pushsafer",
 		"simplepush",
 		"speech",
 		"slack",
