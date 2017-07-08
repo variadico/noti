@@ -49,13 +49,13 @@ with your browser or just use `curl`!
 
 ```shell
 # For macOS.
-curl -L https://github.com/variadico/noti/releases/download/v2.5.0/noti2.5.0.darwin-amd64.tar.gz | tar -xz
+curl -L https://github.com/variadico/noti/releases/download/v2.6.0/noti2.6.0.darwin-amd64.tar.gz | tar -xz
 
 # For Linux.
-curl -L https://github.com/variadico/noti/releases/download/v2.5.0/noti2.5.0.linux-amd64.tar.gz | tar -xz
+curl -L https://github.com/variadico/noti/releases/download/v2.6.0/noti2.6.0.linux-amd64.tar.gz | tar -xz
 
 # For Windows.
-curl -L https://github.com/variadico/noti/releases/download/v2.5.0/noti2.5.0.windows-amd64.tar.gz | tar -xz
+curl -L https://github.com/variadico/noti/releases/download/v2.6.0/noti2.6.0.windows-amd64.tar.gz | tar -xz
 ```
 
 ## Usage
@@ -93,7 +93,7 @@ noti [options] [utility [args...]]
     NOTI_PUSHOVER_DEST to be set.
 -u, -pushsafer
     Trigger a Pushsafer notification. Requires NOTI_PUSHSAFER_KEY
-    to be set.	
+    to be set.
 -l, -simplepush
     Trigger a Simplepush notification. Requires NOTI_SIMPLEPUSH_KEY
     to be set. Optionally, customize ringtone and vibration with
@@ -141,7 +141,7 @@ NOTI_PUSHOVER_DEST
     Pushover message destination. Should be your User Key.
 NOTI_PUSHSAFER_KEY
     Pushsafer private or alias key. Log into your Pushsafer account and note
-    your private or alias key.	
+    your private or alias key.
 NOTI_SIMPLEPUSH_KEY
     Simplepush key. Install the Simplepush app and retrieve your key there.
 NOTI_SLACK_TOK
