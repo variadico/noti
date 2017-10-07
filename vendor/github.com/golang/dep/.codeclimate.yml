@@ -1,0 +1,17 @@
+engines:
+  gofmt:
+    enabled: true
+  govet:
+    enabled: true
+  golint:
+    enabled: true
+  fixme:
+    enabled: true
+ratings:
+  paths:
+    - "**.go"
+exclude_paths:
+  - vendor/
+  - internal/gps/_testdata
+  - cmd/dep/testdata
+  - testdata

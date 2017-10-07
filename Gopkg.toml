@@ -1,0 +1,9 @@
+required = [
+  "github.com/golang/dep/cmd/dep",
+  "honnef.co/go/tools/cmd/megacheck",
+  "github.com/golang/lint/golint",
+]
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/go-toast/toast"

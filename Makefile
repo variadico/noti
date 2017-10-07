@@ -17,7 +17,7 @@ test:
 	megacheck -unused.enabled=false $(pkgs)
 	go vet $(pkgs)
 	go test -cover -race $(pkgs)
-update:
+update-deps:
 	dep ensure
 	dep ensure -update
 	dep prune
