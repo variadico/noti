@@ -13,46 +13,46 @@ SYNOPSIS
      noti [options] [utility [args...]]
 
 OPTIONS
-    -t <string>, -title <string>
+    -t <string>, --title <string>
         Notification title. Default is utility name.
-    -m <string>, -message <string>
+    -m <string>, --message <string>
         Notification message. Default is "Done!"
-    -w <pid>, -pwatch <pid>
+    -w <pid>, --pwatch <pid>
         Trigger notification after PID disappears.
 
-    -b, -banner
+    -b, --banner
         Trigger a banner notification. Default is true. To disable this
         notification set this flag to false.
-    -s, -speech
+    -s, --speech
         Trigger a speech notification. Optionally, customize the voice with
         NOTI_VOICE.
 
-    -i, -hipchat
+    -i, --hipchat
         Trigger a HipChat notification. Requires NOTI_HIPCHAT_TOK and
         NOTI_HIPCHAT_DEST to be set.
-    -p, -pushbullet
+    -p, --pushbullet
         Trigger a Pushbullet notification. Requires NOTI_PUSHBULLET_TOK to
         be set.
-    -o, -pushover
+    -o, --pushover
         Trigger a Pushover notification. Requires NOTI_PUSHOVER_TOK and
         NOTI_PUSHOVER_DEST to be set.
-    -u, -pushsafer
+    -u, --pushsafer
         Trigger a Pushsafer notification. Requires NOTI_PUSHSAFER_KEY
-        to be set.		
-    -l, -simplepush
+        to be set.
+    -l, --simplepush
         Trigger a Simplepush notification. Requires NOTI_SIMPLEPUSH_KEY
         to be set. Optionally, customize ringtone and vibration with
         NOTI_SIMPLEPUSH_EVENT.
-    -k, -slack
+    -k, --slack
         Trigger a Slack notification. Requires NOTI_SLACK_TOK and
         NOTI_SLACK_DEST to be set.
-    -c, -bearychat
+    -c, --bearychat
         Trigger a BearyChat notification. Requries NOTI_BC_INCOMING_URI
         to be set.
 
-    -v, -version
+    -v, --version
         Print noti version and exit.
-    -h, -help
+    -h, --help
         Display help information and exit.
 
 ENVIRONMENT
