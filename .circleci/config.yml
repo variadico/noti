@@ -1,0 +1,10 @@
+version: 2
+jobs:
+   build:
+     docker:
+       - image: circleci/golang:1.9.1
+     working_directory: /go/src/github.com/variadico/noti
+     steps:
+       - checkout
+       - run: make tools
+       - run: make test

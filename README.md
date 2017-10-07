@@ -2,7 +2,7 @@
 
 [![Gitter]](https://gitter.im/variadico/noti)
 [![Open Hub]](https://www.openhub.net/p/variadico-noti)
-[![Travis]](https://travis-ci.org/variadico/noti)
+[![CircleCI]](https://circleci.com/gh/variadico/noti)
 
 Trigger notifications when a process completes.
 
@@ -207,4 +207,4 @@ $ fg; noti
 [releases page]: https://github.com/variadico/noti/releases
 [Gitter]: https://badges.gitter.im/variadico/noti.svg
 [Open Hub]: https://img.shields.io/badge/open%20hub-metrics-blue.svg
-[Travis]: https://travis-ci.org/variadico/noti.svg?branch=master
+[CircleCI]: https://circleci.com/gh/variadico/noti.svg?style=shield
