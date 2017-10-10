@@ -17,6 +17,7 @@ go test ./...
 * CHANGELOG.md
 * noti.go
 * README.md
+* gen_bin.sh
 
 ## Merge to mainline
 
