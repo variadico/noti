@@ -67,6 +67,13 @@ func main() {
 
 	flag.Parse()
 
+	if flags := legacyFlags(os.Args); len(flags) > 0 {
+		log.Println("WARNING: Found legacy-style flags:", flags)
+		log.Println("Please pass long options with two dashes, e.g. --banner")
+		log.Println("Legacy-style flags will be removed in the future")
+		log.Println("See 'noti --help' for more information")
+	}
+
 	if *showVersion {
 		fmt.Println("noti", version)
 		checkForUpdates()
@@ -295,4 +302,32 @@ func expandAlias(a string) ([]string, error) {
 	exp = exp[len(trimLen):]
 
 	return strings.Split(exp, " "), nil
+}
+
+func legacyFlags(args []string) []string {
+	legacy := map[string]struct{}{
+		"-title":      struct{}{},
+		"-message":    struct{}{},
+		"-pwatch":     struct{}{},
+		"-banner":     struct{}{},
+		"-speech":     struct{}{},
+		"-hipchat":    struct{}{},
+		"-pushbullet": struct{}{},
+		"-pushover":   struct{}{},
+		"-pushsafer":  struct{}{},
+		"-simplepush": struct{}{},
+		"-slack":      struct{}{},
+		"-bearychat":  struct{}{},
+		"-version":    struct{}{},
+		"-help":       struct{}{},
+	}
+
+	var flags []string
+	for _, arg := range args {
+		if _, found := legacy[arg]; found {
+			flags = append(flags, arg)
+		}
+	}
+
+	return flags
 }
