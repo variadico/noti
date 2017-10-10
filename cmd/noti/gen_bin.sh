@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-VERSION="2.6.0"
+VERSION="2.7.0"
 rm -f noti
 rm -f noti.exe
 

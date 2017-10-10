@@ -5,6 +5,13 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.7.0]
+
+## Deprecated
+
+* Single-dash long options. Any scripts using `-banner` or `-title` should be
+  updated to use `--banner` or `--title` instead.
+
 ## [2.6.0]
 
 ## Added
@@ -119,7 +126,8 @@ Object-C, which shows (nicer) Terminal icon.
 * `-f` flag for OS X. This caused unexpected behavior for people who use iTerm2.
 * OS X-specific flags and usage text from Linux and FreeBSD help.
 
-[Unreleased]: https://github.com/variadico/noti/compare/v2.6.0...dev
+[Unreleased]: https://github.com/variadico/noti/compare/v2.7.0...dev
+[2.7.0]: https://github.com/variadico/noti/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/variadico/noti/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/variadico/noti/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/variadico/noti/compare/v2.3.0...v2.4.0
