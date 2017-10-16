@@ -5,5 +5,13 @@ required = [
 ]
 
 [[constraint]]
+  name = "github.com/godbus/dbus"
+  version = "4.0.0"
+
+[[constraint]]
   branch = "master"
-  name = "github.com/go-toast/toast"
+  name = "github.com/spf13/cobra"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/variadico/vbs"

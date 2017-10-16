@@ -27,16 +27,16 @@
   version = "v1.3.1"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/go-toast/toast"
-  packages = ["."]
-  revision = "b700e246b8b6d3e13554091e540e1019e26389f1"
-
-[[projects]]
   branch = "v2"
   name = "github.com/go-yaml/yaml"
   packages = ["."]
   revision = "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
+
+[[projects]]
+  name = "github.com/godbus/dbus"
+  packages = ["."]
+  revision = "5f6efc7ef2759c81b7ba876593971bfce311eab3"
+  version = "v4.0.0"
 
 [[projects]]
   name = "github.com/golang/dep"
@@ -51,6 +51,12 @@
   revision = "6aaf7c34af0f4c36a57e0c429bace4d706d8e931"
 
 [[projects]]
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+  version = "v1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/kisielk/gotool"
   packages = [".","internal/load"]
@@ -61,12 +67,6 @@
   name = "github.com/nightlyone/lockfile"
   packages = ["."]
   revision = "6a197d5ea61168f2ac821de2b7f011b250904900"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/nu7hatch/gouuid"
-  packages = ["."]
-  revision = "179d4d0c4d8d407a32af483c2354df1d2c91e6c3"
 
 [[projects]]
   branch = "master"
@@ -85,6 +85,24 @@
   name = "github.com/sdboyer/constext"
   packages = ["."]
   revision = "836a144573533ea4da4e6929c235fd348aed1c80"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  revision = "845c9050106f58df1cb4b4ed2e7e8dae7bbd770d"
+
+[[projects]]
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
+  version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/variadico/vbs"
+  packages = ["."]
+  revision = "5eb949d57a4620eb4f545eeb70ce7d832875f788"
 
 [[projects]]
   branch = "master"
@@ -108,7 +126,7 @@
   branch = "master"
   name = "golang.org/x/tools"
   packages = ["go/ast/astutil","go/buildutil","go/gcexportdata","go/gcimporter15","go/loader","go/types/typeutil"]
-  revision = "ebae2dcdbabadfdb9880a627481eaf0079a08767"
+  revision = "e4b401d06e5ee9f990011dc4f24cd24162131565"
 
 [[projects]]
   name = "honnef.co/go/tools"
@@ -119,6 +137,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1b80b21f010f8ee32510321d1176cdd67ae351590c3891444915ebbce4b11b29"
+  inputs-digest = "ca0082442cfa209a83902b594c9b08fca324731ad148d80e1e0ea23638b6c508"
   solver-name = "gps-cdcl"
   solver-version = 1
