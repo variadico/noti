@@ -67,7 +67,7 @@ what you'll set `NOTI_PUSHOVER_TOK` to.
 Log into your [Pushsafer] account. Next, look for the "Private or Alias Key".
 That's what you'll set `NOTI_PUSHSAFER_KEY` to.
 
-# Using Simplepush
+## Using Simplepush
 
 Install the Simplepush Android app to get your Simplepush key.
 That's the key you'll set to `NOTI_SIMPLEPUSH_KEY`.
