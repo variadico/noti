@@ -1,6 +1,5 @@
 # noti
 
-[![Gitter]](https://gitter.im/variadico/noti)
 [![Open Hub]](https://www.openhub.net/p/variadico-noti)
 [![CircleCI]](https://circleci.com/gh/variadico/noti)
 
@@ -12,9 +11,9 @@ constantly checking the terminal.
 
 ![OS X Banner Notification]
 
-## Types
+## Services
 
-These are the different notification types `noti` supports and on which OSes.
+These are the different notification services `noti` supports and on which OSes.
 
 ```
 type       | macOS | Linux | FreeBSD | Windows
@@ -82,6 +81,9 @@ noti [options] [utility [args...]]
     Trigger a speech notification. Optionally, customize the voice with
     NOTI_VOICE.
 
+-c, --bearychat
+    Trigger a BearyChat notification. Requries NOTI_BC_INCOMING_URI
+    to be set.
 -i, --hipchat
     Trigger a HipChat notification. Requires NOTI_HIPCHAT_TOK and
     NOTI_HIPCHAT_DEST to be set.
@@ -101,9 +103,6 @@ noti [options] [utility [args...]]
 -k, --slack
     Trigger a Slack notification. Requires NOTI_SLACK_TOK and
     NOTI_SLACK_DEST to be set.
--c, --bearychat
-    Trigger a BearyChat notification. Requries NOTI_BC_INCOMING_URI
-    to be set.
 
 -v, --version
     Print noti version and exit.
@@ -201,10 +200,9 @@ $ fg; noti
 2097152000 bytes (2.1 GB, 2.0 GiB) copied, 12 s, 175 MB/s
 ```
 
-[OS X Banner Notification]: https://raw.githubusercontent.com/variadico/noti/master/.github/screenshots/osx_banner.png
+[OS X Banner Notification]: https://raw.githubusercontent.com/variadico/noti/master/docs/screenshots/osx_banner.png
 [docs]: https://github.com/variadico/noti/blob/master/docs/noti.md
-[screenshots]: https://github.com/variadico/noti/tree/master/.github/screenshots
+[screenshots]: https://github.com/variadico/noti/tree/master/docs/screenshots
 [releases page]: https://github.com/variadico/noti/releases
-[Gitter]: https://badges.gitter.im/variadico/noti.svg
 [Open Hub]: https://img.shields.io/badge/open%20hub-metrics-blue.svg
 [CircleCI]: https://circleci.com/gh/variadico/noti.svg?style=shield

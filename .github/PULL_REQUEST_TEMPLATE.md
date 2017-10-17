@@ -1,7 +1,6 @@
-All sections required.
-Open an issue first.
+You should probably open an issue first.
 Read this, it's short:
-https://github.com/variadico/noti/blob/master/CONTRIBUTING.md#submit-a-pull-request
+https://github.com/variadico/noti/blob/master/docs/CONTRIBUTING.md#submit-a-pull-request
 
 OPEN PR AGAINST DEV!
 

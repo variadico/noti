@@ -16,4 +16,4 @@ What did you expect to happen?
 What actually happened?
 
 #### Version
-What `go version` and `noti -version` are you using?
+What `go version` and `noti --version` are you using?
