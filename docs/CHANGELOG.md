@@ -5,6 +5,10 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+* `.noti.yaml` config file support for NSUserNotification.
+
 ### Removed
 
 * Single-dash long options. Long flags must be passed with two dashes, e.g.
