@@ -1,0 +1,22 @@
+---
+version: "{build}"
+clone_folder: C:\Users\appveyor\go\src\github.com\variadico\noti
+environment:
+  GOPATH: C:\Users\appveyor\go
+install:
+- cmd: >-
+    set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
+
+    choco install make
+
+    go version
+
+    go env
+
+    make --version
+
+    make tools
+build_script:
+- cmd: make build
+test_script:
+- cmd: make test

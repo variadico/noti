@@ -1,7 +1,8 @@
 # noti
 
 [![Open Hub]](https://www.openhub.net/p/variadico-noti)
-[![CircleCI]](https://circleci.com/gh/variadico/noti)
+[![Travis]](https://travis-ci.org/variadico/noti)
+[![AppVeyor]](https://ci.appveyor.com/project/variadico/noti)
 
 Trigger notifications when a process completes.
 
@@ -205,4 +206,5 @@ $ fg; noti
 [screenshots]: https://github.com/variadico/noti/tree/master/docs/screenshots
 [releases page]: https://github.com/variadico/noti/releases
 [Open Hub]: https://img.shields.io/badge/open%20hub-metrics-blue.svg
-[CircleCI]: https://circleci.com/gh/variadico/noti.svg?style=shield
+[Travis]: https://travis-ci.org/variadico/noti.svg?branch=master
+[AppVeyor]: https://ci.appveyor.com/api/projects/status/qc2fgc164786jws6/branch/master?svg=true

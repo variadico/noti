@@ -1,0 +1,12 @@
+---
+language: go
+go:
+  - 1.9.x
+os:
+  - linux
+  - osx
+before_install:
+  - make tools
+script:
+  - make build
+  - make test
