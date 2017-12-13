@@ -1,6 +1,6 @@
 # Noti manual
 
-## Configuring
+## Configuring command
 
 Noti uses environment variables for configuration. Here are a couple of ways of
 setting those.
@@ -37,7 +37,22 @@ echo "export NOTI_SOUND=hero" >> ~/.bashrc
 noti
 ```
 
-## Using HipChat
+### Config file
+
+Noti can also read a `.noti.yaml` file. It checks your current and home
+directory for this file. These are the current options that can be set in the
+config file. Not all notification types are supported on every platform.
+
+```yaml
+---
+nsuser:
+  soundName: Ping
+  soundNameFail: Basso
+```
+
+## Configuring cloud services
+
+### HipChat
 
 Log into your HipChat account. Go to My Account > Rooms > {pick a room} >
 Tokens. Create a new token. Set the Scope to "Send Notification". That's what
@@ -47,13 +62,13 @@ Next, go to My Account > Rooms > {pick a room} > Summary. Look for "API ID". You
 can set `NOTI_HIPCHAT_DEST` to "API ID" or you can use the Room name, like
 "MyRoom".
 
-## Using Pushbullet
+### Pushbullet
 
 Log into your Pushbullet account. Next, click on [Settings] on the left sidebar.
 Scroll down to "Access Tokens" and click "Create Access Token". The text that
 appears will be what you'll set `NOTI_PUSHBULLET_TOK` to.
 
-## Using Pushover
+### Pushover
 
 Log into your [Pushover] account. Next, look for the "User Key". That's what
 you'll set `NOTI_PUSHOVER_DEST` to.
@@ -62,12 +77,12 @@ Next [create a new application]. Fill in the fields. Under "Type", select
 "Script". Finally, go to the application page. Look for "API Token/Key". This is
 what you'll set `NOTI_PUSHOVER_TOK` to.
 
-## Using Pushsafer
+### Pushsafer
 
 Log into your [Pushsafer] account. Next, look for the "Private or Alias Key".
 That's what you'll set `NOTI_PUSHSAFER_KEY` to.
 
-## Using Simplepush
+### Simplepush
 
 Install the Simplepush Android app to get your Simplepush key.
 That's the key you'll set to `NOTI_SIMPLEPUSH_KEY`.
@@ -77,7 +92,7 @@ In the app you can create events to customize ringtone and vibration patterns fo
 different kinds of notifications.
 The event id you can set in the app, translates to `NOTI_SIMPLEPUSH_EVENT` in noti.
 
-## Using Slack
+### Slack
 
 Log into your Slack account. Then go to the [OAuth Tokens for Testing and
 Development] page. Create a token. This is what you'll set `NOTI_SLACK_TOK` to.
@@ -86,7 +101,7 @@ The variable `NOTI_SLACK_DEST` can be set to a channel like `#general` or
 `#random`. You can also set it to someone's username, like `@juan` or
 `@variadico`.
 
-## Using BearyChat
+### BearyChat
 
 Log into your BearyChat account. Then create an [incoming robot][bc-incoming].
 Next, look for the "Hook Address" (or "Hook 地址" in Chinese), this is what

@@ -6,18 +6,17 @@ import (
 	"strings"
 
 	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
-func macOSSounds(pass, fail string) (string, string) {
-	if pass == "" {
-		pass = "Ping"
-	}
+func setupConfigFile(v *viper.Viper) error {
+	viper.SupportedExts = []string{"yaml"}
+	v.SetConfigName(".noti")
 
-	if fail == "" {
-		fail = "Basso"
-	}
+	v.AddConfigPath(".")
+	v.AddConfigPath("$HOME")
 
-	return pass, fail
+	return v.ReadInConfig()
 }
 
 // printEnv prints all of the environment variables used in noti.

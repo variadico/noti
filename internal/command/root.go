@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/variadico/noti/service"
 	"github.com/variadico/vbs"
 )
@@ -62,6 +63,12 @@ func init() {
 }
 
 func rootMain(cmd *cobra.Command, args []string) error {
+	v := viper.New()
+	setBannerDefaults(v)
+	if err := setupConfigFile(v); err != nil {
+		vbs.Println("Failed to read config file:", err)
+	}
+
 	vbs.Println("Command:", args)
 	if vbs.Enabled {
 		printEnv()
@@ -93,7 +100,8 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		message = "Done!"
 	}
 
-	pass, fail := macOSSounds(os.Getenv("NOTI_SOUND"), os.Getenv("NOTI_SOUND_FAIL"))
+	pass := v.GetString("nsuser.soundName")
+	fail := v.GetString("nsuser.soundNameFail")
 	sound := pass
 
 	if pid, _ := cmd.Flags().GetInt("pwatch"); pid != -1 {
@@ -115,6 +123,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	}
 
 	vbs.Println("Config:", config)
+	vbs.Println("Viper:", v.AllSettings())
 	var notis []service.Notification
 
 	if config["banner"] {
