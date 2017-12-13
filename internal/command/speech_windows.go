@@ -3,7 +3,8 @@ package command
 import (
 	"fmt"
 
-	"github.com/variadico/noti/services/speechsynthesizer"
+	"github.com/variadico/noti/service"
+	"github.com/variadico/noti/service/speechsynthesizer"
 )
 
 func getSpeech(title, message, voice string) service.Notification {

@@ -20,6 +20,7 @@ $n.SelectVoice("{{.}}")
 $n.Speak("{{.Text}}")
 `
 
+// Notification is a Windows speech notification.
 type Notification struct {
 	Text string
 	// Rate is from -10 to 10. -10 is slowest.
@@ -27,6 +28,7 @@ type Notification struct {
 	Voice string
 }
 
+// Send sends a Windows notification.
 func (n *Notification) Send() error {
 	tmpl, err := template.New("").Parse(script)
 	if err != nil {
@@ -45,10 +47,12 @@ func (n *Notification) Send() error {
 	return cmd.Run()
 }
 
+// SetMessage sets this notification's message.
 func (n *Notification) SetMessage(m string) {
 	n.Text = m
 }
 
+// GetMessage gets this notification's message.
 func (n *Notification) GetMessage() string {
 	return n.Text
 }

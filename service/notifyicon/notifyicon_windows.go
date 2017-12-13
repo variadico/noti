@@ -8,12 +8,14 @@ import (
 	"text/template"
 )
 
+// Balloon icons.
 const (
 	BalloonTipIconError   = "Error"
 	BalloonTipIconWarning = "Warning"
 	BalloonTipIconInfo    = "Info"
 	BalloonTipIconNone    = "None"
 
+	// DefaultIcon is the default icon.
 	DefaultIcon = "[System.Drawing.Icon]::ExtractAssociatedIcon([System.Windows.Forms.Application]::ExecutablePath)"
 )
 
@@ -31,6 +33,7 @@ $n.Visible = $True
 $n.ShowBalloonTip({{.Duration}})
 `
 
+// Notification is a Windows notification.
 type Notification struct {
 	// BalloonTipIcon is the notification icon.
 	BalloonTipIcon string
@@ -50,6 +53,7 @@ type Notification struct {
 	Duration int
 }
 
+// Send sends a Windows notification.
 func (n *Notification) Send() error {
 	if n.Icon == "" {
 		n.Icon = DefaultIcon
@@ -74,10 +78,12 @@ func (n *Notification) Send() error {
 	return cmd.Run()
 }
 
+// SetMessage sets this notification's message.
 func (n *Notification) SetMessage(m string) {
 	n.BalloonTipText = m
 }
 
+// GetMessage gets this notification's message.
 func (n *Notification) GetMessage() string {
 	return n.BalloonTipText
 }
