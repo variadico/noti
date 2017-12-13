@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 )
@@ -508,6 +509,14 @@ func TestPointerUnmarshal(t *testing.T) {
 	}
 }
 
+func TestUnmarshalTypeMismatch(t *testing.T) {
+	result := pointerMarshalTestStruct{}
+	err := Unmarshal([]byte("List = 123"), &result)
+	if !strings.HasPrefix(err.Error(), "(1, 1): Can't convert 123(int64) to []string(slice)") {
+		t.Errorf("Type mismatch must be reported: got %v", err.Error())
+	}
+}
+
 type nestedMarshalTestStruct struct {
 	String [][]string
 	//Struct [][]basicMarshalTestSubStruct
@@ -647,5 +656,79 @@ func TestMarshalComment(t *testing.T) {
 	expected := commentTestToml
 	if !bytes.Equal(result, expected) {
 		t.Errorf("Bad marshal: expected\n-----\n%s\n-----\ngot\n-----\n%s\n-----\n", expected, result)
+	}
+}
+
+type mapsTestStruct struct {
+	Simple map[string]string
+	Paths  map[string]string
+	Other  map[string]float64
+	X      struct {
+		Y struct {
+			Z map[string]bool
+		}
+	}
+}
+
+var mapsTestData = mapsTestStruct{
+	Simple: map[string]string{
+		"one plus one": "two",
+		"next":         "three",
+	},
+	Paths: map[string]string{
+		"/this/is/a/path": "/this/is/also/a/path",
+		"/heloo.txt":      "/tmp/lololo.txt",
+	},
+	Other: map[string]float64{
+		"testing": 3.9999,
+	},
+	X: struct{ Y struct{ Z map[string]bool } }{
+		Y: struct{ Z map[string]bool }{
+			Z: map[string]bool{
+				"is.Nested": true,
+			},
+		},
+	},
+}
+var mapsTestToml = []byte(`
+[Other]
+  "testing" = 3.9999
+
+[Paths]
+  "/heloo.txt" = "/tmp/lololo.txt"
+  "/this/is/a/path" = "/this/is/also/a/path"
+
+[Simple]
+  "next" = "three"
+  "one plus one" = "two"
+
+[X]
+
+  [X.Y]
+
+    [X.Y.Z]
+      "is.Nested" = true
+`)
+
+func TestEncodeQuotedMapKeys(t *testing.T) {
+	var buf bytes.Buffer
+	if err := NewEncoder(&buf).QuoteMapKeys(true).Encode(mapsTestData); err != nil {
+		t.Fatal(err)
+	}
+	result := buf.Bytes()
+	expected := mapsTestToml
+	if !bytes.Equal(result, expected) {
+		t.Errorf("Bad maps marshal: expected\n-----\n%s\n-----\ngot\n-----\n%s\n-----\n", expected, result)
+	}
+}
+func TestDecodeQuotedMapKeys(t *testing.T) {
+	result := mapsTestStruct{}
+	err := NewDecoder(bytes.NewBuffer(mapsTestToml)).Decode(&result)
+	expected := mapsTestData
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Bad maps unmarshal: expected %v, got %v", expected, result)
 	}
 }

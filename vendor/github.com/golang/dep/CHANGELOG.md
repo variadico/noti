@@ -1,5 +1,47 @@
 # v0.3.2 (Unreleased)
 
+NEW FEATURES:
+
+* Add support for importing from [gvt](https://github.com/FiloSottile/gvt)
+and [gb](https://godoc.org/github.com/constabulary/gb/cmd/gb-vendor).
+(#1149)
+* Wildcard ignore support. (#1156)
+* Disable SourceManager lock by setting `DEPNOLOCK` environment variable.
+(#1206)
+* `dep ensure -no-vendor -dry-run` now exits with an error when changes would
+have to be made to `Gopkg.lock`. This is useful for CI. (#1256)
+
+BUG FIXES:
+
+* gps: Fix case mismatch error with multiple dependers. (#1233)
+* Skip broken `vendor` symlink rather than returning an error. (#1191)
+* Fix `status` shows incorrect reason for lock mismatch when ignoring packages.
+(#1216)
+
+IMPROVEMENTS:
+
+* Allow `dep ensure -add` and `-update` when lock is out-of-sync. (#1225)
+* gps: vcs: Dedupe git version list (#1212)
+* gps: Add prune functions to gps. (#1020)
+* gps: Skip broken vendor symlinks. (#1191)
+* `dep ensure -add` now concurrently fetches the source and adds the projects.
+(#1218)
+* File name case check is now performed on `Gopkg.toml` and `Gopkg.lock`.
+(#1114)
+* gps: gps now supports pruning. (#1020)
+* `dep ensure -update` now concurrently validates the passed project arguments.
+Improving performance when updating dependencies with `-update`. (#1175)
+* `dep status` now concurrently fetches repo info. Improving status performance.
+(#1135)
+* gps: Add SourceURLsForPath() to SourceManager. (#1166)
+* gps: Include output in error. (#1180)
+
+WIP:
+
+* gps: Process canonical import paths. (#1017)
+* gps: Persistent cache. (#1127, #1215)
+
+
 # v0.3.1
 
 * gps: Add satisfiability check for case variants (#1079)

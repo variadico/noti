@@ -11,6 +11,8 @@ import (
 	"strings"
 	"testing"
 	"text/tabwriter"
+
+	"github.com/golang/dep/internal/gps/pkgtree"
 )
 
 func TestHashInputs(t *testing.T) {
@@ -64,10 +66,7 @@ func TestHashInputsReqsIgs(t *testing.T) {
 	fix := basicFixtures["shared dependency with overlapping constraints"]
 
 	rm := fix.rootmanifest().(simpleRootManifest).dup()
-	rm.ig = map[string]bool{
-		"foo": true,
-		"bar": true,
-	}
+	rm.ig = pkgtree.NewIgnoredRuleset([]string{"foo", "bar"})
 
 	params := SolveParameters{
 		RootDir:         string(fix.ds[0].n),
@@ -593,4 +592,95 @@ func diffHashingInputs(s Solver, wnt []string) string {
 
 	tw.Flush()
 	return buf.String()
+}
+
+func TestHashInputsIneffectualWildcardIgs(t *testing.T) {
+	fix := basicFixtures["shared dependency with overlapping constraints"]
+
+	rm := fix.rootmanifest().(simpleRootManifest).dup()
+
+	params := SolveParameters{
+		RootDir:         string(fix.ds[0].n),
+		RootPackageTree: fix.rootTree(),
+		Manifest:        rm,
+		ProjectAnalyzer: naiveAnalyzer{},
+		stdLibFn:        func(string) bool { return false },
+		mkBridgeFn:      overrideMkBridge,
+	}
+
+	cases := []struct {
+		name      string
+		ignoreMap []string
+		elems     []string
+	}{
+		{
+			name: "no wildcard ignores",
+			elems: []string{
+				hhConstraints,
+				"a",
+				"sv-1.0.0",
+				"b",
+				"sv-1.0.0",
+				hhImportsReqs,
+				"a",
+				"b",
+				hhIgnores,
+				hhOverrides,
+				hhAnalyzer,
+				"naive-analyzer",
+				"1",
+			},
+		},
+		{
+			name: "different wildcard ignores",
+			ignoreMap: []string{
+				"foobar*",
+				"foobarbaz*",
+				"foozapbar*",
+			},
+			elems: []string{
+				hhConstraints,
+				"a",
+				"sv-1.0.0",
+				"b",
+				"sv-1.0.0",
+				hhImportsReqs,
+				"a",
+				"b",
+				hhIgnores,
+				"foobar*",
+				"foozapbar*",
+				hhOverrides,
+				hhAnalyzer,
+				"naive-analyzer",
+				"1",
+			},
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+
+			rm.ig = pkgtree.NewIgnoredRuleset(c.ignoreMap)
+
+			params.Manifest = rm
+
+			s, err := Prepare(params, newdepspecSM(fix.ds, nil))
+			if err != nil {
+				t.Fatalf("Unexpected error while prepping solver: %s", err)
+			}
+
+			dig := s.HashInputs()
+			h := sha256.New()
+
+			for _, v := range c.elems {
+				h.Write([]byte(v))
+			}
+			correct := h.Sum(nil)
+
+			if !bytes.Equal(dig, correct) {
+				t.Errorf("Hashes are not equal. Inputs:\n%s", diffHashingInputs(s, c.elems))
+			}
+		})
+	}
 }

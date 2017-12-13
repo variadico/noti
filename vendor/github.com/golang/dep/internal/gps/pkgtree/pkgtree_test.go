@@ -11,6 +11,7 @@ import (
 	"go/token"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"reflect"
 	"runtime"
@@ -936,27 +937,6 @@ func TestListPackages(t *testing.T) {
 				},
 			},
 		},
-		// New code allows this because it doesn't care if the code compiles (kinda) or not,
-		// so maybe this is actually not an error anymore?
-		//
-		// TODO re-enable this case after the full and proper ListPackages()
-		// refactor in #99
-		/*"two pkgs": {
-			fileRoot:   j("twopkgs"),
-			importRoot: "twopkgs",
-			out: PackageTree{
-				ImportRoot: "twopkgs",
-				Packages: map[string]PackageOrErr{
-					"twopkgs": {
-						Err: &build.MultiplePackageError{
-							Dir:      j("twopkgs"),
-							Packages: []string{"simple", "m1p"},
-							Files:    []string{"a.go", "b.go"},
-						},
-					},
-				},
-			},
-		}, */
 		// imports a missing pkg
 		"missing import": {
 			fileRoot:   j("missing"),
@@ -1229,6 +1209,114 @@ func TestListPackages(t *testing.T) {
 				},
 			},
 		},
+		"varied with hidden dirs": {
+			fileRoot:   j("varied_hidden"),
+			importRoot: "varied",
+			out: PackageTree{
+				ImportRoot: "varied",
+				Packages: map[string]PackageOrErr{
+					"varied": {
+						P: Package{
+							ImportPath:  "varied",
+							CommentPath: "",
+							Name:        "main",
+							Imports: []string{
+								"net/http",
+								"varied/_frommain",
+								"varied/simple",
+							},
+						},
+					},
+					"varied/always": {
+						P: Package{
+							ImportPath:  "varied/always",
+							CommentPath: "",
+							Name:        "always",
+							Imports:     []string{},
+							TestImports: []string{
+								"varied/.onlyfromtests",
+							},
+						},
+					},
+					"varied/.onlyfromtests": {
+						P: Package{
+							ImportPath:  "varied/.onlyfromtests",
+							CommentPath: "",
+							Name:        "onlyfromtests",
+							Imports: []string{
+								"github.com/golang/dep/internal/gps",
+								"os",
+								"sort",
+								"varied/_secondorder",
+							},
+						},
+					},
+					"varied/simple": {
+						P: Package{
+							ImportPath:  "varied/simple",
+							CommentPath: "",
+							Name:        "simple",
+							Imports: []string{
+								"github.com/golang/dep/internal/gps",
+								"go/parser",
+								"varied/simple/testdata",
+							},
+						},
+					},
+					"varied/simple/testdata": {
+						P: Package{
+							ImportPath:  "varied/simple/testdata",
+							CommentPath: "",
+							Name:        "testdata",
+							Imports: []string{
+								"varied/dotdotslash",
+							},
+						},
+					},
+					"varied/_secondorder": {
+						P: Package{
+							ImportPath:  "varied/_secondorder",
+							CommentPath: "",
+							Name:        "secondorder",
+							Imports: []string{
+								"hash",
+							},
+						},
+					},
+					"varied/_never": {
+						P: Package{
+							ImportPath:  "varied/_never",
+							CommentPath: "",
+							Name:        "never",
+							Imports: []string{
+								"github.com/golang/dep/internal/gps",
+								"sort",
+							},
+						},
+					},
+					"varied/_frommain": {
+						P: Package{
+							ImportPath:  "varied/_frommain",
+							CommentPath: "",
+							Name:        "frommain",
+							Imports: []string{
+								"github.com/golang/dep/internal/gps",
+								"sort",
+							},
+						},
+					},
+					"varied/dotdotslash": {
+						Err: &LocalImportsError{
+							Dir:        j("varied_hidden/dotdotslash"),
+							ImportPath: "varied/dotdotslash",
+							LocalImports: []string{
+								"../github.com/golang/dep/internal/gps",
+							},
+						},
+					},
+				},
+			},
+		},
 		"invalid buildtag like comments should be ignored": {
 			fileRoot:   j("buildtag"),
 			importRoot: "buildtag",
@@ -1284,6 +1372,70 @@ func TestListPackages(t *testing.T) {
 								"os",
 								"sort",
 							},
+						},
+					},
+				},
+			},
+		},
+		"canonical": {
+			fileRoot:   j("canonical"),
+			importRoot: "canonical",
+			out: PackageTree{
+				ImportRoot: "canonical",
+				Packages: map[string]PackageOrErr{
+					"canonical": {
+						P: Package{
+							ImportPath:  "canonical",
+							CommentPath: "canonical",
+							Name:        "pkg",
+							Imports:     []string{},
+						},
+					},
+					"canonical/sub": {
+						P: Package{
+							ImportPath:  "canonical/sub",
+							CommentPath: "canonical/subpackage",
+							Name:        "sub",
+							Imports:     []string{},
+						},
+					},
+				},
+			},
+		},
+		"conflicting canonical comments": {
+			fileRoot:   j("canon_confl"),
+			importRoot: "canon_confl",
+			out: PackageTree{
+				ImportRoot: "canon_confl",
+				Packages: map[string]PackageOrErr{
+					"canon_confl": {
+						Err: &ConflictingImportComments{
+							ImportPath: "canon_confl",
+							ConflictingImportComments: []string{
+								"vanity1",
+								"vanity2",
+							},
+						},
+					},
+				},
+			},
+		},
+		"non-canonical": {
+			fileRoot:   j("canonical"),
+			importRoot: "noncanonical",
+			out: PackageTree{
+				ImportRoot: "noncanonical",
+				Packages: map[string]PackageOrErr{
+					"noncanonical": PackageOrErr{
+						Err: &NonCanonicalImportRoot{
+							ImportRoot: "noncanonical",
+							Canonical:  "canonical",
+						},
+					},
+					"noncanonical/sub": PackageOrErr{
+						Err: &NonCanonicalImportRoot{
+							ImportRoot: "noncanonical",
+							Canonical:  "canonical/subpackage",
 						},
 					},
 				},
@@ -1356,6 +1508,113 @@ func TestListPackages(t *testing.T) {
 	}
 }
 
+// Transform Table Test that operates solely on the varied_hidden fixture.
+func TestTrimHiddenPackages(t *testing.T) {
+	base, err := ListPackages(filepath.Join(getTestdataRootDir(t), "src", "varied_hidden"), "varied")
+	if err != nil {
+		panic(err)
+	}
+
+	table := map[string]struct {
+		main, tests bool     // literal params to TrimHiddenPackages
+		ignore      []string // transformed into IgnoredRuleset param to TrimHiddenPackages
+		trimmed     []string // list of packages that should be trimmed in result PackageTree
+	}{
+		// All of these implicitly verify that the varied/_never pkg is always
+		// trimmed, and that the varied/dotdotslash pkg is not trimmed even
+		// though it has errors.
+		"minimal trim": {
+			main:  true,
+			tests: true,
+		},
+		"ignore simple, lose testdata": {
+			main:    true,
+			tests:   true,
+			ignore:  []string{"simple"},
+			trimmed: []string{"simple", "simple/testdata"},
+		},
+		"no tests": {
+			main:    true,
+			tests:   false,
+			trimmed: []string{".onlyfromtests", "_secondorder"},
+		},
+		"ignore a reachable hidden": {
+			main:    true,
+			tests:   true,
+			ignore:  []string{"_secondorder"},
+			trimmed: []string{"_secondorder"},
+		},
+		"ignore a reachable hidden with another hidden solely reachable through it": {
+			main:    true,
+			tests:   true,
+			ignore:  []string{".onlyfromtests"},
+			trimmed: []string{".onlyfromtests", "_secondorder"},
+		},
+		"no main": {
+			main:    false,
+			tests:   true,
+			trimmed: []string{"", "_frommain"},
+		},
+		"no main or tests": {
+			main:    false,
+			tests:   false,
+			trimmed: []string{"", "_frommain", ".onlyfromtests", "_secondorder"},
+		},
+		"no main or tests and ignore simple": {
+			main:    false,
+			tests:   false,
+			ignore:  []string{"simple"},
+			trimmed: []string{"", "_frommain", ".onlyfromtests", "_secondorder", "simple", "simple/testdata"},
+		},
+	}
+
+	for name, fix := range table {
+		t.Run(name, func(t *testing.T) {
+			want := base.Copy()
+
+			var ig []string
+			for _, v := range fix.ignore {
+				ig = append(ig, path.Join("varied", v))
+			}
+			got := base.TrimHiddenPackages(fix.main, fix.tests, NewIgnoredRuleset(ig))
+
+			for _, ip := range append(fix.trimmed, "_never") {
+				ip = path.Join("varied", ip)
+				if _, has := want.Packages[ip]; !has {
+					panic(fmt.Sprintf("bad input, %s does not exist in fixture ptree", ip))
+				}
+				delete(want.Packages, ip)
+			}
+
+			if !reflect.DeepEqual(want, got) {
+				if len(want.Packages) < 2 {
+					t.Errorf("Did not get expected PackageOrErrs:\n\t(GOT): %#v\n\t(WNT): %#v", got, want)
+				} else {
+					seen := make(map[string]bool)
+					for path, perr := range want.Packages {
+						seen[path] = true
+						if operr, exists := got.Packages[path]; !exists {
+							t.Errorf("Expected PackageOrErr for path %s was missing from output:\n\t%s", path, perr)
+						} else {
+							if !reflect.DeepEqual(perr, operr) {
+								t.Errorf("PkgOrErr for path %s was not as expected:\n\t(GOT): %#v\n\t(WNT): %#v", path, operr, perr)
+							}
+						}
+					}
+
+					for path, operr := range got.Packages {
+						if seen[path] {
+							continue
+						}
+
+						t.Errorf("Got PackageOrErr for path %s, but none was expected:\n\t%s", path, operr)
+					}
+				}
+			}
+		})
+	}
+}
+
 // Test that ListPackages skips directories for which it lacks permissions to
 // enter and files it lacks permissions to read.
 func TestListPackagesNoPerms(t *testing.T) {
@@ -1366,7 +1625,7 @@ func TestListPackagesNoPerms(t *testing.T) {
 		// It's not a big deal, though, because the os.IsPermission() call we
 		// use in the real code is effectively what's being tested here, and
 		// that's designed to be cross-platform. So, if the unix tests pass, we
-		// have every reason to believe windows tests would to, if the situation
+		// have every reason to believe windows tests would too, if the situation
 		// arises.
 		t.Skip()
 	}
@@ -1466,10 +1725,10 @@ func TestToReachMap(t *testing.T) {
 	var want ReachMap
 	var name string
 	var main, tests bool
-	var ignore map[string]bool
+	var ignore []string
 
 	validate := func() {
-		got, em := vptree.ToReachMap(main, tests, true, ignore)
+		got, em := vptree.ToReachMap(main, tests, true, NewIgnoredRuleset(ignore))
 		if len(em) != 0 {
 			t.Errorf("Should not have any error packages from ToReachMap, got %s", em)
 		}
@@ -1629,9 +1888,7 @@ func TestToReachMap(t *testing.T) {
 
 	// ignoring the "varied" pkg has same effect as disabling main pkgs
 	name = "ignore root"
-	ignore = map[string]bool{
-		b(""): true,
-	}
+	ignore = []string{b("")}
 	main = true
 	validate()
 
@@ -1665,9 +1922,7 @@ func TestToReachMap(t *testing.T) {
 	// now, the fun stuff. punch a hole in the middle by cutting out
 	// varied/simple
 	name = "ignore varied/simple"
-	ignore = map[string]bool{
-		b("simple"): true,
-	}
+	ignore = []string{b("simple")}
 	except(
 		// root pkg loses on everything in varied/simple/another
 		// FIXME this is a bit odd, but should probably exclude m1p as well,
@@ -1680,9 +1935,9 @@ func TestToReachMap(t *testing.T) {
 
 	// widen the hole by excluding otherpath
 	name = "ignore varied/{otherpath,simple}"
-	ignore = map[string]bool{
-		b("otherpath"): true,
-		b("simple"):    true,
+	ignore = []string{
+		b("otherpath"),
+		b("simple"),
 	}
 	except(
 		// root pkg loses on everything in varied/simple/another and varied/m1p
@@ -1694,7 +1949,7 @@ func TestToReachMap(t *testing.T) {
 
 	// remove namemismatch, though we're mostly beating a dead horse now
 	name = "ignore varied/{otherpath,simple,namemismatch}"
-	ignore[b("namemismatch")] = true
+	ignore = append(ignore, b("namemismatch"))
 	except(
 		// root pkg loses on everything in varied/simple/another and varied/m1p
 		bl("", "simple", "simple/another", "m1p", "otherpath", "namemismatch")+" hash encoding/binary go/parser github.com/golang/dep/internal/gps sort os github.com/Masterminds/semver",
@@ -1793,9 +2048,9 @@ func TestFlattenReachMap(t *testing.T) {
 			isStdLibFn: nil,
 			main:       true,
 			tests:      true,
-			ignore: map[string]bool{
-				"nomatch": true,
-			},
+			ignore: NewIgnoredRuleset([]string{
+				"nomatch",
+			}),
 		},
 		// should have the same effect as ignoring main
 		{
@@ -1804,9 +2059,9 @@ func TestFlattenReachMap(t *testing.T) {
 			isStdLibFn: nil,
 			main:       true,
 			tests:      true,
-			ignore: map[string]bool{
-				"github.com/example/varied": true,
-			},
+			ignore: NewIgnoredRuleset([]string{
+				"github.com/example/varied",
+			}),
 		},
 		// now drop a more interesting one
 		// we get github.com/golang/dep/internal/gps from m1p, too, so it should still be there
@@ -1816,9 +2071,9 @@ func TestFlattenReachMap(t *testing.T) {
 			isStdLibFn: nil,
 			main:       true,
 			tests:      true,
-			ignore: map[string]bool{
-				"github.com/example/varied/simple": true,
-			},
+			ignore: NewIgnoredRuleset([]string{
+				"github.com/example/varied/simple",
+			}),
 		},
 		// now drop two
 		{
@@ -1827,10 +2082,10 @@ func TestFlattenReachMap(t *testing.T) {
 			isStdLibFn: nil,
 			main:       true,
 			tests:      true,
-			ignore: map[string]bool{
-				"github.com/example/varied/simple":       true,
-				"github.com/example/varied/namemismatch": true,
-			},
+			ignore: NewIgnoredRuleset([]string{
+				"github.com/example/varied/simple",
+				"github.com/example/varied/namemismatch",
+			}),
 		},
 		// make sure tests and main play nice with ignore
 		{
@@ -1839,10 +2094,10 @@ func TestFlattenReachMap(t *testing.T) {
 			isStdLibFn: nil,
 			main:       true,
 			tests:      false,
-			ignore: map[string]bool{
-				"github.com/example/varied/simple":       true,
-				"github.com/example/varied/namemismatch": true,
-			},
+			ignore: NewIgnoredRuleset([]string{
+				"github.com/example/varied/simple",
+				"github.com/example/varied/namemismatch",
+			}),
 		},
 		{
 			name:       "ignore simple and namemismatch, and no main",
@@ -1850,10 +2105,10 @@ func TestFlattenReachMap(t *testing.T) {
 			isStdLibFn: nil,
 			main:       false,
 			tests:      true,
-			ignore: map[string]bool{
-				"github.com/example/varied/simple":       true,
-				"github.com/example/varied/namemismatch": true,
-			},
+			ignore: NewIgnoredRuleset([]string{
+				"github.com/example/varied/simple",
+				"github.com/example/varied/namemismatch",
+			}),
 		},
 		{
 			name:       "ignore simple and namemismatch, and no main or tests",
@@ -1861,10 +2116,10 @@ func TestFlattenReachMap(t *testing.T) {
 			isStdLibFn: nil,
 			main:       false,
 			tests:      false,
-			ignore: map[string]bool{
-				"github.com/example/varied/simple":       true,
-				"github.com/example/varied/namemismatch": true,
-			},
+			ignore: NewIgnoredRuleset([]string{
+				"github.com/example/varied/simple",
+				"github.com/example/varied/namemismatch",
+			}),
 		},
 		// ignore two that should knock out gps
 		{
@@ -1873,10 +2128,10 @@ func TestFlattenReachMap(t *testing.T) {
 			isStdLibFn: nil,
 			main:       true,
 			tests:      true,
-			ignore: map[string]bool{
-				"github.com/example/varied/simple": true,
-				"github.com/example/varied/m1p":    true,
-			},
+			ignore: NewIgnoredRuleset([]string{
+				"github.com/example/varied/simple",
+				"github.com/example/varied/m1p",
+			}),
 		},
 		// finally, directly ignore some external packages
 		{
@@ -1885,11 +2140,11 @@ func TestFlattenReachMap(t *testing.T) {
 			isStdLibFn: nil,
 			main:       true,
 			tests:      true,
-			ignore: map[string]bool{
-				"github.com/golang/dep/internal/gps": true,
-				"go/parser":                          true,
-				"sort":                               true,
-			},
+			ignore: NewIgnoredRuleset([]string{
+				"github.com/golang/dep/internal/gps",
+				"go/parser",
+				"sort",
+			}),
 		},
 	} {
 		t.Run(testCase.name, testFlattenReachMap(&vptree, testCase))
@@ -1913,7 +2168,7 @@ func TestFlattenReachMap(t *testing.T) {
 type flattenReachMapCase struct {
 	expect      []string
 	name        string
-	ignore      map[string]bool
+	ignore      *IgnoredRuleset
 	main, tests bool
 	isStdLibFn  func(string) bool
 }
@@ -1979,4 +2234,39 @@ func getTestdataRootDir(t *testing.T) string {
 		t.Fatal(err)
 	}
 	return filepath.Join(cwd, "..", "_testdata")
+}
+
+// Canary regression test to make sure that if PackageTree ever gains new
+// fields, we update the Copy method accordingly.
+func TestCanaryPackageTreeCopy(t *testing.T) {
+	ptreeFields := []string{
+		"ImportRoot",
+		"Packages",
+	}
+	packageFields := []string{
+		"Name",
+		"ImportPath",
+		"CommentPath",
+		"Imports",
+		"TestImports",
+	}
+
+	fieldNames := func(typ reflect.Type) []string {
+		var names []string
+		for i := 0; i < typ.NumField(); i++ {
+			names = append(names, typ.Field(i).Name)
+		}
+		return names
+	}
+
+	ptreeRefl := fieldNames(reflect.TypeOf(PackageTree{}))
+	packageRefl := fieldNames(reflect.TypeOf(Package{}))
+
+	if !reflect.DeepEqual(ptreeFields, ptreeRefl) {
+		t.Errorf("PackageTree.Copy is designed to work with an exact set of fields in the PackageTree struct - make sure it (and this test) have been updated!\n\t(GOT):%s\n\t(WNT):%s", ptreeFields, ptreeRefl)
+	}
+
+	if !reflect.DeepEqual(packageFields, packageRefl) {
+		t.Errorf("PackageTree.Copy is designed to work with an exact set of fields in the Package struct - make sure it (and this test) have been updated!\n\t(GOT):%s\n\t(WNT):%s", packageFields, packageRefl)
+	}
 }

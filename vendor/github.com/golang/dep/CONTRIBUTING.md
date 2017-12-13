@@ -30,9 +30,9 @@ Please read the [Contribution Guidelines](https://golang.org/doc/contribute.html
 before sending patches.
 
 The
-[help-wanted](https://github.com/golang/dep/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp-wanted)
+[help wanted](https://github.com/golang/dep/issues?q=is%3Aissue+is%3Aopen+label%3A%22help%20wanted%22)
 label highlights issues that are well-suited for folks to jump in on. The
-[good-first-pr](https://github.com/golang/dep/issues?q=is%3Aissue+is%3Aopen+label%3Agood-first-pr)
+[good first issue](https://github.com/golang/dep/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22)
 label further identifies issues that are particularly well-sized for newcomers.
 
 Unless otherwise noted, the `dep` source files are distributed under
@@ -41,6 +41,11 @@ the BSD-style license found in the LICENSE file.
 All submissions, including submissions by project members, require review. We
 use GitHub pull requests for this purpose. Consult [GitHub Help] for more
 information on using pull requests.
+
+We check `dep`'s own `vendor` directory into git. For any PR to `dep` where you're
+updating `Gopkg.toml`, make sure to run `dep ensure` and
+([for now](https://github.com/golang/dep/issues/944)) `dep prune` and commit all
+changes to `vendor`.
 
 [GitHub Help]: https://help.github.com/articles/about-pull-requests/
 
@@ -74,6 +79,7 @@ again.
 ### Issue management
 
 * We use [Zenhub](https://www.zenhub.com) to manage the queue, in addition to what we do with labels.
+  * You will need to install [ZenHub extension](https://www.zenhub.com/extension) to your browser to show the board.
   * Pipelines, and [the board](https://github.com/golang/dep#boards) are one thing we try to utilize:
     * **New Issues Pipeline**: When someone creates a new issue, it goes here first. Keep an eye out for issues that fall into your area. Add labels to them, and if it's something we should do, put it in the `Backlog` pipeline. If you aren't sure, throw it in the `Icebox`. It helps to sort this pipeline by date.
     * **Icebox Pipeline**: Issues that we aren't immediately closing but aren't really ready to be prioritized and started on. It's not a wontfix bucket, but a "not sure if we should/can fix right now" bucket.

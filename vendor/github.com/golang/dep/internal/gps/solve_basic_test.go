@@ -7,6 +7,7 @@ package gps
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -1482,6 +1483,10 @@ func (sm *depspecSourceManager) DeduceProjectRoot(ip string) (ProjectRoot, error
 	return "", fmt.Errorf("Could not find %s, or any parent, in list of known fixtures", ip)
 }
 
+func (sm *depspecSourceManager) SourceURLsForPath(ip string) ([]*url.URL, error) {
+	return nil, fmt.Errorf("dummy sm doesn't implement SourceURLsForPath")
+}
+
 func (sm *depspecSourceManager) rootSpec() depspec {
 	return sm.specs[0]
 }
@@ -1569,7 +1574,7 @@ func (ds depspec) DependencyConstraints() ProjectConstraints {
 type fixLock []LockedProject
 
 // impl Lock interface
-func (fixLock) InputHash() []byte {
+func (fixLock) InputsDigest() []byte {
 	return []byte("fooooorooooofooorooofoo")
 }
 
@@ -1581,7 +1586,7 @@ func (l fixLock) Projects() []LockedProject {
 type dummyLock struct{}
 
 // impl Lock interface
-func (dummyLock) InputHash() []byte {
+func (dummyLock) InputsDigest() []byte {
 	return []byte("fooooorooooofooorooofoo")
 }
 

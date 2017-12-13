@@ -29,7 +29,7 @@ specified, use the current directory.
 When configuration for another dependency management tool is detected, it is
 imported into the initial manifest and lock. Use the -skip-tools flag to
 disable this behavior. The following external tools are supported:
-glide, godep, vndr, govend.
+glide, godep, vndr, govend, gb, gvt.
 
 Any dependencies that are not constrained by external configuration use the
 GOPATH analysis below.
@@ -227,9 +227,9 @@ func (cmd *initCommand) Run(ctx *dep.Ctx, args []string) error {
 }
 
 func getDirectDependencies(sm gps.SourceManager, p *dep.Project) (pkgtree.PackageTree, map[string]bool, error) {
-	pkgT, err := pkgtree.ListPackages(p.ResolvedAbsRoot, string(p.ImportRoot))
+	pkgT, err := p.ParseRootPackageTree()
 	if err != nil {
-		return pkgtree.PackageTree{}, nil, errors.Wrap(err, "gps.ListPackages")
+		return pkgtree.PackageTree{}, nil, err
 	}
 
 	directDeps := map[string]bool{}

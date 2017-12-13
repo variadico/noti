@@ -11,6 +11,8 @@ import (
 
 	"github.com/golang/dep/internal/fs"
 	"github.com/golang/dep/internal/gps"
+	"github.com/golang/dep/internal/gps/pkgtree"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -39,6 +41,54 @@ func findProjectRoot(from string) (string, error) {
 		}
 		from = parent
 	}
+}
+
+// checkGopkgFilenames validates filename case for the manifest and lock files.
+//
+// This is relevant on case-insensitive file systems like the defaults in Windows and
+// macOS.
+//
+// If manifest file is not found, it returns an error indicating the project could not be
+// found. If it is found but the case does not match, an error is returned. If a lock
+// file is not found, no error is returned as lock file is optional. If it is found but
+// the case does not match, an error is returned.
+func checkGopkgFilenames(projectRoot string) error {
+	// ReadActualFilenames is actually costly. Since the check to validate filename case
+	// for Gopkg filenames is not relevant to case-sensitive filesystems like
+	// ext4(linux), try for an early return.
+	caseSensitive, err := fs.IsCaseSensitiveFilesystem(projectRoot)
+	if err != nil {
+		return errors.Wrap(err, "could not check validity of configuration filenames")
+	}
+	if caseSensitive {
+		return nil
+	}
+
+	actualFilenames, err := fs.ReadActualFilenames(projectRoot, []string{ManifestName, LockName})
+
+	if err != nil {
+		return errors.Wrap(err, "could not check validity of configuration filenames")
+	}
+
+	actualMfName, found := actualFilenames[ManifestName]
+	if !found {
+		// Ideally this part of the code won't ever be executed if it is called after
+		// `findProjectRoot`. But be thorough and handle it anyway.
+		return errProjectNotFound
+	}
+	if actualMfName != ManifestName {
+		return fmt.Errorf("manifest filename %q does not match %q", actualMfName, ManifestName)
+	}
+
+	// If a file is not found, the string map returned by `fs.ReadActualFilenames` will
+	// not have an entry for the given filename. Since the lock file is optional, we
+	// should check for equality only if it was found.
+	actualLfName, found := actualFilenames[LockName]
+	if found && actualLfName != LockName {
+		return fmt.Errorf("lock filename %q does not match %q", actualLfName, LockName)
+	}
+
+	return nil
 }
 
 // A Project holds a Manifest and optional Lock for a project.
@@ -82,6 +132,23 @@ func (p *Project) MakeParams() gps.SolveParameters {
 	}
 
 	return params
+}
+
+// ParseRootPackageTree analyzes the root project's disk contents to create a
+// PackageTree, trimming out packages that are not relevant for root projects
+// along the way.
+func (p *Project) ParseRootPackageTree() (pkgtree.PackageTree, error) {
+	ptree, err := pkgtree.ListPackages(p.ResolvedAbsRoot, string(p.ImportRoot))
+	if err != nil {
+		return pkgtree.PackageTree{}, errors.Wrap(err, "analysis of current project's packages failed")
+	}
+	// We don't care about (unreachable) hidden packages for the root project,
+	// so drop all of those.
+	var ig *pkgtree.IgnoredRuleset
+	if p.Manifest != nil {
+		ig = p.Manifest.IgnoredPackages()
+	}
+	return ptree.TrimHiddenPackages(true, true, ig), nil
 }
 
 // BackupVendor looks for existing vendor directory and if it's not empty,

@@ -5,13 +5,16 @@
 package pkgtree
 
 import (
+	"bytes"
 	"fmt"
+	"go/ast"
 	"go/build"
 	"go/parser"
 	gscan "go/scanner"
 	"go/token"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -73,6 +76,9 @@ func ListPackages(fileRoot, importRoot string) (PackageTree, error) {
 
 	err = filepath.Walk(fileRoot, func(wp string, fi os.FileInfo, err error) error {
 		if err != nil && err != filepath.SkipDir {
+			if os.IsPermission(err) {
+				return filepath.SkipDir
+			}
 			return err
 		}
 		if !fi.IsDir() {
@@ -97,25 +103,29 @@ func ListPackages(fileRoot, importRoot string) (PackageTree, error) {
 			return filepath.SkipDir
 		}
 
-		// The entry error is nil when visiting a directory that itself is
-		// untraversable, as it's still governed by the parent directory's
-		// perms. We have to check readability of the dir here, because
-		// otherwise we'll have an empty package entry when we fail to read any
-		// of the dir's contents.
-		//
-		// If we didn't check here, then the next time this closure is called it
-		// would have an err with the same path as is called this time, as only
-		// then will filepath.Walk have attempted to descend into the directory
-		// and encountered an error.
-		var f *os.File
-		f, err = os.Open(wp)
-		if err != nil {
-			if os.IsPermission(err) {
-				return filepath.SkipDir
+		{
+			// For Go 1.9 and earlier:
+			//
+			// The entry error is nil when visiting a directory that itself is
+			// untraversable, as it's still governed by the parent directory's
+			// perms. We have to check readability of the dir here, because
+			// otherwise we'll have an empty package entry when we fail to read any
+			// of the dir's contents.
+			//
+			// If we didn't check here, then the next time this closure is called it
+			// would have an err with the same path as is called this time, as only
+			// then will filepath.Walk have attempted to descend into the directory
+			// and encountered an error.
+			var f *os.File
+			f, err = os.Open(wp)
+			if err != nil {
+				if os.IsPermission(err) {
+					return filepath.SkipDir
+				}
+				return err
 			}
-			return err
+			f.Close()
 		}
-		f.Close()
 
 		// Compute the import path. Run the result through ToSlash(), so that
 		// windows file paths are normalized to slashes, as is expected of
@@ -123,26 +133,17 @@ func ListPackages(fileRoot, importRoot string) (PackageTree, error) {
 		ip := filepath.ToSlash(filepath.Join(importRoot, strings.TrimPrefix(wp, fileRoot)))
 
 		// Find all the imports, across all os/arch combos
-		//p, err := fullPackageInDir(wp)
 		p := &build.Package{
-			Dir: wp,
+			Dir:        wp,
+			ImportPath: ip,
 		}
 		err = fillPackage(p)
 
-		var pkg Package
-		if err == nil {
-			pkg = Package{
-				ImportPath:  ip,
-				CommentPath: p.ImportComment,
-				Name:        p.Name,
-				Imports:     p.Imports,
-				TestImports: dedupeStrings(p.TestImports, p.XTestImports),
-			}
-		} else {
+		if err != nil {
 			switch err.(type) {
-			case gscan.ErrorList, *gscan.Error, *build.NoGoError:
-				// This happens if we encounter malformed or nonexistent Go
-				// source code
+			case gscan.ErrorList, *gscan.Error, *build.NoGoError, *ConflictingImportComments:
+				// Assorted cases in which we've encounter malformed or
+				// nonexistent Go source code.
 				ptree.Packages[ip] = PackageOrErr{
 					Err: err,
 				}
@@ -152,18 +153,34 @@ func ListPackages(fileRoot, importRoot string) (PackageTree, error) {
 			}
 		}
 
+		pkg := Package{
+			ImportPath:  ip,
+			CommentPath: p.ImportComment,
+			Name:        p.Name,
+			Imports:     p.Imports,
+			TestImports: dedupeStrings(p.TestImports, p.XTestImports),
+		}
+
+		if pkg.CommentPath != "" && !strings.HasPrefix(pkg.CommentPath, importRoot) {
+			ptree.Packages[ip] = PackageOrErr{
+				Err: &NonCanonicalImportRoot{
+					ImportRoot: importRoot,
+					Canonical:  pkg.CommentPath,
+				},
+			}
+			return nil
+		}
+
 		// This area has some...fuzzy rules, but check all the imports for
 		// local/relative/dot-ness, and record an error for the package if we
 		// see any.
 		var lim []string
 		for _, imp := range append(pkg.Imports, pkg.TestImports...) {
-			switch {
-			// Do allow the single-dot, at least for now
-			case imp == "..":
-				lim = append(lim, imp)
-			case strings.HasPrefix(imp, "./"):
-				lim = append(lim, imp)
-			case strings.HasPrefix(imp, "../"):
+			if build.IsLocalImport(imp) {
+				// Do allow the single-dot, at least for now
+				if imp == "." {
+					continue
+				}
 				lim = append(lim, imp)
 			}
 		}
@@ -210,6 +227,7 @@ func fillPackage(p *build.Package) error {
 
 	var testImports []string
 	var imports []string
+	var importComments []string
 	for _, file := range gofiles {
 		// Skip underscore-led or dot-led files, in keeping with the rest of the toolchain.
 		bPrefix := filepath.Base(file)[0]
@@ -234,6 +252,10 @@ func fillPackage(p *build.Package) error {
 
 		var ignored bool
 		for _, c := range pf.Comments {
+			ic := findImportComment(pf.Name, c)
+			if ic != "" {
+				importComments = append(importComments, ic)
+			}
 			if c.Pos() > pf.Package { // +build comment must come before package
 				continue
 			}
@@ -282,12 +304,95 @@ func fillPackage(p *build.Package) error {
 			}
 		}
 	}
-
+	importComments = uniq(importComments)
+	if len(importComments) > 1 {
+		return &ConflictingImportComments{
+			ImportPath:                p.ImportPath,
+			ConflictingImportComments: importComments,
+		}
+	}
+	if len(importComments) > 0 {
+		p.ImportComment = importComments[0]
+	}
 	imports = uniq(imports)
 	testImports = uniq(testImports)
 	p.Imports = imports
 	p.TestImports = testImports
 	return nil
+}
+
+var (
+	slashSlash = []byte("//")
+	slashStar  = []byte("/*")
+	starSlash  = []byte("*/")
+	importKwd  = []byte("import ")
+)
+
+func findImportComment(pkgName *ast.Ident, c *ast.CommentGroup) string {
+	afterPkg := pkgName.NamePos + token.Pos(len(pkgName.Name)) + 1
+	commentSlash := c.List[0].Slash
+	if afterPkg != commentSlash {
+		return ""
+	}
+	text := []byte(c.List[0].Text)
+	switch {
+	case bytes.HasPrefix(text, slashSlash):
+		eol := bytes.IndexByte(text, '\n')
+		if eol < 0 {
+			eol = len(text)
+		}
+		text = text[2:eol]
+	case bytes.HasPrefix(text, slashStar):
+		text = text[2:]
+		end := bytes.Index(text, starSlash)
+		if end < 0 {
+			// malformed comment
+			return ""
+		}
+		text = text[:end]
+		if bytes.IndexByte(text, '\n') > 0 {
+			// multiline comment, can't be an import comment
+			return ""
+		}
+	}
+	text = bytes.TrimSpace(text)
+	if !bytes.HasPrefix(text, importKwd) {
+		return ""
+	}
+	quotedPath := bytes.TrimSpace(text[len(importKwd):])
+	return string(bytes.Trim(quotedPath, `"`))
+}
+
+// ConflictingImportComments indicates that the package declares more than one
+// different canonical path.
+type ConflictingImportComments struct {
+	ImportPath                string   // An import path referring to this package
+	ConflictingImportComments []string // All distinct "canonical" paths encountered in the package files
+}
+
+func (e *ConflictingImportComments) Error() string {
+	return fmt.Sprintf("import path %s had conflicting import comments: %s",
+		e.ImportPath, quotedPaths(e.ConflictingImportComments))
+}
+
+// NonCanonicalImportRoot reports the situation when the dependee imports a
+// package via something other than the package's declared canonical path.
+type NonCanonicalImportRoot struct {
+	ImportRoot string // A root path that is being used to import a package
+	Canonical  string // A canonical path declared by the package being imported
+}
+
+func (e *NonCanonicalImportRoot) Error() string {
+	return fmt.Sprintf("import root %q is not a prefix for the package's declared canonical path %q",
+		e.ImportRoot, e.Canonical)
+}
+
+func quotedPaths(ps []string) string {
+	quoted := make([]string, 0, len(ps))
+	for _, p := range ps {
+		quoted = append(quoted, fmt.Sprintf("%q", p))
+	}
+	return strings.Join(quoted, ", ")
 }
 
 // LocalImportsError indicates that a package contains at least one relative
@@ -308,7 +413,7 @@ func (e *LocalImportsError) Error() string {
 	case 1:
 		return fmt.Sprintf("import path %s had a local import: %q", e.ImportPath, e.LocalImports[0])
 	default:
-		return fmt.Sprintf("import path %s had local imports: %q", e.ImportPath, strings.Join(e.LocalImports, "\", \""))
+		return fmt.Sprintf("import path %s had local imports: %s", e.ImportPath, quotedPaths(e.LocalImports))
 	}
 }
 
@@ -440,11 +545,7 @@ type PackageTree struct {
 // 	"A": []string{},
 // 	"A/bar": []string{"B/baz"},
 //  }
-func (t PackageTree) ToReachMap(main, tests, backprop bool, ignore map[string]bool) (ReachMap, map[string]*ProblemImportError) {
-	if ignore == nil {
-		ignore = make(map[string]bool)
-	}
-
+func (t PackageTree) ToReachMap(main, tests, backprop bool, ignore *IgnoredRuleset) (ReachMap, map[string]*ProblemImportError) {
 	// world's simplest adjacency list
 	workmap := make(map[string]wm)
 
@@ -463,7 +564,7 @@ func (t PackageTree) ToReachMap(main, tests, backprop bool, ignore map[string]bo
 			continue
 		}
 		// Skip ignored packages
-		if ignore[ip] {
+		if ignore.IsIgnored(ip) {
 			continue
 		}
 
@@ -484,7 +585,7 @@ func (t PackageTree) ToReachMap(main, tests, backprop bool, ignore map[string]bo
 		// For each import, decide whether it should be ignored, or if it
 		// belongs in the external or internal imports list.
 		for _, imp := range imps {
-			if ignore[imp] || imp == "." {
+			if ignore.IsIgnored(imp) || imp == "." {
 				continue
 			}
 
@@ -508,24 +609,108 @@ func (t PackageTree) ToReachMap(main, tests, backprop bool, ignore map[string]bo
 func (t PackageTree) Copy() PackageTree {
 	t2 := PackageTree{
 		ImportRoot: t.ImportRoot,
-		Packages:   map[string]PackageOrErr{},
+		Packages:   make(map[string]PackageOrErr, len(t.Packages)),
 	}
 
+	// Walk through and count up the total number of string slice elements we'll
+	// need, then allocate them all at once.
+	strcount := 0
+	for _, poe := range t.Packages {
+		strcount = strcount + len(poe.P.Imports) + len(poe.P.TestImports)
+	}
+	pool := make([]string, strcount)
+
 	for path, poe := range t.Packages {
-		poe2 := PackageOrErr{
-			Err: poe.Err,
-			P:   poe.P,
-		}
-		if len(poe.P.Imports) > 0 {
-			poe2.P.Imports = make([]string, len(poe.P.Imports))
-			copy(poe2.P.Imports, poe.P.Imports)
-		}
-		if len(poe.P.TestImports) > 0 {
-			poe2.P.TestImports = make([]string, len(poe.P.TestImports))
-			copy(poe2.P.TestImports, poe.P.TestImports)
+		var poe2 PackageOrErr
+
+		if poe.Err != nil {
+			refl := reflect.ValueOf(poe.Err)
+			switch refl.Kind() {
+			case reflect.Ptr:
+				poe2.Err = reflect.New(refl.Elem().Type()).Interface().(error)
+			case reflect.Slice:
+				err2 := reflect.MakeSlice(refl.Type(), refl.Len(), refl.Len())
+				reflect.Copy(err2, refl)
+				poe2.Err = err2.Interface().(error)
+			default:
+				// This shouldn't be too onerous to maintain - the set of errors
+				// we can get here is restricted by what ListPackages() allows.
+				// So just panic if one is outside the expected kinds of ptr or
+				// slice, as that would mean we've missed something notable.
+				panic(fmt.Sprintf("unrecognized PackgeOrErr error type, %T", poe.Err))
+			}
+		} else {
+			poe2.P = poe.P
+			il, til := len(poe.P.Imports), len(poe.P.TestImports)
+			if il > 0 {
+				poe2.P.Imports, pool = pool[:il], pool[il:]
+				copy(poe2.P.Imports, poe.P.Imports)
+			}
+			if til > 0 {
+				poe2.P.TestImports, pool = pool[:til], pool[til:]
+				copy(poe2.P.TestImports, poe.P.TestImports)
+			}
 		}
 
 		t2.Packages[path] = poe2
+	}
+
+	return t2
+}
+
+// TrimHiddenPackages returns a new PackageTree where packages that are ignored,
+// or both hidden and unreachable, have been removed.
+//
+// The package list is partitioned into two sets: visible, and hidden, where
+// packages are considered hidden if they are within or beneath directories
+// with:
+//
+//  * leading dots
+//  * leading underscores
+//  * the exact name "testdata"
+//
+// Packages in the hidden set are dropped from the returned PackageTree, unless
+// they are transitively reachable from imports in the visible set.
+//
+// The "main", "tests" and "ignored" parameters have the same behavior as with
+// PackageTree.ToReachMap(): the first two determine, respectively, whether
+// imports from main packages, and imports from tests, should be considered for
+// reachability checks. Setting 'main' to true will additionally result in main
+// packages being trimmed.
+//
+// "ignored" designates import paths, or patterns of import paths, where the
+// corresponding packages should be excluded from reachability checks, if
+// encountered. Ignored packages are also removed from the final set.
+//
+// Note that it is not recommended to call this method if the goal is to obtain
+// a set of tree-external imports; calling ToReachMap and FlattenFn will achieve
+// the same effect.
+func (t PackageTree) TrimHiddenPackages(main, tests bool, ignore *IgnoredRuleset) PackageTree {
+	rm, pie := t.ToReachMap(main, tests, false, ignore)
+	t2 := t.Copy()
+	preserve := make(map[string]bool)
+
+	for pkg, ie := range rm {
+		if pkgFilter(pkg) && !ignore.IsIgnored(pkg) {
+			preserve[pkg] = true
+			for _, in := range ie.Internal {
+				preserve[in] = true
+			}
+		}
+	}
+
+	// Also process the problem map, as packages in the visible set with errors
+	// need to be included in the return values.
+	for pkg := range pie {
+		if pkgFilter(pkg) && !ignore.IsIgnored(pkg) {
+			preserve[pkg] = true
+		}
+	}
+
+	for ip := range t.Packages {
+		if !preserve[ip] {
+			delete(t2.Packages, ip)
+		}
 	}
 
 	return t2

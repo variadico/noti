@@ -1606,11 +1606,6 @@ func isPkgDot(expr ast.Expr, pkg, name string) bool {
 	return ok && isIdent(sel.X, pkg) && isIdent(sel.Sel, name)
 }
 
-func isZero(expr ast.Expr) bool {
-	lit, ok := expr.(*ast.BasicLit)
-	return ok && lit.Kind == token.INT && lit.Value == "0"
-}
-
 func isOne(expr ast.Expr) bool {
 	lit, ok := expr.(*ast.BasicLit)
 	return ok && lit.Kind == token.INT && lit.Value == "1"

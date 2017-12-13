@@ -7,6 +7,8 @@ package gps
 import (
 	"reflect"
 	"testing"
+
+	"github.com/golang/dep/internal/gps/pkgtree"
 )
 
 func TestRootdataExternalImports(t *testing.T) {
@@ -56,7 +58,7 @@ func TestRootdataExternalImports(t *testing.T) {
 	// Add an ignore, but not on the required path (Prepare makes that
 	// combination impossible)
 
-	rd.ig["b"] = true
+	rd.ir = pkgtree.NewIgnoredRuleset([]string{"b"})
 	want = []string{"a", "c"}
 	got = rd.externalImportList(params.stdLibFn)
 	if !reflect.DeepEqual(want, got) {
@@ -192,7 +194,7 @@ func TestGetApplicableConstraints(t *testing.T) {
 			// violate the principle of least surprise?
 			name: "ignore imported and overridden pkg",
 			mut: func() {
-				rd.ig["d"] = true
+				rd.ir = pkgtree.NewIgnoredRuleset([]string{"d"})
 			},
 			result: []workingConstraint{
 				{

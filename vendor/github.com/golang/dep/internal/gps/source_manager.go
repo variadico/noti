@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -26,6 +27,41 @@ import (
 
 // Used to compute a friendly filepath from a URL-shaped input.
 var sanitizer = strings.NewReplacer("-", "--", ":", "-", "/", "-", "+", "-")
+
+// A locker is responsible for preventing multiple instances of dep from
+// interfering with one-another.
+//
+// Currently, anything that can either TryLock(), Unlock(), or GetOwner()
+// satifies that need.
+type locker interface {
+	TryLock() error
+	Unlock() error
+	GetOwner() (*os.Process, error)
+}
+
+// A falselocker adheres to the locker interface and its purpose is to quietly
+// fail to lock when the DEPNOLOCK environment variable is set.
+//
+// This allows dep to run on systems where file locking doesn't work --
+// particularly those that use union mount type filesystems that don't
+// implement hard links or fnctl() style locking.
+type falseLocker struct{}
+
+// Always returns an error to indicate there's no current ower PID for our
+// lock.
+func (fl falseLocker) GetOwner() (*os.Process, error) {
+	return nil, fmt.Errorf("falseLocker always fails")
+}
+
+// Does nothing and returns a nil error so caller beleives locking succeeded.
+func (fl falseLocker) TryLock() error {
+	return nil
+}
+
+// Does nothing and returns a nil error so caller beleives unlocking succeeded.
+func (fl falseLocker) Unlock() error {
+	return nil
+}
 
 // A SourceManager is responsible for retrieving, managing, and interrogating
 // source repositories. Its primary purpose is to serve the needs of a Solver,
@@ -71,6 +107,11 @@ type SourceManager interface {
 	// project/source root.
 	DeduceProjectRoot(ip string) (ProjectRoot, error)
 
+	// SourceURLsForPath takes an import path and deduces the set of source URLs
+	// that may refer to a canonical upstream source.
+	// In general, these URLs differ only by protocol (e.g. https vs. ssh), not path
+	SourceURLsForPath(ip string) ([]*url.URL, error)
+
 	// Release lets go of any locks held by the SourceManager. Once called, it is
 	// no longer safe to call methods against it; all method calls will
 	// immediately result in errors.
@@ -115,7 +156,7 @@ func (p ProjectAnalyzerInfo) String() string {
 // tools; control via dependency injection is intended to be sufficient.
 type SourceMgr struct {
 	cachedir    string                // path to root of cache dir
-	lf          *lockfile.Lockfile    // handle for the sm lock file on disk
+	lf          locker                // handle for the sm lock file on disk
 	suprvsr     *supervisor           // subsystem that supervises running calls/io
 	cancelAll   context.CancelFunc    // cancel func to kill all running work
 	deduceCoord *deductionCoordinator // subsystem that manages import path deduction
@@ -136,8 +177,9 @@ var _ SourceManager = &SourceMgr{}
 
 // SourceManagerConfig holds configuration information for creating SourceMgrs.
 type SourceManagerConfig struct {
-	Cachedir string      // Where to store local instances of upstream sources.
-	Logger   *log.Logger // Optional info/warn logger. Discards if nil.
+	Cachedir       string      // Where to store local instances of upstream sources.
+	Logger         *log.Logger // Optional info/warn logger. Discards if nil.
+	DisableLocking bool        // True if the SourceManager should NOT use a lock file to protect the Cachedir from multiple processes.
 }
 
 // NewSourceManager produces an instance of gps's built-in SourceManager.
@@ -169,7 +211,14 @@ func NewSourceManager(c SourceManagerConfig) (*SourceMgr, error) {
 	// we can spin on.
 
 	glpath := filepath.Join(c.Cachedir, "sm.lock")
-	lockfile, err := lockfile.New(glpath)
+
+	lockfile, err := func() (locker, error) {
+		if c.DisableLocking {
+			return falseLocker{}, nil
+		}
+		return lockfile.New(glpath)
+	}()
+
 	if err != nil {
 		return nil, CouldNotCreateLockError{
 			Path: glpath,
@@ -232,7 +281,7 @@ func NewSourceManager(c SourceManagerConfig) (*SourceMgr, error) {
 
 	sm := &SourceMgr{
 		cachedir:    c.Cachedir,
-		lf:          &lockfile,
+		lf:          lockfile,
 		suprvsr:     superv,
 		cancelAll:   cf,
 		deduceCoord: deducer,
@@ -536,6 +585,18 @@ func (sm *SourceMgr) InferConstraint(s string, pi ProjectIdentifier) (Constraint
 	return nil, errors.Errorf("%s is not a valid version for the package %s(%s)", s, pi.ProjectRoot, pi.Source)
 }
 
+// SourceURLsForPath takes an import path and deduces the set of source URLs
+// that may refer to a canonical upstream source.
+// In general, these URLs differ only by protocol (e.g. https vs. ssh), not path
+func (sm *SourceMgr) SourceURLsForPath(ip string) ([]*url.URL, error) {
+	deduced, err := sm.deduceCoord.deduceRootPath(context.TODO(), ip)
+	if err != nil {
+		return nil, err
+	}
+
+	return deduced.mb.possibleURLs(), nil
+}
+
 // disambiguateRevision looks up a revision in the underlying source, spitting
 // it back out in an unabbreviated, disambiguated form.
 //
@@ -679,6 +740,29 @@ const (
 	ctSourceFetch
 	ctExportTree
 )
+
+func (ct callType) String() string {
+	switch ct {
+	case ctHTTPMetadata:
+		return "Retrieving go get metadata"
+	case ctListVersions:
+		return "Retrieving latest version list"
+	case ctGetManifestAndLock:
+		return "Reading manifest and lock data"
+	case ctListPackages:
+		return "Parsing PackageTree"
+	case ctSourcePing:
+		return "Checking for upstream existence"
+	case ctSourceInit:
+		return "Initializing local source cache"
+	case ctSourceFetch:
+		return "Fetching latest data into local source cache"
+	case ctExportTree:
+		return "Writing code tree out to disk"
+	default:
+		panic("unknown calltype")
+	}
+}
 
 // callInfo provides metadata about an ongoing call.
 type callInfo struct {

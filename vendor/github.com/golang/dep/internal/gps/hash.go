@@ -79,16 +79,16 @@ func (s *solver) writeHashingInputs(w io.Writer) {
 	// those will have already been implicitly incorporated by the import
 	// lister.
 	writeString(hhIgnores)
-	ig := make([]string, 0, len(s.rd.ig))
-	for pkg := range s.rd.ig {
-		if !strings.HasPrefix(pkg, s.rd.rpt.ImportRoot) || !isPathPrefixOrEqual(s.rd.rpt.ImportRoot, pkg) {
-			ig = append(ig, pkg)
-		}
-	}
-	sort.Strings(ig)
 
+	ig := s.rd.ir.ToSlice()
+	sort.Strings(ig)
 	for _, igp := range ig {
-		writeString(igp)
+		// Typical prefix comparison checks will erroneously fail if the wildcard
+		// is present. Trim it off, if present.
+		tigp := strings.TrimSuffix(igp, "*")
+		if !strings.HasPrefix(tigp, s.rd.rpt.ImportRoot) || !isPathPrefixOrEqual(s.rd.rpt.ImportRoot, tigp) {
+			writeString(igp)
+		}
 	}
 
 	// Overrides *also* need their own special entry distinct from basic
