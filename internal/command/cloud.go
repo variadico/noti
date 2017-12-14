@@ -67,7 +67,7 @@ func getHipChat(title, message, token, dest string) notification {
 	}
 }
 
-func setPushbullet(v *viper.Viper) {
+func setPushbulletDefaults(v *viper.Viper) {
 	defaults := map[string]string{
 		"pushbullet.token": "",
 	}
@@ -93,7 +93,7 @@ func getPushbullet(title, message, token string) notification {
 	}
 }
 
-func setPushover(v *viper.Viper) {
+func setPushoverDefaults(v *viper.Viper) {
 	defaults := map[string]string{
 		"pushover.token": "",
 		"pushover.user":  "",
@@ -121,7 +121,7 @@ func getPushover(title, message, token, user string) notification {
 	}
 }
 
-func setPushsafer(v *viper.Viper) {
+func setPushsaferDefaults(v *viper.Viper) {
 	defaults := map[string]string{
 		"pushsafer.token": "",
 	}
@@ -145,7 +145,7 @@ func getPushsafer(title, message, key string) notification {
 	}
 }
 
-func setSimplepush(v *viper.Viper) {
+func setSimplepushDefaults(v *viper.Viper) {
 	defaults := map[string]string{
 		"simplepush.key":   "",
 		"simplepush.event": "",
@@ -172,7 +172,7 @@ func getSimplepush(title, message, key, event string) notification {
 	}
 }
 
-func setSlack(v *viper.Viper) {
+func setSlackDefaults(v *viper.Viper) {
 	defaults := map[string]string{
 		"slack.token":   "",
 		"slack.channel": "",

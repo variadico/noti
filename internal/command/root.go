@@ -72,11 +72,11 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	setSpeechDefaults(v)
 	setBearyChatDefaults(v)
 	setHipChatDefaults(v)
-	setPushbullet(v)
-	setPushover(v)
-	setPushsafer(v)
-	setSimplepush(v)
-	setSlack(v)
+	setPushbulletDefaults(v)
+	setPushoverDefaults(v)
+	setPushsaferDefaults(v)
+	setSimplepushDefaults(v)
+	setSlackDefaults(v)
 	if err := setupConfigFile(v); err != nil {
 		vbs.Println("Failed to read config file:", err)
 	}
