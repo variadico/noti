@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
 	"github.com/variadico/noti/service/hipchat"
 	"github.com/variadico/noti/service/pushbullet"
@@ -16,63 +17,65 @@ import (
 
 var httpClient = &http.Client{Timeout: 30 * time.Second}
 
-func getBearyChat(title, message, uri string) notification {
+func getBearyChat(title, message string, v *viper.Viper) notification {
 	return &bearychat.Notification{
 		Text:            fmt.Sprintf("**%s**\n%s", title, message),
-		IncomingHookURI: uri,
+		IncomingHookURI: v.GetString("bearychat.incomingHookURI"),
 		Client:          httpClient,
 	}
 }
 
-func getHipChat(title, message, token, dest string) notification {
+func getHipChat(title, message string, v *viper.Viper) notification {
 	return &hipchat.Notification{
+		Token:         v.GetString("hipchat.token"),
+		Destination:   v.GetString("hipchat.destination"),
 		Message:       fmt.Sprintf("%s\n%s", title, message),
 		MessageFormat: "text",
 		Client:        httpClient,
 	}
 }
 
-func getPushbullet(title, message, token string) notification {
+func getPushbullet(title, message string, v *viper.Viper) notification {
 	return &pushbullet.Notification{
 		Title:  title,
 		Body:   message,
 		Type:   "note",
-		Token:  token,
+		Token:  v.GetString("pushbullet.token"),
 		Client: httpClient,
 	}
 }
 
-func getPushover(title, message, token, user string) notification {
+func getPushover(title, message string, v *viper.Viper) notification {
 	return &pushover.Notification{
 		Title:   title,
 		Message: message,
-		Token:   token,
-		User:    user,
+		Token:   v.GetString("pushover.token"),
+		User:    v.GetString("pushover.user"),
 		Client:  httpClient,
 	}
 }
 
-func getPushsafer(title, message, key string) notification {
+func getPushsafer(title, message string, v *viper.Viper) notification {
 	return &pushsafer.Notification{
 		Title:      title,
 		Message:    message,
-		PrivateKey: key,
+		PrivateKey: v.GetString("pushsafer.privateKey"),
 	}
 }
 
-func getSimplepush(title, message, key, event string) notification {
+func getSimplepush(title, message string, v *viper.Viper) notification {
 	return &simplepush.Notification{
 		Title:   title,
 		Message: message,
-		Key:     key,
-		Event:   event,
+		Key:     v.GetString("simplepush.key"),
+		Event:   v.GetString("simplepush.event"),
 	}
 }
 
-func getSlack(title, message, token, channel string) notification {
+func getSlack(title, message string, v *viper.Viper) notification {
 	return &slack.Notification{
-		Token:     token,
-		Channel:   channel,
+		Token:     v.GetString("slack.token"),
+		Channel:   v.GetString("slack.channel"),
 		Username:  "noti",
 		Text:      fmt.Sprintf("%s\n%s", title, message),
 		IconEmoji: ":rocket:",

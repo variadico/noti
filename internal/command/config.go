@@ -11,8 +11,8 @@ import (
 
 func setNotiDefaults(v *viper.Viper) {
 	defaults := map[string]string{
-		"nsuser.soundName":       "Ping",
-		"nsuser.soundNameFail":   "Basso",
+		"nsuser.soundName":     "Ping",
+		"nsuser.soundNameFail": "Basso",
 
 		"say.voice": "Alex",
 
@@ -30,7 +30,7 @@ func setNotiDefaults(v *viper.Viper) {
 		"pushover.token": "",
 		"pushover.user":  "",
 
-		"pushsafer.token": "",
+		"pushsafer.privateKey": "",
 
 		"simplepush.key":   "",
 		"simplepush.event": "",
@@ -65,7 +65,7 @@ func bindNotiEnv(v *viper.Viper) {
 		"pushover.token": "NOTI_PUSHOVER_TOK",
 		"pushover.user":  "NOTI_PUSHOVER_DEST",
 
-		"pushsafer.token": "NOTI_PUSHSAFER_KEY",
+		"pushsafer.privateKey": "NOTI_PUSHSAFER_KEY",
 
 		"simplepush.key":   "NOTI_SIMPLEPUSH_KEY",
 		"simplepush.event": "NOTI_SIMPLEPUSH_EVENT",

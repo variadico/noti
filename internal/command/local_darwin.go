@@ -8,26 +8,18 @@ import (
 	"github.com/variadico/noti/service/say"
 )
 
-func getBanner(title, message, sound string) notification {
+func getBanner(title, message string, v *viper.Viper) notification {
 	return &nsuser.Notification{
 		Title:           title,
 		InformativeText: message,
-		SoundName:       sound,
+		SoundName:       v.GetString("nsuser.soundName"),
 	}
 }
 
 func getSpeech(title, message string, v *viper.Viper) notification {
-	voice := v.GetString("say.voice")
-
-	nt := &say.Notification{
-		Voice: "Alex",
+	return &say.Notification{
+		Voice: v.GetString("say.voice"),
 		Text:  fmt.Sprintf("%s %s", title, message),
 		Rate:  200,
 	}
-
-	if voice != "" {
-		nt.Voice = voice
-	}
-
-	return nt
 }

@@ -98,12 +98,6 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		title = commandName(args)
 	}
 
-	message := v.GetString("message")
-
-	pass := v.GetString("nsuser.soundName")
-	fail := v.GetString("nsuser.soundNameFail")
-	sound := pass
-
 	if pid, _ := cmd.Flags().GetInt("pwatch"); pid != -1 {
 		vbs.Println("Watching PID")
 		err = pollPID(pid, 1*time.Second)
@@ -112,8 +106,8 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		err = runCommand(args)
 	}
 	if err != nil {
-		message = err.Error()
-		sound = fail
+		v.Set("message", err.Error())
+		v.Set("nsuser.soundName", v.GetString("nsuser.soundNameFail"))
 	}
 
 	config := readEnv(os.Getenv("NOTI_DEFAULT"))
@@ -125,9 +119,10 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	vbs.Println("Config:", config)
 	vbs.Println("Viper:", v.AllSettings())
 	var notis []notification
+	message := v.GetString("message")
 
 	if config["banner"] {
-		notis = append(notis, getBanner(title, message, sound))
+		notis = append(notis, getBanner(title, message, v))
 	}
 
 	if config["speech"] {
@@ -135,38 +130,31 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	}
 
 	if config["bearychat"] {
-		notis = append(notis, getBearyChat(title, message,
-			v.GetString("bearychat.incomingHookURI")))
+		notis = append(notis, getBearyChat(title, message, v))
 	}
 
 	if config["hipchat"] {
-		notis = append(notis, getHipChat(title, message,
-			v.GetString("hipchat.token"), v.GetString("hipchat.destination")))
+		notis = append(notis, getHipChat(title, message, v))
 	}
 
 	if config["pushbullet"] {
-		notis = append(notis, getPushbullet(title, message,
-			v.GetString("pushbullet.token")))
+		notis = append(notis, getPushbullet(title, message, v))
 	}
 
 	if config["pushover"] {
-		notis = append(notis, getPushover(title, message,
-			v.GetString("pushover.token"), v.GetString("pushover.user")))
+		notis = append(notis, getPushover(title, message, v))
 	}
 
 	if config["pushsafer"] {
-		notis = append(notis, getPushsafer(title, message,
-			v.GetString("pushsafer.token")))
+		notis = append(notis, getPushsafer(title, message, v))
 	}
 
 	if config["simplepush"] {
-		notis = append(notis, getSimplepush(title, message,
-			v.GetString("simplepush.key"), v.GetString("simplepush.event")))
+		notis = append(notis, getSimplepush(title, message, v))
 	}
 
 	if config["slack"] {
-		notis = append(notis, getSlack(title, message,
-			v.GetString("slack.token"), v.GetString("slack.channel")))
+		notis = append(notis, getSlack(title, message, v))
 	}
 
 	vbs.Println("Notifications:", len(notis))

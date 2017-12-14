@@ -11,7 +11,7 @@ import (
 	"github.com/variadico/noti/service/freedesktop"
 )
 
-func getBanner(title, message, _ string) notification {
+func getBanner(title, message string, v *viper.Viper) notification {
 	return &freedesktop.Notification{
 		Summary:       title,
 		Body:          message,
@@ -21,16 +21,8 @@ func getBanner(title, message, _ string) notification {
 }
 
 func getSpeech(title, message string, v *viper.Viper) notification {
-	voice := v.GetString("espeak.voiceName")
-
-	nt := &espeak.Notification{
+	return &espeak.Notification{
 		Text:      fmt.Sprintf("%s %s", title, message),
-		VoiceName: "english-us",
+		VoiceName: v.GetString("espeak.voiceName"),
 	}
-
-	if voice != "" {
-		nt.VoiceName = voice
-	}
-
-	return nt
 }
