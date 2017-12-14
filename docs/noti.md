@@ -48,6 +48,12 @@ config file. Not all notification types are supported on every platform.
 nsuser:
   soundName: Ping
   soundNameFail: Basso
+espeak:
+  voiceName: english-us
+say:
+  voice: Alex
+speechsynthesizer:
+  voice: Microsoft David Desktop
 ```
 
 ## Configuring cloud services

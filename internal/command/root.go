@@ -65,6 +65,7 @@ func init() {
 func rootMain(cmd *cobra.Command, args []string) error {
 	v := viper.New()
 	setBannerDefaults(v)
+	setSpeechDefaults(v)
 	if err := setupConfigFile(v); err != nil {
 		vbs.Println("Failed to read config file:", err)
 	}
@@ -131,7 +132,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	}
 
 	if config["speech"] {
-		notis = append(notis, getSpeech(title, message, os.Getenv("NOTI_VOICE")))
+		notis = append(notis, getSpeech(title, message, v))
 	}
 
 	if config["bearychat"] {

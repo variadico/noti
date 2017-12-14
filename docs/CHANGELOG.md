@@ -7,7 +7,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-* `.noti.yaml` config file support for NSUserNotification.
+* `.noti.yaml` config file support for NSUserNotification and speech.
 
 ### Removed
 
