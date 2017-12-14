@@ -100,8 +100,8 @@ const osxManual = `
         Name of voice used for speech notifications. See "say -v ?" for
         available voices.
 BUGS
-    Banner notifications don't fire in tmux.
-    Clicking on banner notifications causes unexpected behavior.`
+    See GitHub for latest bugs.
+    https://github.com/variadico/noti/issues?q=is%3Aissue+is%3Aopen+label%3Abug`
 
 const linuxFreeBSDManual = `
     NOTI_VOICE
