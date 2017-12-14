@@ -13,6 +13,7 @@ func TestSend(t *testing.T) {
 	n := Notification{
 		Message: "mesg",
 		Client:  &http.Client{Timeout: 3 * time.Second},
+		Token:   "foo",
 	}
 	var mockResp apiResponse
 	var hitServer bool

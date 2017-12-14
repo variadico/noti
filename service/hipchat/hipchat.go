@@ -32,6 +32,10 @@ type Notification struct {
 
 // Send triggers a HipChat notification.
 func (n *Notification) Send() error {
+	if n.Token == "" {
+		return errors.New("missing access token")
+	}
+
 	payload := new(bytes.Buffer)
 	if err := json.NewEncoder(payload).Encode(n); err != nil {
 		return err
