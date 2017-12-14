@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"github.com/variadico/noti/service"
 	"github.com/variadico/noti/service/bearychat"
 	"github.com/variadico/noti/service/hipchat"
 	"github.com/variadico/noti/service/pushbullet"
@@ -34,7 +33,7 @@ func setBearyChatDefaults(v *viper.Viper) {
 	}
 }
 
-func getBearyChat(title, message, uri string) service.Notification {
+func getBearyChat(title, message, uri string) notification {
 	return &bearychat.Notification{
 		Text:            fmt.Sprintf("**%s**\n%s", title, message),
 		IncomingHookURI: uri,
@@ -60,7 +59,7 @@ func setHipChatDefaults(v *viper.Viper) {
 	}
 }
 
-func getHipChat(title, message, token, dest string) service.Notification {
+func getHipChat(title, message, token, dest string) notification {
 	return &hipchat.Notification{
 		Message:       fmt.Sprintf("%s\n%s", title, message),
 		MessageFormat: "text",
@@ -84,7 +83,7 @@ func setPushbullet(v *viper.Viper) {
 	}
 }
 
-func getPushbullet(title, message, token string) service.Notification {
+func getPushbullet(title, message, token string) notification {
 	return &pushbullet.Notification{
 		Title:  title,
 		Body:   message,
@@ -112,7 +111,7 @@ func setPushover(v *viper.Viper) {
 	}
 }
 
-func getPushover(title, message, token, user string) service.Notification {
+func getPushover(title, message, token, user string) notification {
 	return &pushover.Notification{
 		Title:   title,
 		Message: message,
@@ -138,7 +137,7 @@ func setPushsafer(v *viper.Viper) {
 	}
 }
 
-func getPushsafer(title, message, key string) service.Notification {
+func getPushsafer(title, message, key string) notification {
 	return &pushsafer.Notification{
 		Title:      title,
 		Message:    message,
@@ -164,7 +163,7 @@ func setSimplepush(v *viper.Viper) {
 	}
 }
 
-func getSimplepush(title, message, key, event string) service.Notification {
+func getSimplepush(title, message, key, event string) notification {
 	return &simplepush.Notification{
 		Title:   title,
 		Message: message,
@@ -191,7 +190,7 @@ func setSlack(v *viper.Viper) {
 	}
 }
 
-func getSlack(title, message, token, channel string) service.Notification {
+func getSlack(title, message, token, channel string) notification {
 	return &slack.Notification{
 		Token:     token,
 		Channel:   channel,

@@ -2,7 +2,6 @@ package command
 
 import (
 	"github.com/spf13/viper"
-	"github.com/variadico/noti/service"
 	"github.com/variadico/noti/service/nsuser"
 )
 
@@ -25,7 +24,7 @@ func setBannerDefaults(v *viper.Viper) {
 	}
 }
 
-func getBanner(title, message, sound string) service.Notification {
+func getBanner(title, message, sound string) notification {
 	return &nsuser.Notification{
 		Title:           title,
 		InformativeText: message,

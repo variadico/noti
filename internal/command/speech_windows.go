@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
-	"github.com/variadico/noti/service"
 	"github.com/variadico/noti/service/speechsynthesizer"
 )
 
@@ -24,7 +23,7 @@ func setSpeechDefaults(v *viper.Viper) {
 	}
 }
 
-func getSpeech(title, message string, v *viper.Viper) service.Notification {
+func getSpeech(title, message string, v *viper.Viper) notification {
 	voice := v.GetString("speechsynthesizer.voice")
 
 	return &speechsynthesizer.Notification{

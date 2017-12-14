@@ -13,9 +13,13 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/variadico/noti/service"
 	"github.com/variadico/vbs"
 )
+
+// notification is the interface for all notifications.
+type notification interface {
+	Send() error
+}
 
 // Root is the root noti command.
 var Root = &cobra.Command{
@@ -132,7 +136,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 
 	vbs.Println("Config:", config)
 	vbs.Println("Viper:", v.AllSettings())
-	var notis []service.Notification
+	var notis []notification
 
 	if config["banner"] {
 		notis = append(notis, getBanner(title, message, sound))

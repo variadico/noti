@@ -77,13 +77,3 @@ func (n *Notification) Send() error {
 
 	return cmd.Run()
 }
-
-// SetMessage sets this notification's message.
-func (n *Notification) SetMessage(m string) {
-	n.BalloonTipText = m
-}
-
-// GetMessage gets this notification's message.
-func (n *Notification) GetMessage() string {
-	return n.BalloonTipText
-}

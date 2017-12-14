@@ -54,13 +54,3 @@ func (n *Notification) Send() error {
 
 	return nil
 }
-
-// SetMessage sets a notification's message.
-func (n *Notification) SetMessage(m string) {
-	n.Message = m
-}
-
-// GetMessage gets a notification's message.
-func (n *Notification) GetMessage() string {
-	return n.Message
-}
