@@ -8,10 +8,6 @@ import (
 	"github.com/variadico/noti/service/speechsynthesizer"
 )
 
-func setBannerDefaults(v *viper.Viper) {
-	// No banner defaults.
-}
-
 func getBanner(title, message, _ string) notification {
 	nt := &notifyicon.Notification{
 		BalloonTipTitle: title,
@@ -20,22 +16,6 @@ func getBanner(title, message, _ string) notification {
 	}
 
 	return nt
-}
-
-func setSpeechDefaults(v *viper.Viper) {
-	defaults := map[string]string{
-		"speechsynthesizer.voice": "Microsoft David Desktop",
-	}
-	for key, val := range defaults {
-		v.SetDefault(key, val)
-	}
-
-	envs := map[string]string{
-		"speechsynthesizer.voice": "NOTI_VOICE",
-	}
-	for key, val := range envs {
-		v.BindEnv(key, val)
-	}
 }
 
 func getSpeech(title, message string, v *viper.Viper) notification {

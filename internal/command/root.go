@@ -68,15 +68,8 @@ func init() {
 
 func rootMain(cmd *cobra.Command, args []string) error {
 	v := viper.New()
-	setBannerDefaults(v)
-	setSpeechDefaults(v)
-	setBearyChatDefaults(v)
-	setHipChatDefaults(v)
-	setPushbulletDefaults(v)
-	setPushoverDefaults(v)
-	setPushsaferDefaults(v)
-	setSimplepushDefaults(v)
-	setSlackDefaults(v)
+	setNotiDefaults(v)
+	bindNotiEnv(v)
 	if err := setupConfigFile(v); err != nil {
 		vbs.Println("Failed to read config file:", err)
 	}
