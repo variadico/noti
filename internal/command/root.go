@@ -66,6 +66,13 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	v := viper.New()
 	setBannerDefaults(v)
 	setSpeechDefaults(v)
+	setBearyChatDefaults(v)
+	setHipChatDefaults(v)
+	setPushbullet(v)
+	setPushover(v)
+	setPushsafer(v)
+	setSimplepush(v)
+	setSlack(v)
 	if err := setupConfigFile(v); err != nil {
 		vbs.Println("Failed to read config file:", err)
 	}
@@ -137,37 +144,37 @@ func rootMain(cmd *cobra.Command, args []string) error {
 
 	if config["bearychat"] {
 		notis = append(notis, getBearyChat(title, message,
-			os.Getenv("NOTI_BC_INCOMING_URI")))
+			v.GetString("bearychat.incomingHookURI")))
 	}
 
 	if config["hipchat"] {
 		notis = append(notis, getHipChat(title, message,
-			os.Getenv("NOTI_HIPCHAT_TOK"), os.Getenv("NOTI_HIPCHAT_DEST")))
+			v.GetString("hipchat.token"), v.GetString("hipchat.destination")))
 	}
 
 	if config["pushbullet"] {
 		notis = append(notis, getPushbullet(title, message,
-			os.Getenv("NOTI_PUSHBULLET_TOK")))
+			v.GetString("pushbullet.token")))
 	}
 
 	if config["pushover"] {
 		notis = append(notis, getPushover(title, message,
-			os.Getenv("NOTI_PUSHOVER_TOK"), os.Getenv("NOTI_PUSHOVER_DEST")))
+			v.GetString("pushover.token"), v.GetString("pushover.user")))
 	}
 
 	if config["pushsafer"] {
 		notis = append(notis, getPushsafer(title, message,
-			os.Getenv("NOTI_PUSHSAFER_KEY")))
+			v.GetString("pushsafer.token")))
 	}
 
 	if config["simplepush"] {
 		notis = append(notis, getSimplepush(title, message,
-			os.Getenv("NOTI_SIMPLEPUSH_KEY"), os.Getenv("NOTI_SIMPLEPUSH_EVENT")))
+			v.GetString("simplepush.key"), v.GetString("simplepush.event")))
 	}
 
 	if config["slack"] {
 		notis = append(notis, getSlack(title, message,
-			os.Getenv("NOTI_SLACK_TOK"), os.Getenv("NOTI_SLACK_DEST")))
+			v.GetString("slack.token"), v.GetString("slack.channel")))
 	}
 
 	vbs.Println("Notifications:", len(notis))

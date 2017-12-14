@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/spf13/viper"
 	"github.com/variadico/noti/service"
 	"github.com/variadico/noti/service/bearychat"
 	"github.com/variadico/noti/service/hipchat"
@@ -17,11 +18,45 @@ import (
 
 var httpClient = &http.Client{Timeout: 30 * time.Second}
 
+func setBearyChatDefaults(v *viper.Viper) {
+	defaults := map[string]string{
+		"bearychat.incomingHookURI": "",
+	}
+	for key, val := range defaults {
+		v.SetDefault(key, val)
+	}
+
+	envs := map[string]string{
+		"bearychat.incomingHookURI": "NOTI_BC_INCOMING_URI",
+	}
+	for key, val := range envs {
+		v.BindEnv(key, val)
+	}
+}
+
 func getBearyChat(title, message, uri string) service.Notification {
 	return &bearychat.Notification{
 		Text:            fmt.Sprintf("**%s**\n%s", title, message),
 		IncomingHookURI: uri,
 		Client:          httpClient,
+	}
+}
+
+func setHipChatDefaults(v *viper.Viper) {
+	defaults := map[string]string{
+		"hipchat.token":       "",
+		"hipchat.destination": "",
+	}
+	for key, val := range defaults {
+		v.SetDefault(key, val)
+	}
+
+	envs := map[string]string{
+		"hipchat.token":       "NOTI_BC_INCOMING_URI",
+		"hipchat.destination": "NOTI_HIPCHAT_DEST",
+	}
+	for key, val := range envs {
+		v.BindEnv(key, val)
 	}
 }
 
@@ -33,12 +68,47 @@ func getHipChat(title, message, token, dest string) service.Notification {
 	}
 }
 
+func setPushbullet(v *viper.Viper) {
+	defaults := map[string]string{
+		"pushbullet.token": "",
+	}
+	for key, val := range defaults {
+		v.SetDefault(key, val)
+	}
+
+	envs := map[string]string{
+		"pushbullet.token": "NOTI_PUSHBULLET_TOK",
+	}
+	for key, val := range envs {
+		v.BindEnv(key, val)
+	}
+}
+
 func getPushbullet(title, message, token string) service.Notification {
 	return &pushbullet.Notification{
 		Title:  title,
 		Body:   message,
 		Type:   "note",
+		Token:  token,
 		Client: httpClient,
+	}
+}
+
+func setPushover(v *viper.Viper) {
+	defaults := map[string]string{
+		"pushover.token": "",
+		"pushover.user":  "",
+	}
+	for key, val := range defaults {
+		v.SetDefault(key, val)
+	}
+
+	envs := map[string]string{
+		"pushover.token": "NOTI_PUSHOVER_TOK",
+		"pushover.user":  "NOTI_PUSHOVER_DEST",
+	}
+	for key, val := range envs {
+		v.BindEnv(key, val)
 	}
 }
 
@@ -52,11 +122,45 @@ func getPushover(title, message, token, user string) service.Notification {
 	}
 }
 
+func setPushsafer(v *viper.Viper) {
+	defaults := map[string]string{
+		"pushsafer.token": "",
+	}
+	for key, val := range defaults {
+		v.SetDefault(key, val)
+	}
+
+	envs := map[string]string{
+		"pushsafer.token": "NOTI_PUSHSAFER_KEY",
+	}
+	for key, val := range envs {
+		v.BindEnv(key, val)
+	}
+}
+
 func getPushsafer(title, message, key string) service.Notification {
 	return &pushsafer.Notification{
 		Title:      title,
 		Message:    message,
 		PrivateKey: key,
+	}
+}
+
+func setSimplepush(v *viper.Viper) {
+	defaults := map[string]string{
+		"simplepush.key":   "",
+		"simplepush.event": "",
+	}
+	for key, val := range defaults {
+		v.SetDefault(key, val)
+	}
+
+	envs := map[string]string{
+		"simplepush.key":   "NOTI_SIMPLEPUSH_KEY",
+		"simplepush.event": "NOTI_SIMPLEPUSH_EVENT",
+	}
+	for key, val := range envs {
+		v.BindEnv(key, val)
 	}
 }
 
@@ -66,6 +170,24 @@ func getSimplepush(title, message, key, event string) service.Notification {
 		Message: message,
 		Key:     key,
 		Event:   event,
+	}
+}
+
+func setSlack(v *viper.Viper) {
+	defaults := map[string]string{
+		"slack.token":   "",
+		"slack.channel": "",
+	}
+	for key, val := range defaults {
+		v.SetDefault(key, val)
+	}
+
+	envs := map[string]string{
+		"slack.token":   "NOTI_SLACK_TOK",
+		"slack.channel": "NOTI_SLACK_DEST",
+	}
+	for key, val := range envs {
+		v.BindEnv(key, val)
 	}
 }
 
