@@ -47,7 +47,7 @@ func init() {
 	Root.Flags().SetInterspersed(false)
 
 	Root.Flags().StringP("title", "t", "", "Notification title. Default is utility name.")
-	Root.Flags().StringP("message", "m", "", "Notification message. Default is 'Done!'.")
+	Root.Flags().StringP("message", "m", "Done!", "Notification message. Default is 'Done!'.")
 
 	Root.Flags().IntP("pwatch", "w", -1, "Trigger notification after PID disappears.")
 
@@ -80,6 +80,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	if err := setupConfigFile(v); err != nil {
 		vbs.Println("Failed to read config file:", err)
 	}
+	v.BindPFlag("message", cmd.Flags().Lookup("message"))
 
 	vbs.Println("Command:", args)
 	if vbs.Enabled {
@@ -104,13 +105,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		title = commandName(args)
 	}
 
-	message, err := cmd.Flags().GetString("message")
-	if err != nil {
-		return err
-	}
-	if message == "" {
-		message = "Done!"
-	}
+	message := v.GetString("message")
 
 	pass := v.GetString("nsuser.soundName")
 	fail := v.GetString("nsuser.soundNameFail")
