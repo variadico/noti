@@ -4,8 +4,23 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
+	"github.com/variadico/noti/service/notifyicon"
 	"github.com/variadico/noti/service/speechsynthesizer"
 )
+
+func setBannerDefaults(v *viper.Viper) {
+	// No banner defaults.
+}
+
+func getBanner(title, message, _ string) notification {
+	nt := &notifyicon.Notification{
+		BalloonTipTitle: title,
+		BalloonTipText:  message,
+		BalloonTipIcon:  notifyicon.BalloonTipIconInfo,
+	}
+
+	return nt
+}
 
 func setSpeechDefaults(v *viper.Viper) {
 	defaults := map[string]string{
