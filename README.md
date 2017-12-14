@@ -20,7 +20,7 @@ These are the different notification services `noti` supports and on which OSes.
 type       | macOS | Linux | FreeBSD | Windows
 ------------------------------------------------
 Banner     |   ✔   |   ✔   |    ✔    |    ✔
-Speech     |   ✔   |   ✔   |    ✔    |
+Speech     |   ✔   |   ✔   |    ✔    |    ✔
 BearyChat  |   ✔   |   ✔   |    ✔    |    ✔
 HipChat    |   ✔   |   ✔   |    ✔    |    ✔
 Pushbullet |   ✔   |   ✔   |    ✔    |    ✔

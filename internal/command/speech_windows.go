@@ -10,7 +10,7 @@ import (
 
 func setSpeechDefaults(v *viper.Viper) {
 	defaults := map[string]string{
-		"speechsynthesizer.voice": "",
+		"speechsynthesizer.voice": "Microsoft David Desktop",
 	}
 	for key, val := range defaults {
 		v.SetDefault(key, val)
