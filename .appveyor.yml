@@ -15,7 +15,7 @@ install:
 
     make --version
 
-    make tools
+    make install-tools
 build_script:
 - cmd: make build
 test_script:

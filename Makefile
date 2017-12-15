@@ -13,15 +13,17 @@ install:
 	go install \
 		-ldflags "-X github.com/variadico/noti/internal/command.Version=$(branch)-$(rev)" \
 		github.com/variadico/noti/cmd/noti
-tools:
+install-tools:
 	go install ./vendor/github.com/golang/dep/cmd/dep
 	go install ./vendor/honnef.co/go/tools/cmd/megacheck
 	go install ./vendor/github.com/golang/lint/golint
-test:
+lint-only:
 	golint -set_exit_status $(pkgs)
 	megacheck $(pkgs)
 	go vet $(pkgs)
+test-only:
 	go test -v -cover -race $(pkgs)
+test: lint-only test-only
 update-deps:
 	dep ensure
 	dep ensure -update
