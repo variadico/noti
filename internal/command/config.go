@@ -7,72 +7,72 @@ import (
 	"github.com/spf13/viper"
 )
 
+var baseDefaults = map[string]string{
+	"nsuser.soundName":     "Ping",
+	"nsuser.soundNameFail": "Basso",
+
+	"say.voice": "Alex",
+
+	"espeak.voiceName": "english-us",
+
+	"speechsynthesizer.voice": "Microsoft David Desktop",
+
+	"bearychat.incomingHookURI": "",
+
+	"hipchat.token":       "",
+	"hipchat.destination": "",
+
+	"pushbullet.token": "",
+
+	"pushover.token": "",
+	"pushover.user":  "",
+
+	"pushsafer.privateKey": "",
+
+	"simplepush.key":   "",
+	"simplepush.event": "",
+
+	"slack.token":   "",
+	"slack.channel": "",
+}
+
 func setNotiDefaults(v *viper.Viper) {
-	defaults := map[string]string{
-		"nsuser.soundName":     "Ping",
-		"nsuser.soundNameFail": "Basso",
-
-		"say.voice": "Alex",
-
-		"espeak.voiceName": "english-us",
-
-		"speechsynthesizer.voice": "Microsoft David Desktop",
-
-		"bearychat.incomingHookURI": "",
-
-		"hipchat.token":       "",
-		"hipchat.destination": "",
-
-		"pushbullet.token": "",
-
-		"pushover.token": "",
-		"pushover.user":  "",
-
-		"pushsafer.privateKey": "",
-
-		"simplepush.key":   "",
-		"simplepush.event": "",
-
-		"slack.token":   "",
-		"slack.channel": "",
-	}
-
-	for key, val := range defaults {
+	for key, val := range baseDefaults {
 		v.SetDefault(key, val)
 	}
 }
 
+var keyEnvBindings = map[string]string{
+	"nsuser.soundName":     "NOTI_SOUND",
+	"nsuser.soundNameFail": "NOTI_SOUND_FAIL",
+
+	"say.voice": "NOTI_VOICE",
+
+	"espeak.voiceName": "NOTI_VOICE",
+
+	"speechsynthesizer.voice": "NOTI_VOICE",
+
+	"bearychat.incomingHookURI": "NOTI_BC_INCOMING_URI",
+
+	"hipchat.token":       "NOTI_BC_INCOMING_URI",
+	"hipchat.destination": "NOTI_HIPCHAT_DEST",
+
+	"pushbullet.token": "NOTI_PUSHBULLET_TOK",
+
+	"pushover.token": "NOTI_PUSHOVER_TOK",
+	"pushover.user":  "NOTI_PUSHOVER_DEST",
+
+	"pushsafer.privateKey": "NOTI_PUSHSAFER_KEY",
+
+	"simplepush.key":   "NOTI_SIMPLEPUSH_KEY",
+	"simplepush.event": "NOTI_SIMPLEPUSH_EVENT",
+
+	"slack.token":   "NOTI_SLACK_TOK",
+	"slack.channel": "NOTI_SLACK_DEST",
+}
+
 func bindNotiEnv(v *viper.Viper) {
-	envs := map[string]string{
-		"nsuser.soundName":     "NOTI_SOUND",
-		"nsuser.soundNameFail": "NOTI_SOUND_FAIL",
-
-		"say.voice": "NOTI_VOICE",
-
-		"espeak.voiceName": "NOTI_VOICE",
-
-		"speechsynthesizer.voice": "NOTI_VOICE",
-
-		"bearychat.incomingHookURI": "NOTI_BC_INCOMING_URI",
-
-		"hipchat.token":       "NOTI_BC_INCOMING_URI",
-		"hipchat.destination": "NOTI_HIPCHAT_DEST",
-
-		"pushbullet.token": "NOTI_PUSHBULLET_TOK",
-
-		"pushover.token": "NOTI_PUSHOVER_TOK",
-		"pushover.user":  "NOTI_PUSHOVER_DEST",
-
-		"pushsafer.privateKey": "NOTI_PUSHSAFER_KEY",
-
-		"simplepush.key":   "NOTI_SIMPLEPUSH_KEY",
-		"simplepush.event": "NOTI_SIMPLEPUSH_EVENT",
-
-		"slack.token":   "NOTI_SLACK_TOK",
-		"slack.channel": "NOTI_SLACK_DEST",
-	}
-
-	for key, val := range envs {
+	for key, val := range keyEnvBindings {
 		v.BindEnv(key, val)
 	}
 }
