@@ -1,0 +1,40 @@
+---
+version: 2
+jobs:
+  linux-build-test:
+    docker:
+      - image: circleci/golang:1.9.2
+    working_directory: /go/src/github.com/variadico/noti
+    steps:
+      - checkout
+      - run:
+          name: Install tools
+          command: make tools
+      - run:
+          name: Run tests
+          command: make test
+  macos-build-test:
+    macos:
+      xcode: "9.0"
+    environment:
+      - GOVERSION: 1.9.2
+    working_directory: ~/go/src/github.com/variadico/noti
+    steps:
+      - checkout
+      - run:
+          name: Install go
+          command: ./.circleci/install_go.sh
+      - run:
+          name: Install tools
+          command: make tools
+      - run:
+          name: Run tests
+          command: make test
+workflows:
+  version: 2
+  linux-flow:
+    jobs:
+      - linux-build-test
+  macos-flow:
+    jobs:
+      - macos-build-test
