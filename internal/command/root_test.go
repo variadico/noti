@@ -1,6 +1,41 @@
 package command
 
-import "testing"
+import (
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"testing"
+)
+
+func TestRunCommand(t *testing.T) {
+	lsAbs, err := exec.LookPath("ls")
+	if err != nil {
+		if runtime.GOOS == "windows" {
+			lsAbs, err = exec.LookPath("dir")
+		}
+		t.Skipf("Missing command for test, skipping: %s", err)
+	}
+
+	if err := runCommand([]string{lsAbs}, nil, nil, nil); err != nil {
+		t.Error("Unexpected error", err)
+	}
+
+	if err := runCommand([]string{}, nil, nil, nil); err != nil {
+		t.Error("Unexpected error", err)
+	}
+
+	shell := filepath.Base(os.Getenv("SHELL"))
+	if shell != "bash" && shell != "zsh" {
+		t.Logf("%s subshell not supported", shell)
+		t.Log("Skipping rest of test")
+		return
+	}
+
+	if err := runCommand([]string{":"}, nil, nil, nil); err != nil {
+		t.Error("Unexpected error", err)
+	}
+}
 
 func TestCommandName(t *testing.T) {
 	cases := []struct {

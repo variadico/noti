@@ -3,12 +3,13 @@ package command
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -103,7 +104,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		err = pollPID(pid, 1*time.Second)
 	} else {
 		vbs.Println("Running command")
-		err = runCommand(args)
+		err = runCommand(args, os.Stdin, os.Stdout, os.Stderr)
 	}
 	if err != nil {
 		v.Set("message", err.Error())
@@ -211,42 +212,39 @@ func commandName(args []string) string {
 	return args[0]
 }
 
-func runCommand(args []string) error {
+func runCommand(args []string, sin io.Reader, sout, serr io.Writer) error {
 	if len(args) == 0 {
 		return nil
 	}
 
+	var cmd *exec.Cmd
 	if _, err := exec.LookPath(args[0]); err != nil {
-		exp, expErr := expandAlias(args[0])
-		if expErr != nil {
+		// Maybe command is alias or builtin?
+		cmd = subshellCommand(args)
+		if cmd == nil {
 			return err
 		}
-
-		args = append(exp, args[1:]...)
+	} else {
+		cmd = exec.Command(args[0], args[1:]...)
 	}
 
-	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
+	cmd.Stdin = sin
+	cmd.Stdout = sout
+	cmd.Stderr = serr
 	return cmd.Run()
 }
 
-func expandAlias(alias string) ([]string, error) {
+func subshellCommand(args []string) *exec.Cmd {
 	shell := os.Getenv("SHELL")
 
-	cmd := exec.Command(shell, "-l", "-i", "-c", "which "+alias)
-	expanded, err := cmd.Output()
-	if err != nil {
-		return nil, err
+	switch filepath.Base(shell) {
+	case "bash", "zsh":
+		args = append([]string{"-l", "-i", "-c"}, args...)
+	default:
+		return nil
 	}
 
-	exp := strings.TrimSpace(string(expanded))
-	trimLen := fmt.Sprintf("%s: aliased to ", alias)
-	exp = exp[len(trimLen):]
-
-	return strings.Split(exp, " "), nil
+	return exec.Command(shell, args...)
 }
 
 // printEnv prints all of the environment variables used in noti.
