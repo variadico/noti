@@ -19,4 +19,5 @@ install:
 build_script:
 - cmd: make build
 test_script:
-- cmd: make test
+- cmd: make lint-only
+- cmd: make test-only
