@@ -69,12 +69,9 @@ func init() {
 
 func rootMain(cmd *cobra.Command, args []string) error {
 	v := viper.New()
-	setNotiDefaults(v)
-	bindNotiEnv(v)
-	if err := setupConfigFile(v); err != nil {
-		vbs.Println("Failed to read config file:", err)
+	if err := configureApp(v, cmd.Flags()); err != nil {
+		vbs.Println("Config error:", err)
 	}
-	v.BindPFlag("message", cmd.Flags().Lookup("message"))
 
 	vbs.Println("Command:", args)
 	if vbs.Enabled {

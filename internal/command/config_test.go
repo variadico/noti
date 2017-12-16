@@ -1,9 +1,11 @@
 package command
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
@@ -85,4 +87,66 @@ func TestBindNotiEnv(t *testing.T) {
 		t.Error("Unexpected base config length")
 		t.Errorf("have=%d; want=%d", haveKeys, len(baseDefaults))
 	}
+}
+
+func TestSetupConfigFile(t *testing.T) {
+	v := viper.New()
+	setupConfigFile(v)
+
+	haveKeys := countSettingsKeys(t, v.AllSettings())
+	if haveKeys != 0 {
+		t.Fatal("Environment should be cleared")
+	}
+
+	sample, err := ioutil.ReadFile("testdata/sample_config.yaml")
+	if err != nil {
+		t.Errorf("Failed to read sample config: %s", err)
+	}
+
+	if err := ioutil.WriteFile(".noti.yaml", sample, 0644); err != nil {
+		t.Errorf("Failed to write sample config: %s", err)
+	}
+	defer os.Remove(".noti.yaml")
+
+	if err := v.ReadInConfig(); err != nil {
+		t.Errorf("Failed to read config: %s", err)
+	}
+
+	haveKeys = countSettingsKeys(t, v.AllSettings())
+	if haveKeys != len(baseDefaults) {
+		t.Error("Unexpected len keys")
+	}
+}
+
+func TestConfigureApp(t *testing.T) {
+	orig := getNotiEnv(t)
+	defer setNotiEnv(t, orig)
+	clearNotiEnv(t)
+
+	v := viper.New()
+	flags := pflag.NewFlagSet("testconfigureapp", pflag.ContinueOnError)
+
+	configureApp(v, flags)
+
+	t.Run("default config", func(t *testing.T) {
+		have := v.GetString("nsuser.soundName")
+		want := baseDefaults["nsuser.soundName"]
+		if have != want {
+			t.Error("Unexpected config value")
+			t.Errorf("have=%s; want=%s", have, want)
+		}
+	})
+
+	t.Run("env override", func(t *testing.T) {
+		want := "foo"
+		if err := os.Setenv("NOTI_SOUND", want); err != nil {
+			t.Errorf("Failed to set env: %s", err)
+		}
+
+		have := v.GetString("nsuser.soundName")
+		if have != want {
+			t.Error("Unexpected config value")
+			t.Errorf("have=%s; want=%s", have, want)
+		}
+	})
 }

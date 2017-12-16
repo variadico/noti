@@ -87,6 +87,20 @@ func setupConfigFile(v *viper.Viper) error {
 	return v.ReadInConfig()
 }
 
+// configureApp merges together different configuration sources.
+func configureApp(v *viper.Viper, flags *pflag.FlagSet) error {
+	setNotiDefaults(v)
+	bindNotiEnv(v)
+
+	if err := setupConfigFile(v); err != nil {
+		return err
+	}
+
+	v.BindPFlag("message", flags.Lookup("message"))
+
+	return nil
+}
+
 // readEnv populates the initial config map.
 func readEnv(env string) map[string]bool {
 	// Initially everything is off.
