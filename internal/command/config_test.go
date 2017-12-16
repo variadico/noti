@@ -16,7 +16,13 @@ func countSettingsKeys(t *testing.T, m map[string]interface{}) int {
 	var keys int
 	for _, v := range m {
 		if sub, ok := v.(map[string]interface{}); ok {
+			// v is an object with keys.
 			keys += len(sub)
+		}
+
+		if _, ok := v.(string); ok {
+			// v is just a string key.
+			keys++
 		}
 	}
 	return keys
@@ -84,7 +90,8 @@ func TestBindNotiEnv(t *testing.T) {
 	}
 
 	haveKeys = countSettingsKeys(t, v.AllSettings())
-	if haveKeys != len(baseDefaults) {
+	wantKeys := len(baseDefaults) - 1 // -1 for message key.
+	if haveKeys != wantKeys {
 		t.Error("Unexpected base config length")
 		t.Errorf("have=%d; want=%d", haveKeys, len(baseDefaults))
 	}

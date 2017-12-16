@@ -8,6 +8,8 @@ import (
 )
 
 var baseDefaults = map[string]string{
+	"message": "Done!",
+
 	"nsuser.soundName":     "Ping",
 	"nsuser.soundNameFail": "Basso",
 

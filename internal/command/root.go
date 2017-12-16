@@ -48,7 +48,7 @@ func init() {
 	Root.Flags().SetInterspersed(false)
 
 	Root.Flags().StringP("title", "t", "", "Notification title. Default is utility name.")
-	Root.Flags().StringP("message", "m", "Done!", "Notification message. Default is 'Done!'.")
+	Root.Flags().StringP("message", "m", "", "Notification message. Default is 'Done!'.")
 
 	Root.Flags().IntP("pwatch", "w", -1, "Trigger notification after PID disappears.")
 
