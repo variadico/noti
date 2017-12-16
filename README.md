@@ -1,6 +1,5 @@
 # noti
 
-[![Open Hub]](https://www.openhub.net/p/variadico-noti)
 [![CircleCI]](https://circleci.com/gh/variadico/noti)
 [![AppVeyor]](https://ci.appveyor.com/project/variadico/noti)
 [![Codecov]](https://codecov.io/gh/variadico/noti)
@@ -206,7 +205,6 @@ $ fg; noti
 [docs]: https://github.com/variadico/noti/blob/master/docs/noti.md
 [screenshots]: https://github.com/variadico/noti/tree/master/docs/screenshots
 [releases page]: https://github.com/variadico/noti/releases
-[Open Hub]: https://img.shields.io/badge/open%20hub-metrics-blue.svg
 [CircleCI]: https://circleci.com/gh/variadico/noti/tree/master.svg?style=svg
 [AppVeyor]: https://ci.appveyor.com/api/projects/status/qc2fgc164786jws6/branch/master?svg=true
 [Codecov]: https://codecov.io/gh/variadico/noti/branch/master/graph/badge.svg
