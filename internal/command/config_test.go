@@ -254,3 +254,30 @@ func TestEnabledServices(t *testing.T) {
 		}
 	})
 }
+
+func TestGetNotifications(t *testing.T) {
+	services := []string{
+		"banner",
+		"bearychat",
+		"hipchat",
+		"pushbullet",
+		"pushover",
+		"pushsafer",
+		"simplepush",
+		"slack",
+		"speech",
+	}
+
+	for _, name := range services {
+		t.Run(fmt.Sprintf("get %s notification", name), func(t *testing.T) {
+			v := viper.New()
+			s := map[string]struct{}{name: struct{}{}}
+
+			notis := getNotifications(v, s)
+			if len(notis) != 1 {
+				t.Error("Unexpected number of notifications")
+				t.Errorf("have=%d; want=%d", len(notis), 1)
+			}
+		})
+	}
+}
