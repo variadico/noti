@@ -15,7 +15,10 @@ jobs:
           command: make lint-only
       - run:
           name: Run tests
-          command: make test-only
+          command: ./.circleci/test_coverage.sh
+      - run:
+          name: Upload coverage
+          command: bash <(curl -s https://codecov.io/bash)
   macos-build-test:
     macos:
       xcode: "9.0"
@@ -35,7 +38,10 @@ jobs:
           command: make lint-only
       - run:
           name: Run tests
-          command: make test-only
+          command: ./.circleci/test_coverage.sh
+      - run:
+          name: Upload coverage
+          command: bash <(curl -s https://codecov.io/bash)
 workflows:
   version: 2
   linux-flow:

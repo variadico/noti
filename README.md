@@ -3,6 +3,7 @@
 [![Open Hub]](https://www.openhub.net/p/variadico-noti)
 [![CircleCI]](https://circleci.com/gh/variadico/noti)
 [![AppVeyor]](https://ci.appveyor.com/project/variadico/noti)
+[![Codecov]](https://codecov.io/gh/variadico/noti)
 
 Trigger notifications when a process completes.
 
@@ -208,3 +209,4 @@ $ fg; noti
 [Open Hub]: https://img.shields.io/badge/open%20hub-metrics-blue.svg
 [CircleCI]: https://circleci.com/gh/variadico/noti/tree/master.svg?style=svg
 [AppVeyor]: https://ci.appveyor.com/api/projects/status/qc2fgc164786jws6/branch/master?svg=true
+[Codecov]: https://codecov.io/gh/variadico/noti/branch/master/graph/badge.svg
