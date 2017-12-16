@@ -1,6 +1,7 @@
 package command
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,11 +17,16 @@ func countSettingsKeys(t *testing.T, m map[string]interface{}) int {
 	var keys int
 	for _, v := range m {
 		if sub, ok := v.(map[string]interface{}); ok {
-			// v is an object with keys.
+			// Don't count the object, just its keys.
 			keys += len(sub)
 		}
 
 		if _, ok := v.(string); ok {
+			// v is just a string key.
+			keys++
+		}
+
+		if _, ok := v.([]string); ok {
 			// v is just a string key.
 			keys++
 		}
@@ -90,10 +96,10 @@ func TestBindNotiEnv(t *testing.T) {
 	}
 
 	haveKeys = countSettingsKeys(t, v.AllSettings())
-	wantKeys := len(baseDefaults) - 1 // -1 for message key.
+	wantKeys := len(baseDefaults) - 2 // -1 for message, -1 for default.
 	if haveKeys != wantKeys {
 		t.Error("Unexpected base config length")
-		t.Errorf("have=%d; want=%d", haveKeys, len(baseDefaults))
+		t.Errorf("have=%d; want=%d", haveKeys, wantKeys)
 	}
 }
 
@@ -122,7 +128,7 @@ func TestConfigureApp(t *testing.T) {
 	// file there first.
 	v.AddConfigPath("testdata")
 	flags := pflag.NewFlagSet("testconfigureapp", pflag.ContinueOnError)
-	flags.String("message", "", "")
+	defineFlags(flags)
 
 	configureApp(v, flags)
 
@@ -167,6 +173,84 @@ func TestConfigureApp(t *testing.T) {
 		if have != want {
 			t.Error("Unexpected config value")
 			t.Errorf("have=%s; want=%s", have, want)
+		}
+	})
+}
+
+func TestEnabledServices(t *testing.T) {
+	orig := getNotiEnv(t)
+	defer setNotiEnv(t, orig)
+	clearNotiEnv(t)
+
+	t.Run("flag override", func(t *testing.T) {
+		v := viper.New()
+		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
+		defineFlags(flags)
+
+		want := true
+		flags.Set("slack", fmt.Sprint(want))
+		services := enabledServices(v, flags)
+
+		if len(services) != 1 {
+			t.Error("Unexpected number of enabled services")
+			t.Errorf("have=%d; want=%d", len(services), 1)
+		}
+
+		_, have := services["slack"]
+		if have != want {
+			t.Error("Unexpected enabled state")
+			t.Errorf("have=%t; want=%t", have, want)
+		}
+	})
+
+	t.Run("env override", func(t *testing.T) {
+		v := viper.New()
+		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
+		defineFlags(flags)
+
+		if err := os.Setenv("NOTI_DEFAULT", "slack"); err != nil {
+			t.Fatal(err)
+		}
+		defer os.Unsetenv("NOTI_DEFAULT")
+
+		services := enabledServices(v, flags)
+
+		if len(services) != 1 {
+			t.Error("Unexpected number of enabled services")
+			t.Errorf("have=%d; want=%d", len(services), 1)
+		}
+
+		_, have := services["slack"]
+		want := true
+		if have != want {
+			t.Error("Unexpected enabled state")
+			t.Errorf("have=%t; want=%t", have, want)
+		}
+	})
+
+	t.Run("defaults", func(t *testing.T) {
+		v := viper.New()
+		// For tests, we prepend the testdata dir so that we check for a config
+		// file there first.
+		v.AddConfigPath("testdata")
+
+		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
+		defineFlags(flags)
+
+		configureApp(v, flags)
+
+		services := enabledServices(v, flags)
+
+		if len(services) != 1 {
+			t.Error("Unexpected number of enabled services")
+			t.Errorf("have=%d; want=%d", len(services), 1)
+		}
+
+		_, have := services["banner"]
+		want := true
+		if have != want {
+			t.Error("Unexpected enabled state")
+			t.Errorf("have=%t; want=%t", have, want)
 		}
 	})
 }

@@ -15,6 +15,11 @@ project adheres to [Semantic Versioning](http://semver.org/).
 * Single-dash long options. Long flags must be passed with two dashes, e.g.
   `--version`.
 
+### Changed
+
+* `-b=false` no longer has to be passed to disable banner when enabling
+  multiple notifications.
+
 ## [2.7.0]
 
 ### Deprecated

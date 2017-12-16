@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"github.com/variadico/vbs"
 )
@@ -44,27 +45,30 @@ func init() {
 	}
 
 	Root.SetUsageTemplate(compiledManual)
+	defineFlags(Root.Flags())
+}
 
-	Root.Flags().SetInterspersed(false)
+func defineFlags(flags *pflag.FlagSet) {
+	flags.SetInterspersed(false)
 
-	Root.Flags().StringP("title", "t", "", "Notification title. Default is utility name.")
-	Root.Flags().StringP("message", "m", "", "Notification message. Default is 'Done!'.")
+	flags.StringP("title", "t", "", "Notification title. Default is utility name.")
+	flags.StringP("message", "m", "", "Notification message. Default is 'Done!'.")
 
-	Root.Flags().IntP("pwatch", "w", -1, "Trigger notification after PID disappears.")
+	flags.IntP("pwatch", "w", -1, "Trigger notification after PID disappears.")
 
-	Root.Flags().BoolP("banner", "b", true, "Trigger a banner notification. Default is true. To disable this notification set this flag to false.")
-	Root.Flags().BoolP("speech", "s", false, "Trigger a speech notification. Optionally, customize the voice with NOTI_VOICE.")
-	Root.Flags().BoolP("hipchat", "i", false, "Trigger a HipChat notification. Requires NOTI_HIPCHAT_TOK and NOTI_HIPCHAT_DEST to be set.")
-	Root.Flags().BoolP("pushbullet", "p", false, "Trigger a Pushbullet notification. Requires NOTI_PUSHBULLET_TOK to be set.")
-	Root.Flags().BoolP("pushover", "o", false, "Trigger a Pushover notification. Requires NOTI_PUSHOVER_TOK and NOTI_PUSHOVER_DEST to be set.")
-	Root.Flags().BoolP("pushsafer", "u", false, "Trigger a Pushsafer notification. Requires NOTI_PUSHSAFER_KEY to be set.")
-	Root.Flags().BoolP("simplepush", "l", false, "Trigger a Simplepush notification. Requires NOTI_SIMPLEPUSH_KEY to be set. Optionally, customize ringtone and vibration with NOTI_SIMPLEPUSH_EVENT.")
-	Root.Flags().BoolP("slack", "k", false, "Trigger a Slack notification. Requires NOTI_SLACK_TOK and NOTI_SLACK_DEST to be set.")
-	Root.Flags().BoolP("bearychat", "c", false, "Trigger a BearyChat notification. Requries NOTI_BC_INCOMING_URI to be set.")
+	flags.BoolP("banner", "b", false, "Trigger a banner notification. Default is true. To disable this notification set this flag to false.")
+	flags.BoolP("speech", "s", false, "Trigger a speech notification. Optionally, customize the voice with NOTI_VOICE.")
+	flags.BoolP("hipchat", "i", false, "Trigger a HipChat notification. Requires NOTI_HIPCHAT_TOK and NOTI_HIPCHAT_DEST to be set.")
+	flags.BoolP("pushbullet", "p", false, "Trigger a Pushbullet notification. Requires NOTI_PUSHBULLET_TOK to be set.")
+	flags.BoolP("pushover", "o", false, "Trigger a Pushover notification. Requires NOTI_PUSHOVER_TOK and NOTI_PUSHOVER_DEST to be set.")
+	flags.BoolP("pushsafer", "u", false, "Trigger a Pushsafer notification. Requires NOTI_PUSHSAFER_KEY to be set.")
+	flags.BoolP("simplepush", "l", false, "Trigger a Simplepush notification. Requires NOTI_SIMPLEPUSH_KEY to be set. Optionally, customize ringtone and vibration with NOTI_SIMPLEPUSH_EVENT.")
+	flags.BoolP("slack", "k", false, "Trigger a Slack notification. Requires NOTI_SLACK_TOK and NOTI_SLACK_DEST to be set.")
+	flags.BoolP("bearychat", "c", false, "Trigger a BearyChat notification. Requries NOTI_BC_INCOMING_URI to be set.")
 
-	Root.Flags().BoolP("version", "v", false, "Print noti version and exit.")
-	Root.Flags().BoolP("help", "h", false, "Display help information and exit.")
-	Root.Flags().BoolVar(&vbs.Enabled, "verbose", false, "Enable verbose mode.")
+	flags.BoolP("version", "v", false, "Print noti version and exit.")
+	flags.BoolP("help", "h", false, "Display help information and exit.")
+	flags.BoolVar(&vbs.Enabled, "verbose", false, "Enable verbose mode.")
 }
 
 func rootMain(cmd *cobra.Command, args []string) error {
@@ -95,6 +99,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	if title == "" {
 		title = commandName(args)
 	}
+	v.Set("title", title)
 
 	if pid, _ := cmd.Flags().GetInt("pwatch"); pid != -1 {
 		vbs.Println("Watching PID")
@@ -108,52 +113,10 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		v.Set("nsuser.soundName", v.GetString("nsuser.soundNameFail"))
 	}
 
-	config := readEnv(os.Getenv("NOTI_DEFAULT"))
-	err = readFlags(cmd.Flags(), config, os.Getenv("NOTI_DEFAULT") == "")
-	if err != nil {
-		return err
-	}
-
-	vbs.Println("Config:", config)
+	enabled := enabledServices(v, cmd.Flags())
+	vbs.Println("Services:", enabled)
 	vbs.Println("Viper:", v.AllSettings())
-	var notis []notification
-	message := v.GetString("message")
-
-	if config["banner"] {
-		notis = append(notis, getBanner(title, message, v))
-	}
-
-	if config["speech"] {
-		notis = append(notis, getSpeech(title, message, v))
-	}
-
-	if config["bearychat"] {
-		notis = append(notis, getBearyChat(title, message, v))
-	}
-
-	if config["hipchat"] {
-		notis = append(notis, getHipChat(title, message, v))
-	}
-
-	if config["pushbullet"] {
-		notis = append(notis, getPushbullet(title, message, v))
-	}
-
-	if config["pushover"] {
-		notis = append(notis, getPushover(title, message, v))
-	}
-
-	if config["pushsafer"] {
-		notis = append(notis, getPushsafer(title, message, v))
-	}
-
-	if config["simplepush"] {
-		notis = append(notis, getSimplepush(title, message, v))
-	}
-
-	if config["slack"] {
-		notis = append(notis, getSlack(title, message, v))
-	}
+	notis := getNotifications(v, enabled)
 
 	vbs.Println("Notifications:", len(notis))
 	for _, n := range notis {

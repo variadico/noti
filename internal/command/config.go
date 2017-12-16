@@ -1,14 +1,23 @@
 package command
 
 import (
+	"os"
 	"strings"
 
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
-var baseDefaults = map[string]string{
-	"message": "Done!",
+// Configuration Precedence
+// * viper.Set
+// * flag
+// * env
+// * file
+// * defaults
+
+var baseDefaults = map[string]interface{}{
+	"defaults": []string{"banner"},
+	"message":  "Done!",
 
 	"nsuser.soundName":     "Ping",
 	"nsuser.soundNameFail": "Basso",
@@ -105,10 +114,11 @@ func configureApp(v *viper.Viper, flags *pflag.FlagSet) error {
 	return nil
 }
 
-// readEnv populates the initial config map.
-func readEnv(env string) map[string]bool {
-	// Initially everything is off.
-	config := map[string]bool{
+func enabledFromSlice(defaults []string) map[string]bool {
+	// defaults should come from viper, which should  have processed baseDefaults
+	// and config file values.
+
+	services := map[string]bool{
 		"banner":     false,
 		"bearychat":  false,
 		"hipchat":    false,
@@ -120,37 +130,115 @@ func readEnv(env string) map[string]bool {
 		"speech":     false,
 	}
 
-	if env == "" {
-		return config
-	}
-
-	envDefaults := strings.Split(env, " ")
-	for _, name := range envDefaults {
-		if _, found := config[name]; found {
-			config[name] = true
+	for _, name := range defaults {
+		// Check if name is in services to avoid bad names from getting added
+		// to map.
+		if _, ok := services[name]; ok {
+			services[name] = true
 		}
 	}
 
-	return config
+	return services
 }
 
-// readFlags overrides anything set in the environment.
-func readFlags(flags *pflag.FlagSet, config map[string]bool, defaultWasSet bool) error {
-	for name := range config {
-		if !flags.Changed(name) {
-			// Flag was not set by user.
-
-			if !defaultWasSet {
-				continue
-			}
-		}
-
-		val, err := flags.GetBool(name)
-		if err != nil {
-			return err
-		}
-		config[name] = val
+func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
+	services := map[string]bool{
+		"banner":     false,
+		"bearychat":  false,
+		"hipchat":    false,
+		"pushbullet": false,
+		"pushover":   false,
+		"pushsafer":  false,
+		"simplepush": false,
+		"slack":      false,
+		"speech":     false,
 	}
 
-	return nil
+	// Visit flags that have been set.
+	flags.Visit(func(f *pflag.Flag) {
+		// pflag normalizes false, f, 0 to "false".
+		if f.Value.Type() == "bool" && f.Value.String() == "false" {
+			// Skip bool flags that are set to false.
+			return
+		}
+
+		// Ignore flags that aren't service names.
+		if _, ok := services[f.Name]; ok {
+			services[f.Name] = true
+		}
+	})
+
+	return services
+}
+
+func enabledServices(v *viper.Viper, flags *pflag.FlagSet) map[string]struct{} {
+	var services map[string]bool
+
+	// Highest precedence.
+	if n := flags.NFlag(); n != 0 {
+		services = enabledFromFlags(flags)
+	}
+
+	if s := os.Getenv("NOTI_DEFAULT"); s != "" {
+		services = enabledFromSlice(strings.Split(s, " "))
+	}
+
+	// Lowest precedence.
+	if s := v.GetStringSlice("defaults"); len(s) != 0 {
+		services = enabledFromSlice(s)
+	}
+
+	filtered := make(map[string]struct{})
+	for service, enabled := range services {
+		if enabled {
+			filtered[service] = struct{}{}
+		}
+	}
+
+	return filtered
+}
+
+func getNotifications(v *viper.Viper, services map[string]struct{}) []notification {
+	title := v.GetString("title")
+	message := v.GetString("message")
+
+	var notis []notification
+
+	if _, ok := services["banner"]; ok {
+		notis = append(notis, getBanner(title, message, v))
+	}
+
+	if _, ok := services["speech"]; ok {
+		notis = append(notis, getSpeech(title, message, v))
+	}
+
+	if _, ok := services["bearychat"]; ok {
+		notis = append(notis, getBearyChat(title, message, v))
+	}
+
+	if _, ok := services["hipchat"]; ok {
+		notis = append(notis, getHipChat(title, message, v))
+	}
+
+	if _, ok := services["pushbullet"]; ok {
+		notis = append(notis, getPushbullet(title, message, v))
+	}
+
+	if _, ok := services["pushover"]; ok {
+		notis = append(notis, getPushover(title, message, v))
+	}
+
+	if _, ok := services["pushsafer"]; ok {
+		notis = append(notis, getPushsafer(title, message, v))
+	}
+
+	if _, ok := services["simplepush"]; ok {
+		notis = append(notis, getSimplepush(title, message, v))
+	}
+
+	if _, ok := services["slack"]; ok {
+		notis = append(notis, getSlack(title, message, v))
+	}
+
+	return notis
 }
