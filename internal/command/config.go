@@ -96,7 +96,9 @@ func configureApp(v *viper.Viper, flags *pflag.FlagSet) error {
 		return err
 	}
 
-	v.BindPFlag("message", flags.Lookup("message"))
+	if flags != nil {
+		v.BindPFlag("message", flags.Lookup("message"))
+	}
 
 	return nil
 }

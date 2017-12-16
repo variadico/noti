@@ -1,8 +1,9 @@
 package command
 
 import (
-	"io/ioutil"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/spf13/pflag"
@@ -91,30 +92,16 @@ func TestBindNotiEnv(t *testing.T) {
 
 func TestSetupConfigFile(t *testing.T) {
 	v := viper.New()
+	// For tests, we prepend the testdata dir so that we check for a config
+	// file there first.
+	v.AddConfigPath("testdata")
 	setupConfigFile(v)
 
-	haveKeys := countSettingsKeys(t, v.AllSettings())
-	if haveKeys != 0 {
-		t.Fatal("Environment should be cleared")
-	}
-
-	sample, err := ioutil.ReadFile("testdata/sample_config.yaml")
-	if err != nil {
-		t.Errorf("Failed to read sample config: %s", err)
-	}
-
-	if err := ioutil.WriteFile(".noti.yaml", sample, 0644); err != nil {
-		t.Errorf("Failed to write sample config: %s", err)
-	}
-	defer os.Remove(".noti.yaml")
-
-	if err := v.ReadInConfig(); err != nil {
-		t.Errorf("Failed to read config: %s", err)
-	}
-
-	haveKeys = countSettingsKeys(t, v.AllSettings())
-	if haveKeys != len(baseDefaults) {
-		t.Error("Unexpected len keys")
+	const want = 1
+	have := countSettingsKeys(t, v.AllSettings())
+	if have != want {
+		t.Error("Unexpected number of keys")
+		t.Errorf("have=%d; want=%d", have, want)
 	}
 }
 
@@ -124,26 +111,52 @@ func TestConfigureApp(t *testing.T) {
 	clearNotiEnv(t)
 
 	v := viper.New()
+	// For tests, we prepend the testdata dir so that we check for a config
+	// file there first.
+	v.AddConfigPath("testdata")
 	flags := pflag.NewFlagSet("testconfigureapp", pflag.ContinueOnError)
+	flags.String("message", "", "")
 
 	configureApp(v, flags)
 
-	t.Run("default config", func(t *testing.T) {
+	configDir := filepath.Base(filepath.Dir(v.ConfigFileUsed()))
+	if configDir != "testdata" {
+		t.Fatalf("Wrong config file used: %s", v.ConfigFileUsed())
+	}
+
+	t.Run("default and file", func(t *testing.T) {
+		// File takes precedence.
 		have := v.GetString("nsuser.soundName")
-		want := baseDefaults["nsuser.soundName"]
+		want := "testdata"
 		if have != want {
 			t.Error("Unexpected config value")
 			t.Errorf("have=%s; want=%s", have, want)
 		}
 	})
 
-	t.Run("env override", func(t *testing.T) {
+	t.Run("default, file, and env", func(t *testing.T) {
+		// Env takes precedence.
 		want := "foo"
 		if err := os.Setenv("NOTI_SOUND", want); err != nil {
 			t.Errorf("Failed to set env: %s", err)
 		}
+		defer setNotiEnv(t, orig)
 
 		have := v.GetString("nsuser.soundName")
+		if have != want {
+			t.Error("Unexpected config value")
+			t.Errorf("have=%s; want=%s", have, want)
+		}
+	})
+
+	t.Run("default", func(t *testing.T) {
+		// Default takes precedence.
+
+		// Clear config file.
+		v.ReadConfig(strings.NewReader(""))
+
+		have := v.GetString("nsuser.soundName")
+		want := baseDefaults["nsuser.soundName"]
 		if have != want {
 			t.Error("Unexpected config value")
 			t.Errorf("have=%s; want=%s", have, want)
