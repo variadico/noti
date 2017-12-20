@@ -111,7 +111,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 
 	if pid, _ := cmd.Flags().GetInt("pwatch"); pid != -1 {
 		vbs.Println("Watching PID")
-		err = pollPID(pid, 1*time.Second)
+		err = pollPID(pid, 2*time.Second)
 	} else {
 		vbs.Println("Running command")
 		err = runCommand(args, os.Stdin, os.Stdout, os.Stderr)

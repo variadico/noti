@@ -7,8 +7,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-* `.noti.yaml` config file support for NSUserNotification and speech.
-* Speech notification support for Windows
+* `.noti.yaml` config file supports current notifications.
+* Speech notification support for Windows.
 
 ### Removed
 
@@ -19,6 +19,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 * `-b=false` no longer has to be passed to disable banner when enabling
   multiple notifications.
+
+* `--pwatch` now polls PID every 2 seconds instead of every 1 second.
 
 ## [2.7.0]
 
