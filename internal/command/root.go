@@ -18,6 +18,9 @@ import (
 	"github.com/variadico/vbs"
 )
 
+// Draft releases and prereleases are not returned by this endpoint.
+const githubReleasesURL = "https://api.github.com/repos/variadico/noti/releases/latest"
+
 // notification is the interface for all notifications.
 type notification interface {
 	Send() error
@@ -83,8 +86,13 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	}
 
 	if showVer, _ := cmd.Flags().GetBool("version"); showVer {
-		fmt.Println(Version)
-		checkForUpdates()
+		fmt.Println("noti version", Version)
+		if latest, dl, err := latestRelease(githubReleasesURL); err != nil {
+			vbs.Println("Failed get latest release:", err)
+		} else if latest != Version {
+			fmt.Println("Latest:", latest)
+			fmt.Println("Download:", dl)
+		}
 		return nil
 	}
 
@@ -128,14 +136,12 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func checkForUpdates() error {
-	// Draft releases and prereleases are not returned by this endpoint.
-	const releaseAPI = "https://api.github.com/repos/variadico/noti/releases/latest"
+func latestRelease(u string) (string, string, error) {
 	webClient := &http.Client{Timeout: 30 * time.Second}
 
-	resp, err := webClient.Get(releaseAPI)
+	resp, err := webClient.Get(u)
 	if err != nil {
-		return err
+		return "", "", err
 	}
 	defer resp.Body.Close()
 
@@ -144,15 +150,10 @@ func checkForUpdates() error {
 		TagName string `json:"tag_name"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
-		return err
+		return "", "", err
 	}
 
-	fmt.Println("latest:", r.TagName)
-	if r.TagName != Version {
-		fmt.Println("download:", r.HTMLURL)
-	}
-
-	return nil
+	return r.TagName, r.HTMLURL, nil
 }
 
 func commandName(args []string) string {
