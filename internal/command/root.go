@@ -80,7 +80,6 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		vbs.Println("Config error:", err)
 	}
 
-	vbs.Println("Command:", args)
 	if vbs.Enabled {
 		printEnv()
 	}
@@ -107,13 +106,14 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	if title == "" {
 		title = commandName(args)
 	}
+	vbs.Println("title:", title)
 	v.Set("title", title)
 
 	if pid, _ := cmd.Flags().GetInt("pwatch"); pid != -1 {
-		vbs.Println("Watching PID")
+		vbs.Println("Watching PID:", pid)
 		err = pollPID(pid, 2*time.Second)
 	} else {
-		vbs.Println("Running command")
+		vbs.Println("Running command:", args)
 		err = runCommand(args, os.Stdin, os.Stdout, os.Stderr)
 	}
 	if err != nil {
@@ -126,10 +126,12 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	vbs.Println("Viper:", v.AllSettings())
 	notis := getNotifications(v, enabled)
 
-	vbs.Println("Notifications:", len(notis))
+	vbs.Println(len(notis), "notifications queued")
 	for _, n := range notis {
 		if err := n.Send(); err != nil {
 			log.Println(err)
+		} else {
+			vbs.Printf("Sent: %T\n", n)
 		}
 	}
 
@@ -208,7 +210,6 @@ func subshellCommand(args []string) *exec.Cmd {
 	return exec.Command(shell, args...)
 }
 
-// printEnv prints all of the environment variables used in noti.
 func printEnv() {
 	envs := []string{
 		"NOTI_BC_INCOMING_URI",
