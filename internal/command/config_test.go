@@ -184,8 +184,14 @@ func TestEnabledServices(t *testing.T) {
 
 	t.Run("flag override", func(t *testing.T) {
 		v := viper.New()
+		// For tests, we prepend the testdata dir so that we check for a config
+		// file there first.
+		v.AddConfigPath("testdata")
+
 		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
 		defineFlags(flags)
+
+		configureApp(v, flags)
 
 		want := true
 		flags.Set("slack", fmt.Sprint(want))
@@ -205,8 +211,14 @@ func TestEnabledServices(t *testing.T) {
 
 	t.Run("env override", func(t *testing.T) {
 		v := viper.New()
+		// For tests, we prepend the testdata dir so that we check for a config
+		// file there first.
+		v.AddConfigPath("testdata")
+
 		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
 		defineFlags(flags)
+
+		configureApp(v, flags)
 
 		if err := os.Setenv("NOTI_DEFAULT", "slack"); err != nil {
 			t.Fatal(err)

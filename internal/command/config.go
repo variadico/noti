@@ -174,17 +174,13 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 func enabledServices(v *viper.Viper, flags *pflag.FlagSet) map[string]struct{} {
 	var services map[string]bool
 
-	// Highest precedence.
 	if n := flags.NFlag(); n != 0 {
+		// Highest precedence.
 		services = enabledFromFlags(flags)
-	}
-
-	if s := os.Getenv("NOTI_DEFAULT"); s != "" {
+	} else if s := os.Getenv("NOTI_DEFAULT"); s != "" {
 		services = enabledFromSlice(strings.Split(s, " "))
-	}
-
-	// Lowest precedence.
-	if s := v.GetStringSlice("defaults"); len(s) != 0 {
+	} else if s := v.GetStringSlice("defaults"); len(s) != 0 {
+		// Lowest precedence.
 		services = enabledFromSlice(s)
 	}
 
