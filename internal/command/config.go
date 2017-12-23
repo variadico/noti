@@ -141,6 +141,33 @@ func enabledFromSlice(defaults []string) map[string]bool {
 	return services
 }
 
+func hasServiceFlags(flags *pflag.FlagSet) bool {
+	services := map[string]bool{
+		"banner":     false,
+		"bearychat":  false,
+		"hipchat":    false,
+		"pushbullet": false,
+		"pushover":   false,
+		"pushsafer":  false,
+		"simplepush": false,
+		"slack":      false,
+		"speech":     false,
+	}
+
+	flags.Visit(func(f *pflag.Flag) {
+		if _, ok := services[f.Name]; ok {
+			services[f.Name] = true
+		}
+	})
+
+	for _, enabled := range services {
+		if enabled {
+			return true
+		}
+	}
+	return false
+}
+
 func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 	services := map[string]bool{
 		"banner":     false,
@@ -174,7 +201,7 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 func enabledServices(v *viper.Viper, flags *pflag.FlagSet) map[string]struct{} {
 	var services map[string]bool
 
-	if n := flags.NFlag(); n != 0 {
+	if hasServiceFlags(flags) {
 		// Highest precedence.
 		services = enabledFromFlags(flags)
 	} else if s := os.Getenv("NOTI_DEFAULT"); s != "" {

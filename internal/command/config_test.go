@@ -209,6 +209,36 @@ func TestEnabledServices(t *testing.T) {
 		}
 	})
 
+	t.Run("non-service flags", func(t *testing.T) {
+		v := viper.New()
+		// For tests, we prepend the testdata dir so that we check for a config
+		// file there first.
+		v.AddConfigPath("testdata")
+
+		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
+		defineFlags(flags)
+
+		configureApp(v, flags)
+
+		flags.Set("verbose", "true")
+		services := enabledServices(v, flags)
+
+		// We should end up taking the defaults.
+
+		if len(services) != 1 {
+			t.Error("Unexpected number of enabled services")
+			t.Errorf("have=%d; want=%d", len(services), 1)
+			t.Error("services:", services)
+		}
+
+		want := true
+		_, have := services["banner"]
+		if have != want {
+			t.Error("Unexpected enabled state")
+			t.Errorf("have=%t; want=%t", have, want)
+		}
+	})
+
 	t.Run("env override", func(t *testing.T) {
 		v := viper.New()
 		// For tests, we prepend the testdata dir so that we check for a config
