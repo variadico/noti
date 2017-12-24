@@ -1,7 +1,7 @@
 # Change Log
 
-All notable changes to this project will be documented in this file. This
-project adheres to [Semantic Versioning](http://semver.org/).
+All notable changes to this project will be documented in this file. The tool
+interface adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
@@ -9,18 +9,20 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 * `.noti.yaml` config file supports current notifications.
 * Speech notification support for Windows.
-
-### Removed
-
-* Single-dash long options. Long flags must be passed with two dashes, e.g.
-  `--version`.
+* Man pages for `noti` and `noti.yaml`.
+* Configuration option for Slack bot name.
 
 ### Changed
 
 * `-b=false` no longer has to be passed to disable banner when enabling
   multiple notifications.
-
+* `--help` has been simplified.
 * `--pwatch` now polls PID every 2 seconds instead of every 1 second.
+
+### Removed
+
+* Single-dash long options. Long flags must be passed with two dashes, e.g.
+  `--version`.
 
 ## [2.7.0]
 

@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -28,51 +27,44 @@ type notification interface {
 
 // Root is the root noti command.
 var Root = &cobra.Command{
-	Use:  "noti [flags] [command [arguments]]",
-	RunE: rootMain,
+	Use:     "noti [flags] [utility [args...]]",
+	Example: "noti tar -cjf music.tar.bz2 Music/",
+	RunE:    rootMain,
 
 	SilenceErrors: true,
 	SilenceUsage:  true,
 }
 
-// Version is the version of noti. This is set at compile time.
+// Version is the version of noti. This is set at compile time with Make.
 var Version string
 
 func init() {
-	var compiledManual string
-	switch runtime.GOOS {
-	case "darwin":
-		compiledManual = fmt.Sprintf(manual, osxManual)
-	case "linux", "freebsd":
-		compiledManual = fmt.Sprintf(manual, linuxFreeBSDManual)
-	}
-
-	Root.SetUsageTemplate(compiledManual)
 	defineFlags(Root.Flags())
 }
 
 func defineFlags(flags *pflag.FlagSet) {
 	flags.SetInterspersed(false)
+	flags.SortFlags = false
 
-	flags.StringP("title", "t", "", "Notification title. Default is utility name.")
-	flags.StringP("message", "m", "", "Notification message. Default is 'Done!'.")
+	flags.StringP("title", "t", "", "Set notification title. Default is utility name.")
+	flags.StringP("message", "m", "", `Set notification message. Default is "Done!".`)
 
-	flags.BoolP("banner", "b", false, "Trigger a banner notification. Default is true. To disable this notification set this flag to false.")
-	flags.BoolP("speech", "s", false, "Trigger a speech notification. Optionally, customize the voice with NOTI_VOICE.")
-	flags.BoolP("hipchat", "i", false, "Trigger a HipChat notification. Requires NOTI_HIPCHAT_TOK and NOTI_HIPCHAT_DEST to be set.")
-	flags.BoolP("pushbullet", "p", false, "Trigger a Pushbullet notification. Requires NOTI_PUSHBULLET_TOK to be set.")
-	flags.BoolP("pushover", "o", false, "Trigger a Pushover notification. Requires NOTI_PUSHOVER_TOK and NOTI_PUSHOVER_DEST to be set.")
-	flags.BoolP("pushsafer", "u", false, "Trigger a Pushsafer notification. Requires NOTI_PUSHSAFER_KEY to be set.")
-	flags.BoolP("simplepush", "l", false, "Trigger a Simplepush notification. Requires NOTI_SIMPLEPUSH_KEY to be set. Optionally, customize ringtone and vibration with NOTI_SIMPLEPUSH_EVENT.")
-	flags.BoolP("slack", "k", false, "Trigger a Slack notification. Requires NOTI_SLACK_TOK and NOTI_SLACK_DEST to be set.")
-	flags.BoolP("bearychat", "c", false, "Trigger a BearyChat notification. Requries NOTI_BC_INCOMING_URI to be set.")
+	flags.BoolP("banner", "b", false, "Trigger a banner notification. This is enabled by default.")
+	flags.BoolP("speech", "s", false, "Trigger a speech notification.")
+	flags.BoolP("bearychat", "c", false, "Trigger a BearyChat notification.")
+	flags.BoolP("hipchat", "i", false, "Trigger a HipChat notification.")
+	flags.BoolP("pushbullet", "p", false, "Trigger a Pushbullet notification.")
+	flags.BoolP("pushover", "o", false, "Trigger a Pushover notification.")
+	flags.BoolP("pushsafer", "u", false, "Trigger a Pushsafer notification.")
+	flags.BoolP("simplepush", "l", false, "Trigger a Simplepush notification.")
+	flags.BoolP("slack", "k", false, "Trigger a Slack notification.")
 
-	flags.IntP("pwatch", "w", -1, "Trigger notification after PID disappears.")
+	flags.IntP("pwatch", "w", -1, "Monitor a process by PID and trigger a notification when the pid disappears.")
 
-	flags.StringP("file", "f", "", "Noti config file")
+	flags.StringP("file", "f", "", "Path to noti.yaml configuration file.")
 	flags.BoolVar(&vbs.Enabled, "verbose", false, "Enable verbose mode.")
 	flags.BoolP("version", "v", false, "Print noti version and exit.")
-	flags.BoolP("help", "h", false, "Display help information and exit.")
+	flags.BoolP("help", "h", false, "Print noti help and exit.")
 }
 
 func rootMain(cmd *cobra.Command, args []string) error {
@@ -97,7 +89,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	}
 
 	if showHelp, _ := cmd.Flags().GetBool("help"); showHelp {
-		return cmd.Usage()
+		return cmd.Help()
 	}
 
 	title, err := cmd.Flags().GetString("title")

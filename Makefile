@@ -33,3 +33,6 @@ clean:
 	rm -f cmd/noti/noti
 	git clean -x -f -d
 	git remote prune origin
+man:
+	pandoc -s -t man docs/man/noti.1.md -o docs/man/noti.1
+	pandoc -s -t man docs/man/noti.yaml.5.md -o docs/man/noti.yaml.5
