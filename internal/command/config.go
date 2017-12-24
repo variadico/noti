@@ -43,8 +43,9 @@ var baseDefaults = map[string]interface{}{
 	"simplepush.key":   "",
 	"simplepush.event": "",
 
-	"slack.token":   "",
-	"slack.channel": "",
+	"slack.token":    "",
+	"slack.channel":  "",
+	"slack.username": "noti",
 }
 
 func setNotiDefaults(v *viper.Viper) {
@@ -78,8 +79,9 @@ var keyEnvBindings = map[string]string{
 	"simplepush.key":   "NOTI_SIMPLEPUSH_KEY",
 	"simplepush.event": "NOTI_SIMPLEPUSH_EVENT",
 
-	"slack.token":   "NOTI_SLACK_TOK",
-	"slack.channel": "NOTI_SLACK_DEST",
+	"slack.token":    "NOTI_SLACK_TOK",
+	"slack.channel":  "NOTI_SLACK_DEST",
+	"slack.username": "NOTI_SLACK_USERNAME",
 }
 
 func bindNotiEnv(v *viper.Viper) {
