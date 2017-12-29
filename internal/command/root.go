@@ -211,22 +211,12 @@ func subshellCommand(args []string) *exec.Cmd {
 }
 
 func printEnv() {
-	envs := []string{
-		"NOTI_BC_INCOMING_URI",
-		"NOTI_DEFAULT",
-		"NOTI_HIPCHAT_DEST",
-		"NOTI_HIPCHAT_TOK",
-		"NOTI_PUSHBULLET_TOK",
-		"NOTI_PUSHOVER_DEST",
-		"NOTI_PUSHOVER_TOK",
-		"NOTI_PUSHSAFER_KEY",
-		"NOTI_SIMPLEPUSH_EVENT",
-		"NOTI_SIMPLEPUSH_KEY",
-		"NOTI_SLACK_DEST",
-		"NOTI_SLACK_TOK",
-		"NOTI_SOUND",
-		"NOTI_SOUND_FAIL",
-		"NOTI_VOICE",
+	var envs []string
+	for _, e := range keyEnvBindings {
+		envs = append(envs, e)
+	}
+	for _, e := range keyEnvBindingsDeprecated {
+		envs = append(envs, e)
 	}
 
 	for _, env := range envs {

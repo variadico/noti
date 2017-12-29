@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"github.com/variadico/vbs"
 )
 
 // Configuration Precedence
@@ -55,39 +56,73 @@ func setNotiDefaults(v *viper.Viper) {
 }
 
 var keyEnvBindings = map[string]string{
-	"nsuser.soundName":     "NOTI_SOUND",
-	"nsuser.soundNameFail": "NOTI_SOUND_FAIL",
+	"nsuser.soundName":     "NOTI_NSUSER_SOUNDNAME",
+	"nsuser.soundNameFail": "NOTI_NSUSER_SOUNDNAMEFAIL",
 
-	"say.voice": "NOTI_VOICE",
+	"say.voice": "NOTI_SAY_VOICE",
 
-	"espeak.voiceName": "NOTI_VOICE",
+	"espeak.voiceName": "NOTI_ESPEAK_VOICENAME",
 
-	"speechsynthesizer.voice": "NOTI_VOICE",
+	"speechsynthesizer.voice": "NOTI_SPEECHSYNTHESIZER_VOICE",
 
-	"bearychat.incomingHookURI": "NOTI_BC_INCOMING_URI",
+	"bearychat.incomingHookURI": "NOTI_BEARYCHAT_INCOMINGHOOKURI",
 
-	"hipchat.accessToken": "NOTI_BC_INCOMING_URI",
-	"hipchat.room":        "NOTI_HIPCHAT_DEST",
+	"hipchat.accessToken": "NOTI_HIPCHAT_ACCESSTOKEN",
+	"hipchat.room":        "NOTI_HIPCHAT_ROOM",
 
-	"pushbullet.accessToken": "NOTI_PUSHBULLET_TOK",
+	"pushbullet.accessToken": "NOTI_PUSHBULLET_ACCESSTOKEN",
 
-	"pushover.token": "NOTI_PUSHOVER_TOK",
-	"pushover.user":  "NOTI_PUSHOVER_DEST",
+	"pushover.token": "NOTI_PUSHOVER_TOKEN",
+	"pushover.user":  "NOTI_PUSHOVER_USER",
 
-	"pushsafer.privateKey": "NOTI_PUSHSAFER_KEY",
+	"pushsafer.privateKey": "NOTI_PUSHSAFER_PRIVATEKEY",
 
 	"simplepush.key":   "NOTI_SIMPLEPUSH_KEY",
 	"simplepush.event": "NOTI_SIMPLEPUSH_EVENT",
 
-	"slack.token":    "NOTI_SLACK_TOK",
-	"slack.channel":  "NOTI_SLACK_DEST",
+	"slack.token":    "NOTI_SLACK_TOKEN",
+	"slack.channel":  "NOTI_SLACK_CHANNEL",
 	"slack.username": "NOTI_SLACK_USERNAME",
 }
 
-func bindNotiEnv(v *viper.Viper) {
+var keyEnvBindingsDeprecated = map[string]string{
+	"NOTI_NSUSER_SOUNDNAME":          "NOTI_SOUND",
+	"NOTI_NSUSER_SOUNDNAMEFAIL":      "NOTI_SOUND_FAIL",
+	"NOTI_SAY_VOICE":                 "NOTI_VOICE",
+	"NOTI_ESPEAK_VOICENAME":          "NOTI_VOICE",
+	"NOTI_SPEECHSYNTHESIZER_VOICE":   "NOTI_VOICE",
+	"NOTI_BEARYCHAT_INCOMINGHOOKURI": "NOTI_BC_INCOMING_URI",
+	"NOTI_HIPCHAT_ACCESSTOKEN":       "NOTI_HIPCHAT_TOK",
+	"NOTI_HIPCHAT_ROOM":              "NOTI_HIPCHAT_DEST",
+	"NOTI_PUSHBULLET_ACCESSTOKEN":    "NOTI_PUSHBULLET_TOK",
+	"NOTI_PUSHOVER_TOKEN":            "NOTI_PUSHOVER_TOK",
+	"NOTI_PUSHOVER_USER":             "NOTI_PUSHOVER_DEST",
+	"NOTI_PUSHSAFER_PRIVATEKEY":      "NOTI_PUSHSAFER_KEY",
+	"NOTI_SLACK_TOKEN":               "NOTI_SLACK_TOK",
+	"NOTI_SLACK_CHANNEL":             "NOTI_SLACK_DEST",
+}
+
+func bindNotiEnv(v *viper.Viper) error {
 	for key, val := range keyEnvBindings {
-		v.BindEnv(key, val)
+		if err := v.BindEnv(key, val); err != nil {
+			return err
+		}
 	}
+
+	// Map old deprecated env vars to new ones.
+	for newEnv, oldEnv := range keyEnvBindingsDeprecated {
+		v := os.Getenv(oldEnv)
+		if v == "" {
+			continue
+		}
+
+		vbs.Printf("Remapping %s=%s to %s\n", oldEnv, v, newEnv)
+		if err := os.Setenv(newEnv, v); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func setupConfigFile(v *viper.Viper) error {
@@ -103,17 +138,20 @@ func setupConfigFile(v *viper.Viper) error {
 // configureApp merges together different configuration sources.
 func configureApp(v *viper.Viper, flags *pflag.FlagSet) error {
 	setNotiDefaults(v)
-	bindNotiEnv(v)
+
+	if err := bindNotiEnv(v); err != nil {
+		return err
+	}
 
 	if err := setupConfigFile(v); err != nil {
 		return err
 	}
 
-	if flags != nil {
-		v.BindPFlag("message", flags.Lookup("message"))
+	if flags == nil {
+		return nil
 	}
 
-	return nil
+	return v.BindPFlag("message", flags.Lookup("message"))
 }
 
 func enabledFromSlice(defaults []string) map[string]bool {

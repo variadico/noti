@@ -86,20 +86,25 @@ func TestBindNotiEnv(t *testing.T) {
 
 	haveKeys := countSettingsKeys(t, v.AllSettings())
 	if haveKeys != 0 {
-		t.Fatal("Environment should be cleared")
+		t.Error("Environment should be cleared")
+		t.Error(v.AllSettings())
 	}
 
+	var numSet int
 	for _, env := range keyEnvBindings {
 		if err := os.Setenv(env, "foo"); err != nil {
 			t.Errorf("Setenv error: %s", err)
+			continue
 		}
+		numSet++
 	}
 
 	haveKeys = countSettingsKeys(t, v.AllSettings())
-	wantKeys := len(baseDefaults) - 2 // -1 for message, -1 for default.
+	wantKeys := numSet
 	if haveKeys != wantKeys {
 		t.Error("Unexpected base config length")
 		t.Errorf("have=%d; want=%d", haveKeys, wantKeys)
+		t.Error(v.AllSettings())
 	}
 }
 
@@ -150,15 +155,16 @@ func TestConfigureApp(t *testing.T) {
 	t.Run("default, file, and env", func(t *testing.T) {
 		// Env takes precedence.
 		want := "foo"
-		if err := os.Setenv("NOTI_SOUND", want); err != nil {
+		if err := os.Setenv("NOTI_NSUSER_SOUNDNAME", want); err != nil {
 			t.Errorf("Failed to set env: %s", err)
 		}
-		defer setNotiEnv(t, orig)
+		defer clearNotiEnv(t)
 
 		have := v.GetString("nsuser.soundName")
 		if have != want {
 			t.Error("Unexpected config value")
 			t.Errorf("have=%s; want=%s", have, want)
+			t.Error("nsuser:", v.Sub("nsuser").AllSettings())
 		}
 	})
 
@@ -173,6 +179,7 @@ func TestConfigureApp(t *testing.T) {
 		if have != want {
 			t.Error("Unexpected config value")
 			t.Errorf("have=%s; want=%s", have, want)
+			t.Error("nsuser:", v.Sub("nsuser").AllSettings())
 		}
 	})
 }
