@@ -57,8 +57,6 @@ func defineFlags(flags *pflag.FlagSet) {
 	flags.StringP("title", "t", "", "Notification title. Default is utility name.")
 	flags.StringP("message", "m", "", "Notification message. Default is 'Done!'.")
 
-	flags.IntP("pwatch", "w", -1, "Trigger notification after PID disappears.")
-
 	flags.BoolP("banner", "b", false, "Trigger a banner notification. Default is true. To disable this notification set this flag to false.")
 	flags.BoolP("speech", "s", false, "Trigger a speech notification. Optionally, customize the voice with NOTI_VOICE.")
 	flags.BoolP("hipchat", "i", false, "Trigger a HipChat notification. Requires NOTI_HIPCHAT_TOK and NOTI_HIPCHAT_DEST to be set.")
@@ -69,15 +67,18 @@ func defineFlags(flags *pflag.FlagSet) {
 	flags.BoolP("slack", "k", false, "Trigger a Slack notification. Requires NOTI_SLACK_TOK and NOTI_SLACK_DEST to be set.")
 	flags.BoolP("bearychat", "c", false, "Trigger a BearyChat notification. Requries NOTI_BC_INCOMING_URI to be set.")
 
+	flags.IntP("pwatch", "w", -1, "Trigger notification after PID disappears.")
+
+	flags.StringP("file", "f", "", "Noti config file")
+	flags.BoolVar(&vbs.Enabled, "verbose", false, "Enable verbose mode.")
 	flags.BoolP("version", "v", false, "Print noti version and exit.")
 	flags.BoolP("help", "h", false, "Display help information and exit.")
-	flags.BoolVar(&vbs.Enabled, "verbose", false, "Enable verbose mode.")
 }
 
 func rootMain(cmd *cobra.Command, args []string) error {
 	v := viper.New()
 	if err := configureApp(v, cmd.Flags()); err != nil {
-		vbs.Println("Config error:", err)
+		vbs.Println("Failed to configure:", err)
 	}
 
 	if vbs.Enabled {

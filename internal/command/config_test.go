@@ -3,7 +3,6 @@ package command
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
@@ -110,10 +109,9 @@ func TestBindNotiEnv(t *testing.T) {
 
 func TestSetupConfigFile(t *testing.T) {
 	v := viper.New()
-	// For tests, we prepend the testdata dir so that we check for a config
-	// file there first.
-	v.AddConfigPath("testdata")
-	setupConfigFile(v)
+	if err := setupConfigFile("testdata/noti.yaml", v); err != nil {
+		t.Error(err)
+	}
 
 	const want = 1
 	have := countSettingsKeys(t, v.AllSettings())
@@ -129,26 +127,22 @@ func TestConfigureApp(t *testing.T) {
 	clearNotiEnv(t)
 
 	v := viper.New()
-	// For tests, we prepend the testdata dir so that we check for a config
-	// file there first.
-	v.AddConfigPath("testdata")
 	flags := pflag.NewFlagSet("testconfigureapp", pflag.ContinueOnError)
 	defineFlags(flags)
+	flags.Set("file", "testdata/noti.yaml")
 
-	configureApp(v, flags)
-
-	configDir := filepath.Base(filepath.Dir(v.ConfigFileUsed()))
-	if configDir != "testdata" {
-		t.Fatalf("Wrong config file used: %s", v.ConfigFileUsed())
+	if err := configureApp(v, flags); err != nil {
+		t.Error(err)
 	}
 
 	t.Run("default and file", func(t *testing.T) {
 		// File takes precedence.
 		have := v.GetString("nsuser.soundName")
-		want := "testdata"
+		want := "testSoundName"
 		if have != want {
 			t.Error("Unexpected config value")
 			t.Errorf("have=%s; want=%s", have, want)
+			t.Error("nsuser:", v.Sub("nsuser").AllSettings())
 		}
 	})
 

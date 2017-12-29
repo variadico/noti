@@ -1,7 +1,12 @@
 package command
 
 import (
+	"bytes"
+	"fmt"
+	"io"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/pflag"
@@ -125,14 +130,44 @@ func bindNotiEnv(v *viper.Viper) error {
 	return nil
 }
 
-func setupConfigFile(v *viper.Viper) error {
+func setupConfigFile(fileFlag string, v *viper.Viper) error {
 	viper.SupportedExts = []string{"yaml"}
-	v.SetConfigName(".noti")
+	var configPaths []string
 
-	v.AddConfigPath(".")
-	v.AddConfigPath("$HOME")
+	if fileFlag != "" {
+		configPaths = append(configPaths, fileFlag)
+	}
 
-	return v.ReadInConfig()
+	xdgConfig := os.Getenv("XDG_CONFIG_HOME")
+	if xdgConfig == "" {
+		xdgConfig = filepath.Join(os.ExpandEnv("$HOME"), ".config", "noti", "noti.yaml")
+	} else {
+		xdgConfig = filepath.Join(xdgConfig, "noti", "noti.yaml")
+	}
+
+	configPaths = append(configPaths,
+		filepath.Join(".", ".noti.yaml"),
+		xdgConfig,
+	)
+
+	var config io.Reader
+	var errMsg []string
+	for _, p := range configPaths {
+		data, err := ioutil.ReadFile(p)
+		if err != nil {
+			errMsg = append(errMsg, err.Error())
+			continue
+		}
+
+		config = bytes.NewReader(data)
+		break
+	}
+	if config == nil {
+		return fmt.Errorf("failed to read config file: %v", errMsg)
+	}
+
+	v.SetConfigType("yaml")
+	return v.ReadConfig(config)
 }
 
 // configureApp merges together different configuration sources.
@@ -143,7 +178,9 @@ func configureApp(v *viper.Viper, flags *pflag.FlagSet) error {
 		return err
 	}
 
-	if err := setupConfigFile(v); err != nil {
+	// Don't care about this error, fileFlag can be blank.
+	fileFlag, _ := flags.GetString("file")
+	if err := setupConfigFile(fileFlag, v); err != nil {
 		return err
 	}
 
