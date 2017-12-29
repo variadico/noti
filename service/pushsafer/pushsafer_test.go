@@ -10,10 +10,10 @@ import (
 
 func TestSend(t *testing.T) {
 	n := Notification{
-		Title:      "title",
-		Message:    "mesg",
-		PrivateKey: "key",
-		Client:     &http.Client{Timeout: 3 * time.Second},
+		Title:   "title",
+		Message: "mesg",
+		Key:     "key",
+		Client:  &http.Client{Timeout: 3 * time.Second},
 	}
 	var mockResp apiResponse
 	var hitServer bool

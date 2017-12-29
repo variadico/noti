@@ -23,10 +23,10 @@ type apiResponse struct {
 
 // Notification is a pushover notification.
 type Notification struct {
-	Message string
-	Title   string
-	Token   string
-	User    string
+	Message  string
+	Title    string
+	APIToken string
+	UserKey  string
 
 	Client *http.Client
 }
@@ -34,8 +34,8 @@ type Notification struct {
 // Send sends a pushover notification.
 func (n *Notification) Send() error {
 	vals := make(url.Values)
-	vals.Set("token", n.Token)
-	vals.Set("user", n.User)
+	vals.Set("token", n.APIToken)
+	vals.Set("user", n.UserKey)
 	vals.Set("message", n.Message)
 	vals.Set("title", n.Title)
 

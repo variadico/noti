@@ -23,9 +23,10 @@ type apiResponse struct {
 
 // Notification is a Pushsafer notification.
 type Notification struct {
-	Title      string
-	Message    string
-	PrivateKey string
+	Title   string
+	Message string
+	// Key is a private key or an alias key.
+	Key string
 
 	Client *http.Client
 }
@@ -33,7 +34,7 @@ type Notification struct {
 // Send sends a Pushsafer notification.
 func (n *Notification) Send() error {
 	vals := make(url.Values)
-	vals.Set("k", n.PrivateKey)
+	vals.Set("k", n.Key)
 	vals.Set("m", n.Message)
 	vals.Set("t", n.Title)
 

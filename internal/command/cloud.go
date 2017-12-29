@@ -47,19 +47,20 @@ func getPushbullet(title, message string, v *viper.Viper) notification {
 
 func getPushover(title, message string, v *viper.Viper) notification {
 	return &pushover.Notification{
-		Title:   title,
-		Message: message,
-		Token:   v.GetString("pushover.token"),
-		User:    v.GetString("pushover.user"),
-		Client:  httpClient,
+		Title:    title,
+		Message:  message,
+		APIToken: v.GetString("pushover.apiToken"),
+		UserKey:  v.GetString("pushover.userKey"),
+		Client:   httpClient,
 	}
 }
 
 func getPushsafer(title, message string, v *viper.Viper) notification {
 	return &pushsafer.Notification{
-		Title:      title,
-		Message:    message,
-		PrivateKey: v.GetString("pushsafer.privateKey"),
+		Title:   title,
+		Message: message,
+		Key:     v.GetString("pushsafer.key"),
+		Client:  httpClient,
 	}
 }
 
@@ -69,6 +70,7 @@ func getSimplepush(title, message string, v *viper.Viper) notification {
 		Message: message,
 		Key:     v.GetString("simplepush.key"),
 		Event:   v.GetString("simplepush.event"),
+		Client:  httpClient,
 	}
 }
 

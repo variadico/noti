@@ -41,10 +41,10 @@ var baseDefaults = map[string]interface{}{
 
 	"pushbullet.accessToken": "",
 
-	"pushover.token": "",
-	"pushover.user":  "",
+	"pushover.apiToken": "",
+	"pushover.userKey":  "",
 
-	"pushsafer.privateKey": "",
+	"pushsafer.key": "",
 
 	"simplepush.key":   "",
 	"simplepush.event": "",
@@ -77,10 +77,10 @@ var keyEnvBindings = map[string]string{
 
 	"pushbullet.accessToken": "NOTI_PUSHBULLET_ACCESSTOKEN",
 
-	"pushover.token": "NOTI_PUSHOVER_TOKEN",
-	"pushover.user":  "NOTI_PUSHOVER_USER",
+	"pushover.apiToken": "NOTI_PUSHOVER_APITOKEN",
+	"pushover.userKey":  "NOTI_PUSHOVER_USERKEY",
 
-	"pushsafer.privateKey": "NOTI_PUSHSAFER_PRIVATEKEY",
+	"pushsafer.key": "NOTI_PUSHSAFER_KEY",
 
 	"simplepush.key":   "NOTI_SIMPLEPUSH_KEY",
 	"simplepush.event": "NOTI_SIMPLEPUSH_EVENT",
@@ -102,7 +102,6 @@ var keyEnvBindingsDeprecated = map[string]string{
 	"NOTI_PUSHBULLET_ACCESSTOKEN":    "NOTI_PUSHBULLET_TOK",
 	"NOTI_PUSHOVER_TOKEN":            "NOTI_PUSHOVER_TOK",
 	"NOTI_PUSHOVER_USER":             "NOTI_PUSHOVER_DEST",
-	"NOTI_PUSHSAFER_PRIVATEKEY":      "NOTI_PUSHSAFER_KEY",
 	"NOTI_SLACK_TOKEN":               "NOTI_SLACK_TOK",
 	"NOTI_SLACK_CHANNEL":             "NOTI_SLACK_DEST",
 }

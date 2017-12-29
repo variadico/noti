@@ -30,10 +30,14 @@ type Notification struct {
 
 // Send sends a simplepush notification.
 func (n *Notification) Send() error {
+	if n.Key == "" {
+		return errors.New("missing key")
+	}
+
 	vals := make(url.Values)
 	vals.Set("key", n.Key)
-	vals.Set("msg", n.Message)
 	vals.Set("title", n.Title)
+	vals.Set("msg", n.Message)
 	vals.Set("event", n.Event)
 
 	resp, err := n.Client.PostForm(API, vals)
