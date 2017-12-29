@@ -18,7 +18,7 @@ jobs:
           command: ./.circleci/test_coverage.sh
       - run:
           name: Upload coverage
-          command: bash <(curl -s https://codecov.io/bash)
+          command: ./.circleci/codecov-bash.sh
   macos-build-test:
     macos:
       xcode: "9.0"
@@ -41,7 +41,7 @@ jobs:
           command: ./.circleci/test_coverage.sh
       - run:
           name: Upload coverage
-          command: bash <(curl -s https://codecov.io/bash)
+          command: ./.circleci/codecov-bash.sh
 workflows:
   version: 2
   linux-flow:
