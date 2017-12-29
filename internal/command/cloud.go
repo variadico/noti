@@ -27,8 +27,8 @@ func getBearyChat(title, message string, v *viper.Viper) notification {
 
 func getHipChat(title, message string, v *viper.Viper) notification {
 	return &hipchat.Notification{
-		Token:         v.GetString("hipchat.token"),
-		Destination:   v.GetString("hipchat.destination"),
+		AccessToken:   v.GetString("hipchat.accessToken"),
+		Room:          v.GetString("hipchat.room"),
 		Message:       fmt.Sprintf("%s\n%s", title, message),
 		MessageFormat: "text",
 		Client:        httpClient,
@@ -37,11 +37,11 @@ func getHipChat(title, message string, v *viper.Viper) notification {
 
 func getPushbullet(title, message string, v *viper.Viper) notification {
 	return &pushbullet.Notification{
-		Title:  title,
-		Body:   message,
-		Type:   "note",
-		Token:  v.GetString("pushbullet.token"),
-		Client: httpClient,
+		Title:       title,
+		Body:        message,
+		Type:        "note",
+		AccessToken: v.GetString("pushbullet.accessToken"),
+		Client:      httpClient,
 	}
 }
 

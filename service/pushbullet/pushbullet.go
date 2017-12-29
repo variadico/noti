@@ -44,8 +44,8 @@ type Notification struct {
 	Title string `json:"title"`
 	Type  string `json:"type"`
 
-	Token  string       `json:"-"`
-	Client *http.Client `json:"-"`
+	AccessToken string       `json:"-"`
+	Client      *http.Client `json:"-"`
 }
 
 // Send sends a Pushbullet notification.
@@ -59,7 +59,7 @@ func (n *Notification) Send() error {
 	if err != nil {
 		return err
 	}
-	req.Header.Set("Access-Token", n.Token)
+	req.Header.Set("Access-Token", n.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := n.Client.Do(req)

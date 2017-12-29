@@ -25,14 +25,14 @@ type Notification struct {
 	Message       string `json:"message"`
 	MessageFormat string `json:"message_format"`
 
-	Token       string       `json:"-"`
-	Destination string       `json:"-"`
+	AccessToken string       `json:"-"`
+	Room        string       `json:"-"`
 	Client      *http.Client `json:"-"`
 }
 
 // Send triggers a HipChat notification.
 func (n *Notification) Send() error {
-	if n.Token == "" {
+	if n.AccessToken == "" {
 		return errors.New("missing access token")
 	}
 
@@ -41,12 +41,12 @@ func (n *Notification) Send() error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf(API, n.Destination), payload)
+	req, err := http.NewRequest("POST", fmt.Sprintf(API, n.Room), payload)
 	if err != nil {
 		return err
 	}
 
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", n.Token))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", n.AccessToken))
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := n.Client.Do(req)

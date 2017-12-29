@@ -30,10 +30,10 @@ var baseDefaults = map[string]interface{}{
 
 	"bearychat.incomingHookURI": "",
 
-	"hipchat.token":       "",
-	"hipchat.destination": "",
+	"hipchat.accessToken": "",
+	"hipchat.room":        "",
 
-	"pushbullet.token": "",
+	"pushbullet.accessToken": "",
 
 	"pushover.token": "",
 	"pushover.user":  "",
@@ -66,10 +66,10 @@ var keyEnvBindings = map[string]string{
 
 	"bearychat.incomingHookURI": "NOTI_BC_INCOMING_URI",
 
-	"hipchat.token":       "NOTI_BC_INCOMING_URI",
-	"hipchat.destination": "NOTI_HIPCHAT_DEST",
+	"hipchat.accessToken": "NOTI_BC_INCOMING_URI",
+	"hipchat.room":        "NOTI_HIPCHAT_DEST",
 
-	"pushbullet.token": "NOTI_PUSHBULLET_TOK",
+	"pushbullet.accessToken": "NOTI_PUSHBULLET_TOK",
 
 	"pushover.token": "NOTI_PUSHOVER_TOK",
 	"pushover.user":  "NOTI_PUSHOVER_DEST",
