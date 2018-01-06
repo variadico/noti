@@ -11,7 +11,6 @@ import (
 
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"github.com/variadico/vbs"
 )
 
 // Configuration Precedence
@@ -120,7 +119,10 @@ func bindNotiEnv(v *viper.Viper) error {
 			continue
 		}
 
-		vbs.Printf("Remapping %s=%s to %s\n", oldEnv, v, newEnv)
+		fmt.Fprintf(os.Stderr, "Warning: %s is deprecated, use %s instead\n",
+			oldEnv, newEnv)
+		fmt.Fprintf(os.Stderr, "Remapping %s=%s to %s\n", oldEnv, v, newEnv)
+
 		if err := os.Setenv(newEnv, v); err != nil {
 			return err
 		}

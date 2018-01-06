@@ -19,6 +19,29 @@ interface adheres to [Semantic Versioning](http://semver.org/).
 * `--help` has been simplified.
 * `--pwatch` now polls PID every 2 seconds instead of every 1 second.
 
+### Deprecated
+
+* In an effort to normalize and allow future configuration for different
+  services, certain environment variables have been deprecated.
+
+```
+| Deprecated           | Current                        |
+---------------------------------------------------------
+| NOTI_SOUND           | NOTI_NSUSER_SOUNDNAME          |
+| NOTI_SOUND_FAIL      | NOTI_NSUSER_SOUNDNAMEFAIL      |
+| NOTI_VOICE           | NOTI_SAY_VOICE                 |
+| NOTI_VOICE           | NOTI_ESPEAK_VOICENAME          |
+| NOTI_VOICE           | NOTI_SPEECHSYNTHESIZER_VOICE   |
+| NOTI_BC_INCOMING_URI | NOTI_BEARYCHAT_INCOMINGHOOKURI |
+| NOTI_HIPCHAT_TOK     | NOTI_HIPCHAT_ACCESSTOKEN       |
+| NOTI_HIPCHAT_DEST    | NOTI_HIPCHAT_ROOM              |
+| NOTI_PUSHBULLET_TOK  | NOTI_PUSHBULLET_ACCESSTOKEN    |
+| NOTI_PUSHOVER_TOK    | NOTI_PUSHOVER_TOKEN            |
+| NOTI_PUSHOVER_DEST   | NOTI_PUSHOVER_USER             |
+| NOTI_SLACK_TOK       | NOTI_SLACK_TOKEN               |
+| NOTI_SLACK_DEST      | NOTI_SLACK_CHANNEL             |
+```
+
 ### Removed
 
 * Single-dash long options. Long flags must be passed with two dashes, e.g.
