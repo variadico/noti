@@ -1,65 +1,62 @@
 # Noti release
 
-This is the internal process I go through to release a version of Noti. I'm just
-writing this down for myself.
+This is the internal process I go through to release a version of Noti. I'm
+just writing this down for myself.
 
-## Run tests
+## Tests
 
-```
-cd variadico/noti
-./lint.sh
-./cmd/noti/test.sh
-go test ./...
-```
+Make sure latest dev is green on CI.
+
+* https://circleci.com/gh/variadico/noti
+* https://ci.appveyor.com/project/variadico/noti
 
 ## Increment version
 
 * CHANGELOG.md
-* noti.go
-* README.md
-* gen_bin.sh
+* docs/man
 
-## Merge to mainline
+## Merge to master
 
 ```
 git checkout master
 git merge dev --ff-only
-
-# Repeat Run Tests. Make sure it still works.
-go install github.com/variadico/noti/cmd/noti
-
-# Go check make sure you didn't screw anything up. Make sure URLs in doc resolve
-# correctly.
 git push origin master
+```
 
-git tag v1.2.3
-git push origin v1.2.3
+## Tests
+
+Make sure latest master is green on CI.
+
+* https://circleci.com/gh/variadico/noti
+* https://ci.appveyor.com/project/variadico/noti
+
+## Double check
+
+Fix anything that might have broken like CI or URLs in docs. Last chance to
+change anything.
+
+## Tag release
+
+Once everything is ready, tag the release.
+
+```
+git tag 1.2.3
+git push origin 1.2.3
 ```
 
 ## Edit GitHub release information
 
-* Click on Releases > v1.2.3 > Edit tag.
-* Make the release title v1.2.3.
+* Click on Releases > 1.2.3 > Edit tag.
+* Make the release title 1.2.3.
 * Copy and paste the changes from CHANGELOG.md into the description box.
 
-Upload binaries.
+Create release tarballs.
 
 ```
-cd $GOPATH/bin
-tar -czf noti1.2.3.darwin-amd64.tar.gz noti
-mv noti1.2.3.darwin-amd64.tar.gz ~/Desktop
-
-docker run --rm -it -v $GOPATH:/go golang:1.6.2 /bin/bash
-cd $GOPATH/bin
-rm noti
-
-go install github.com/variadico/noti/cmd/noti
-# Make sure it works.
-noti -h
-
-tar -czf noti1.2.3.linux-amd64.tar.gz noti
-mv noti1.2.3.linux-amd64.tar.gz ~/Desktop
+make release
 ```
+
+Upload files.
 
 ## Eventually update Homebrew
 
