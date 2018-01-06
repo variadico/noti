@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased] - YYYY-MM-DD
+
+## [3.0.0] - 2018-01-06
 
 ### Added
 
@@ -20,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   multiple notifications.
 * `--help` has been simplified.
 * `--pwatch` now polls PID every 2 seconds instead of every 1 second.
+* Version omits `v` prefix, e.g. `3.0.0` instead of `v3.0.0`.
 
 ### Deprecated
 
@@ -175,7 +178,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * OS X-specific flags and usage text from Linux and FreeBSD help.
 
 
-[Unreleased]: https://github.com/variadico/noti/compare/v2.7.0...dev
+[Unreleased]: https://github.com/variadico/noti/compare/3.0.0...dev
+[3.0.0]: https://github.com/variadico/noti/compare/v2.7.0...3.0.0
 [2.7.0]: https://github.com/variadico/noti/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/variadico/noti/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/variadico/noti/compare/v2.4.0...v2.5.0
