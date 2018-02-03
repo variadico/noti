@@ -68,6 +68,8 @@ func defineFlags(flags *pflag.FlagSet) {
 }
 
 func rootMain(cmd *cobra.Command, args []string) error {
+	vbs.Println("os.Args:", os.Args)
+
 	v := viper.New()
 	if err := configureApp(v, cmd.Flags()); err != nil {
 		vbs.Println("Failed to configure:", err)
@@ -97,9 +99,9 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	if title == "" {
+		vbs.Println("Title from flags is empty, getting title from command name")
 		title = commandName(args)
 	}
-	vbs.Println("title:", title)
 	v.Set("title", title)
 
 	if pid, _ := cmd.Flags().GetInt("pwatch"); pid != -1 {
@@ -113,6 +115,9 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		v.Set("message", err.Error())
 		v.Set("nsuser.soundName", v.GetString("nsuser.soundNameFail"))
 	}
+
+	vbs.Println("Title:", v.GetString("title"))
+	vbs.Println("Message:", v.GetString("message"))
 
 	enabled := enabledServices(v, cmd.Flags())
 	vbs.Println("Services:", enabled)
