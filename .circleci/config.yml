@@ -3,7 +3,7 @@ version: 2
 jobs:
   linux-build-test:
     docker:
-      - image: circleci/golang:1.9.2
+      - image: circleci/golang:1.10
     working_directory: /go/src/github.com/variadico/noti
     steps:
       - checkout
@@ -23,7 +23,7 @@ jobs:
     macos:
       xcode: "9.0"
     environment:
-      - GOVERSION: 1.9.2
+      - GOVERSION: '1.10'
     working_directory: ~/go/src/github.com/variadico/noti
     steps:
       - checkout
