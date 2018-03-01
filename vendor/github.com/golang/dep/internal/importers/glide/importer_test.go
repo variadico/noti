@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/golang/dep"
-	"github.com/golang/dep/internal/gps"
+	"github.com/golang/dep/gps"
 	"github.com/golang/dep/internal/importers/importertest"
 	"github.com/golang/dep/internal/test"
 	"github.com/pkg/errors"
@@ -125,7 +125,7 @@ func TestGlideConfig_Convert(t *testing.T) {
 			},
 			glideLock{},
 			importertest.TestCase{
-				WantConvertErr: true,
+				WantWarning: "Warning: Skipping project. Invalid glide configuration, Name is required",
 			},
 		},
 		"warn unused os field": {
@@ -138,8 +138,7 @@ func TestGlideConfig_Convert(t *testing.T) {
 				}},
 			glideLock{},
 			importertest.TestCase{
-				WantConstraint: "*",
-				WantWarning:    "specified an os",
+				WantWarning: "specified an os",
 			},
 		},
 		"warn unused arch field": {
@@ -152,8 +151,7 @@ func TestGlideConfig_Convert(t *testing.T) {
 				}},
 			glideLock{},
 			importertest.TestCase{
-				WantConstraint: "*",
-				WantWarning:    "specified an arch",
+				WantWarning: "specified an arch",
 			},
 		},
 	}
@@ -162,7 +160,7 @@ func TestGlideConfig_Convert(t *testing.T) {
 		name := name
 		testCase := testCase
 		t.Run(name, func(t *testing.T) {
-			err := testCase.Execute(t, func(logger *log.Logger, sm gps.SourceManager) (*dep.Manifest, *dep.Lock, error) {
+			err := testCase.Execute(t, func(logger *log.Logger, sm gps.SourceManager) (*dep.Manifest, *dep.Lock) {
 				g := NewImporter(logger, true, sm)
 				g.glideConfig = testCase.yaml
 				g.glideLock = testCase.lock

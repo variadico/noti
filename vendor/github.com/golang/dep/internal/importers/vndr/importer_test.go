@@ -6,13 +6,14 @@ package vndr
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"path/filepath"
 	"reflect"
 	"testing"
 
 	"github.com/golang/dep"
-	"github.com/golang/dep/internal/gps"
+	"github.com/golang/dep/gps"
 	"github.com/golang/dep/internal/importers/importertest"
 	"github.com/golang/dep/internal/test"
 	"github.com/pkg/errors"
@@ -41,7 +42,7 @@ func TestVndrConfig_Convert(t *testing.T) {
 				reference: importertest.V1Tag,
 			}},
 			importertest.TestCase{
-				WantConvertErr: true,
+				WantWarning: "Warning: Skipping project. Invalid vndr configuration, import path is required",
 			},
 		},
 		"missing reference": {
@@ -49,7 +50,10 @@ func TestVndrConfig_Convert(t *testing.T) {
 				importPath: importertest.Project,
 			}},
 			importertest.TestCase{
-				WantConvertErr: true,
+				WantWarning: fmt.Sprintf(
+					"Warning: Invalid vndr configuration, reference not found for import path %q",
+					importertest.Project,
+				),
 			},
 		},
 	}
@@ -58,7 +62,7 @@ func TestVndrConfig_Convert(t *testing.T) {
 		name := name
 		testCase := testCase
 		t.Run(name, func(t *testing.T) {
-			err := testCase.Execute(t, func(logger *log.Logger, sm gps.SourceManager) (*dep.Manifest, *dep.Lock, error) {
+			err := testCase.Execute(t, func(logger *log.Logger, sm gps.SourceManager) (*dep.Manifest, *dep.Lock) {
 				g := NewImporter(logger, true, sm)
 				g.packages = testCase.packages
 				return g.convert(importertest.RootProject)

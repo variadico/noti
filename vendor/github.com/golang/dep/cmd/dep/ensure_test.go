@@ -14,8 +14,8 @@ import (
 	"testing"
 
 	"github.com/golang/dep"
-	"github.com/golang/dep/internal/gps"
-	"github.com/golang/dep/internal/gps/pkgtree"
+	"github.com/golang/dep/gps"
+	"github.com/golang/dep/gps/pkgtree"
 	"github.com/golang/dep/internal/test"
 )
 
@@ -190,6 +190,15 @@ func TestValidateUpdateArgs(t *testing.T) {
 			wantError: errUpdateArgsValidation,
 			wantWarn: []string{
 				"version constraint master passed for github.com/golang/dep, but -update follows constraints declared in Gopkg.toml, not CLI arguments",
+			},
+			lockedProjects: []string{"github.com/golang/dep"},
+		},
+		{
+			name:      "flags after spec",
+			args:      []string{"github.com/golang/dep@master", "-v"},
+			wantError: errUpdateArgsValidation,
+			wantWarn: []string{
+				"could not infer project root from dependency path",
 			},
 			lockedProjects: []string{"github.com/golang/dep"},
 		},

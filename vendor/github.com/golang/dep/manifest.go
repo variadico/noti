@@ -13,9 +13,9 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/golang/dep/internal/gps"
-	"github.com/golang/dep/internal/gps/pkgtree"
-	"github.com/pelletier/go-toml"
+	"github.com/golang/dep/gps"
+	"github.com/golang/dep/gps/pkgtree"
+	toml "github.com/pelletier/go-toml"
 	"github.com/pkg/errors"
 )
 
@@ -24,26 +24,42 @@ const ManifestName = "Gopkg.toml"
 
 // Errors
 var (
-	errInvalidConstraint  = errors.New("\"constraint\" must be a TOML array of tables")
-	errInvalidOverride    = errors.New("\"override\" must be a TOML array of tables")
-	errInvalidRequired    = errors.New("\"required\" must be a TOML list of strings")
-	errInvalidIgnored     = errors.New("\"ignored\" must be a TOML list of strings")
+	errInvalidConstraint   = errors.Errorf("%q must be a TOML array of tables", "constraint")
+	errInvalidOverride     = errors.Errorf("%q must be a TOML array of tables", "override")
+	errInvalidRequired     = errors.Errorf("%q must be a TOML list of strings", "required")
+	errInvalidIgnored      = errors.Errorf("%q must be a TOML list of strings", "ignored")
+	errInvalidPrune        = errors.Errorf("%q must be a TOML table of booleans", "prune")
+	errInvalidPruneProject = errors.Errorf("%q must be a TOML array of tables", "prune.project")
+	errInvalidMetadata     = errors.New("metadata should be a TOML table")
+
 	errInvalidProjectRoot = errors.New("ProjectRoot name validation failed")
+
+	errInvalidPruneValue = errors.New("prune options values must be booleans")
+	errPruneSubProject   = errors.New("prune projects should not contain sub projects")
+
+	errRootPruneContainsName   = errors.Errorf("%q should not include a name", "prune")
+	errInvalidRootPruneValue   = errors.New("root prune options must be omitted instead of being set to false")
+	errInvalidPruneProjectName = errors.Errorf("%q in %q must be a string", "name", "prune.project")
+	errNoName                  = errors.New("no name provided")
 )
 
 // Manifest holds manifest file data and implements gps.RootManifest.
 type Manifest struct {
 	Constraints gps.ProjectConstraints
 	Ovr         gps.ProjectConstraints
-	Ignored     []string
-	Required    []string
+
+	Ignored  []string
+	Required []string
+
+	PruneOptions gps.CascadingPruneOptions
 }
 
 type rawManifest struct {
-	Constraints []rawProject `toml:"constraint,omitempty"`
-	Overrides   []rawProject `toml:"override,omitempty"`
-	Ignored     []string     `toml:"ignored,omitempty"`
-	Required    []string     `toml:"required,omitempty"`
+	Constraints  []rawProject    `toml:"constraint,omitempty"`
+	Overrides    []rawProject    `toml:"override,omitempty"`
+	Ignored      []string        `toml:"ignored,omitempty"`
+	Required     []string        `toml:"required,omitempty"`
+	PruneOptions rawPruneOptions `toml:"prune,omitempty"`
 }
 
 type rawProject struct {
@@ -54,11 +70,37 @@ type rawProject struct {
 	Source   string `toml:"source,omitempty"`
 }
 
-// NewManifest instantiates a new manifest.
+type rawPruneOptions struct {
+	UnusedPackages bool `toml:"unused-packages,omitempty"`
+	NonGoFiles     bool `toml:"non-go,omitempty"`
+	GoTests        bool `toml:"go-tests,omitempty"`
+
+	//Projects []map[string]interface{} `toml:"project,omitempty"`
+	Projects []map[string]interface{}
+}
+
+const (
+	pruneOptionUnusedPackages = "unused-packages"
+	pruneOptionGoTests        = "go-tests"
+	pruneOptionNonGo          = "non-go"
+)
+
+// Constants to represents per-project prune uint8 values.
+const (
+	pvnone  uint8 = 0 // No per-project prune value was set in Gopkg.toml.
+	pvtrue  uint8 = 1 // Per-project prune value was explicitly set to true.
+	pvfalse uint8 = 2 // Per-project prune value was explicitly set to false.
+)
+
+// NewManifest instantites a new manifest.
 func NewManifest() *Manifest {
 	return &Manifest{
 		Constraints: make(gps.ProjectConstraints),
 		Ovr:         make(gps.ProjectConstraints),
+		PruneOptions: gps.CascadingPruneOptions{
+			DefaultOptions:    gps.PruneNestedVendorDirs,
+			PerProjectOptions: map[gps.ProjectRoot]gps.PruneOptionSet{},
+		},
 	}
 }
 
@@ -67,7 +109,7 @@ func validateManifest(s string) ([]error, error) {
 	// Load the TomlTree from string
 	tree, err := toml.Load(s)
 	if err != nil {
-		return warns, errors.Wrap(err, "Unable to load TomlTree from string")
+		return warns, errors.Wrap(err, "unable to load TomlTree from string")
 	}
 	// Convert tree to a map
 	manifest := tree.ToMap()
@@ -80,7 +122,7 @@ func validateManifest(s string) ([]error, error) {
 		case "metadata":
 			// Check if metadata is of Map type
 			if reflect.TypeOf(val).Kind() != reflect.Map {
-				warns = append(warns, errors.New("metadata should be a TOML table"))
+				warns = append(warns, errInvalidMetadata)
 			}
 		case "constraint", "override":
 			valid := true
@@ -95,13 +137,17 @@ func validateManifest(s string) ([]error, error) {
 				if valid {
 					// Iterate through each array of tables
 					for _, v := range rawProj {
+						ruleProvided := false
+						props := v.(map[string]interface{})
 						// Check the individual field's key to be valid
-						for key, value := range v.(map[string]interface{}) {
+						for key, value := range props {
 							// Check if the key is valid
 							switch key {
-							case "name", "branch", "version", "source":
-								// valid key
+							case "name":
+							case "branch", "version", "source":
+								ruleProvided = true
 							case "revision":
+								ruleProvided = true
 								if valueStr, ok := value.(string); ok {
 									if abbrevRevHash.MatchString(valueStr) {
 										warns = append(warns, fmt.Errorf("revision %q should not be in abbreviated form", valueStr))
@@ -114,8 +160,13 @@ func validateManifest(s string) ([]error, error) {
 								}
 							default:
 								// unknown/invalid key
-								warns = append(warns, fmt.Errorf("Invalid key %q in %q", key, prop))
+								warns = append(warns, fmt.Errorf("invalid key %q in %q", key, prop))
 							}
+						}
+						if _, ok := props["name"]; !ok {
+							warns = append(warns, errNoName)
+						} else if !ruleProvided && prop == "constraint" {
+							warns = append(warns, fmt.Errorf("branch, version, revision, or source should be provided for %q", props["name"]))
 						}
 					}
 				}
@@ -151,12 +202,89 @@ func validateManifest(s string) ([]error, error) {
 					return warns, errInvalidRequired
 				}
 			}
+		case "prune":
+			pruneWarns, err := validatePruneOptions(val, true)
+			warns = append(warns, pruneWarns...)
+			if err != nil {
+				return warns, err
+			}
 		default:
-			warns = append(warns, fmt.Errorf("Unknown field in manifest: %v", prop))
+			warns = append(warns, fmt.Errorf("unknown field in manifest: %v", prop))
 		}
 	}
 
 	return warns, nil
+}
+
+func validatePruneOptions(val interface{}, root bool) (warns []error, err error) {
+	if reflect.TypeOf(val).Kind() != reflect.Map {
+		return warns, errInvalidPrune
+	}
+
+	for key, value := range val.(map[string]interface{}) {
+		switch key {
+		case pruneOptionNonGo, pruneOptionGoTests, pruneOptionUnusedPackages:
+			if option, ok := value.(bool); !ok {
+				return warns, errInvalidPruneValue
+			} else if root && !option {
+				return warns, errInvalidRootPruneValue
+			}
+		case "name":
+			if root {
+				warns = append(warns, errRootPruneContainsName)
+			} else if _, ok := value.(string); !ok {
+				return warns, errInvalidPruneProjectName
+			}
+		case "project":
+			if !root {
+				return warns, errPruneSubProject
+			}
+			if reflect.TypeOf(value).Kind() != reflect.Slice {
+				return warns, errInvalidPruneProject
+			}
+
+			for _, project := range value.([]interface{}) {
+				projectWarns, err := validatePruneOptions(project, false)
+				warns = append(warns, projectWarns...)
+				if err != nil {
+					return nil, err
+				}
+			}
+
+		default:
+			if root {
+				warns = append(warns, errors.Errorf("unknown field %q in %q", key, "prune"))
+			} else {
+				warns = append(warns, errors.Errorf("unknown field %q in %q", key, "prune.project"))
+			}
+		}
+	}
+
+	return warns, err
+}
+
+func checkRedundantPruneOptions(co gps.CascadingPruneOptions) (warns []error) {
+	for name, project := range co.PerProjectOptions {
+		if project.UnusedPackages != pvnone {
+			if (co.DefaultOptions&gps.PruneUnusedPackages != 0) == (project.UnusedPackages == pvtrue) {
+				warns = append(warns, errors.Errorf("redundant prune option %q set for %q", pruneOptionUnusedPackages, name))
+			}
+		}
+
+		if project.NonGoFiles != pvnone {
+			if (co.DefaultOptions&gps.PruneNonGoFiles != 0) == (project.NonGoFiles == pvtrue) {
+				warns = append(warns, errors.Errorf("redundant prune option %q set for %q", pruneOptionNonGo, name))
+			}
+		}
+
+		if project.GoTests != pvnone {
+			if (co.DefaultOptions&gps.PruneGoTestFiles != 0) == (project.GoTests == pvtrue) {
+				warns = append(warns, errors.Errorf("redundant prune option %q set for %q", pruneOptionGoTests, name))
+			}
+		}
+	}
+
+	return warns
 }
 
 // ValidateProjectRoots validates the project roots present in manifest.
@@ -184,6 +312,10 @@ func ValidateProjectRoots(c *Ctx, m *Manifest, sm gps.SourceManager) error {
 		wg.Add(1)
 		go validate(pr)
 	}
+	for pr := range m.PruneOptions.PerProjectOptions {
+		wg.Add(1)
+		go validate(pr)
+	}
 
 	wg.Wait()
 	close(errorCh)
@@ -206,25 +338,30 @@ func readManifest(r io.Reader) (*Manifest, []error, error) {
 	buf := &bytes.Buffer{}
 	_, err := buf.ReadFrom(r)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Unable to read byte stream")
+		return nil, nil, errors.Wrap(err, "unable to read byte stream")
 	}
 
 	warns, err := validateManifest(buf.String())
 	if err != nil {
-		return nil, warns, errors.Wrap(err, "Manifest validation failed")
+		return nil, warns, errors.Wrap(err, "manifest validation failed")
 	}
 
 	raw := rawManifest{}
 	err = toml.Unmarshal(buf.Bytes(), &raw)
 	if err != nil {
-		return nil, warns, errors.Wrap(err, "Unable to parse the manifest as TOML")
+		return nil, warns, errors.Wrap(err, "unable to parse the manifest as TOML")
 	}
 
-	m, err := fromRawManifest(raw)
-	return m, warns, err
+	m, err := fromRawManifest(raw, buf)
+	if err != nil {
+		return nil, warns, err
+	}
+
+	warns = append(warns, checkRedundantPruneOptions(m.PruneOptions)...)
+	return m, warns, nil
 }
 
-func fromRawManifest(raw rawManifest) (*Manifest, error) {
+func fromRawManifest(raw rawManifest, buf *bytes.Buffer) (*Manifest, error) {
 	m := NewManifest()
 
 	m.Constraints = make(gps.ProjectConstraints, len(raw.Constraints))
@@ -254,7 +391,94 @@ func fromRawManifest(raw rawManifest) (*Manifest, error) {
 		m.Ovr[name] = prj
 	}
 
+	// TODO(sdboyer) it is awful that we have to do this manual extraction
+	tree, err := toml.Load(buf.String())
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to load TomlTree from string")
+	}
+
+	iprunemap := tree.Get("prune")
+	if iprunemap == nil {
+		return m, nil
+	}
+	// Previous validation already guaranteed that, if it exists, it's this map
+	// type.
+	m.PruneOptions = fromRawPruneOptions(iprunemap.(*toml.Tree).ToMap())
+
 	return m, nil
+}
+
+func fromRawPruneOptions(prunemap map[string]interface{}) gps.CascadingPruneOptions {
+	opts := gps.CascadingPruneOptions{
+		DefaultOptions:    gps.PruneNestedVendorDirs,
+		PerProjectOptions: make(map[gps.ProjectRoot]gps.PruneOptionSet),
+	}
+
+	if val, has := prunemap[pruneOptionUnusedPackages]; has && val.(bool) {
+		opts.DefaultOptions |= gps.PruneUnusedPackages
+	}
+	if val, has := prunemap[pruneOptionNonGo]; has && val.(bool) {
+		opts.DefaultOptions |= gps.PruneNonGoFiles
+	}
+	if val, has := prunemap[pruneOptionGoTests]; has && val.(bool) {
+		opts.DefaultOptions |= gps.PruneGoTestFiles
+	}
+
+	trinary := func(v interface{}) uint8 {
+		b := v.(bool)
+		if b {
+			return pvtrue
+		}
+		return pvfalse
+	}
+
+	if projprunes, has := prunemap["project"]; has {
+		for _, proj := range projprunes.([]interface{}) {
+			var pr gps.ProjectRoot
+			// This should be redundant, but being explicit doesn't hurt.
+			pos := gps.PruneOptionSet{NestedVendor: pvtrue}
+
+			for key, val := range proj.(map[string]interface{}) {
+				switch key {
+				case "name":
+					pr = gps.ProjectRoot(val.(string))
+				case pruneOptionNonGo:
+					pos.NonGoFiles = trinary(val)
+				case pruneOptionGoTests:
+					pos.GoTests = trinary(val)
+				case pruneOptionUnusedPackages:
+					pos.UnusedPackages = trinary(val)
+				}
+			}
+			opts.PerProjectOptions[pr] = pos
+		}
+	}
+
+	return opts
+}
+
+// toRawPruneOptions converts a gps.RootPruneOption's PruneOptions to rawPruneOptions
+//
+// Will panic if gps.RootPruneOption includes ProjectPruneOptions
+// See https://github.com/golang/dep/pull/1460#discussion_r158128740 for more information
+func toRawPruneOptions(co gps.CascadingPruneOptions) rawPruneOptions {
+	if len(co.PerProjectOptions) != 0 {
+		panic("toRawPruneOptions cannot convert ProjectOptions to rawPruneOptions")
+	}
+	raw := rawPruneOptions{}
+
+	if (co.DefaultOptions & gps.PruneUnusedPackages) != 0 {
+		raw.UnusedPackages = true
+	}
+
+	if (co.DefaultOptions & gps.PruneNonGoFiles) != 0 {
+		raw.NonGoFiles = true
+	}
+
+	if (co.DefaultOptions & gps.PruneGoTestFiles) != 0 {
+		raw.GoTests = true
+	}
+	return raw
 }
 
 // toProject interprets the string representations of project information held in
@@ -288,7 +512,17 @@ func toProject(raw rawProject) (n gps.ProjectRoot, pp gps.ProjectProperties, err
 	}
 
 	pp.Source = raw.Source
+
 	return n, pp, nil
+}
+
+// MarshalTOML serializes this manifest into TOML via an intermediate raw form.
+func (m *Manifest) MarshalTOML() ([]byte, error) {
+	raw := m.toRaw()
+	var buf bytes.Buffer
+	enc := toml.NewEncoder(&buf).ArraysWithOneElementPerLine(true)
+	err := enc.Encode(raw)
+	return buf.Bytes(), errors.Wrap(err, "unable to marshal the lock to a TOML string")
 }
 
 // toRaw converts the manifest into a representation suitable to write to the manifest file
@@ -299,6 +533,7 @@ func (m *Manifest) toRaw() rawManifest {
 		Ignored:     m.Ignored,
 		Required:    m.Required,
 	}
+
 	for n, prj := range m.Constraints {
 		raw.Constraints = append(raw.Constraints, toRawProject(n, prj))
 	}
@@ -308,6 +543,8 @@ func (m *Manifest) toRaw() rawManifest {
 		raw.Overrides = append(raw.Overrides, toRawProject(n, prj))
 	}
 	sort.Sort(sortedRawProjects(raw.Overrides))
+
+	raw.PruneOptions = toRawPruneOptions(m.PruneOptions)
 
 	return raw
 }
@@ -327,13 +564,6 @@ func (s sortedRawProjects) Less(i, j int) bool {
 	}
 
 	return l.Source < r.Source
-}
-
-// MarshalTOML serializes this manifest into TOML via an intermediate raw form.
-func (m *Manifest) MarshalTOML() ([]byte, error) {
-	raw := m.toRaw()
-	result, err := toml.Marshal(raw)
-	return result, errors.Wrap(err, "Unable to marshal the lock to a TOML string")
 }
 
 func toRawProject(name gps.ProjectRoot, project gps.ProjectProperties) rawProject {
@@ -363,6 +593,7 @@ func toRawProject(name gps.ProjectRoot, project gps.ProjectProperties) rawProjec
 		// Has to be a semver range.
 		raw.Version = project.Constraint.ImpliedCaretString()
 	}
+
 	return raw
 }
 

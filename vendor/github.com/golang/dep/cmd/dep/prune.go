@@ -1,4 +1,4 @@
-// Copyright 2016 The Go Authors. All rights reserved.
+// Copyright 2017 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -15,18 +15,17 @@ import (
 	"strings"
 
 	"github.com/golang/dep"
+	"github.com/golang/dep/gps"
+	"github.com/golang/dep/gps/pkgtree"
 	"github.com/golang/dep/internal/fs"
-	"github.com/golang/dep/internal/gps"
-	"github.com/golang/dep/internal/gps/pkgtree"
 	"github.com/pkg/errors"
 )
 
-const pruneShortHelp = `Prune the vendor tree of unused packages`
+const pruneShortHelp = `Pruning is now performed automatically by dep ensure.`
 const pruneLongHelp = `
-Prune is used to remove unused packages from your vendor tree.
-
-STABILITY NOTICE: this command creates problems for vendor/ verification. As
-such, it may be removed and/or moved out into a separate project later on.
+Prune was merged into the ensure command.
+Set prune options in the manifest and it will be applied after every ensure.
+dep prune will be removed in a future version of dep, causing this command to exit non-0.
 `
 
 type pruneCommand struct {
@@ -42,6 +41,12 @@ func (cmd *pruneCommand) Register(fs *flag.FlagSet) {
 }
 
 func (cmd *pruneCommand) Run(ctx *dep.Ctx, args []string) error {
+	ctx.Err.Printf("Pruning is now performed automatically by dep ensure.\n")
+	ctx.Err.Printf("Set prune settings in %s and it it will be applied when running ensure.\n", dep.ManifestName)
+	ctx.Err.Printf("\nThis command currently still prunes as it always has, to ease the transition.\n")
+	ctx.Err.Printf("However, it will be removed in a future version of dep.\n")
+	ctx.Err.Printf("\nNow is the time to update your Gopkg.toml and remove `dep prune` from any scripts.\n")
+
 	p, err := ctx.LoadProject()
 	if err != nil {
 		return err
@@ -97,7 +102,7 @@ func pruneProject(p *dep.Project, sm gps.SourceManager, logger *log.Logger) erro
 	}
 	defer os.RemoveAll(td)
 
-	if err := gps.WriteDepTree(td, p.Lock, sm, true, logger); err != nil {
+	if err := gps.WriteDepTree(td, p.Lock, sm, gps.CascadingPruneOptions{DefaultOptions: gps.PruneNestedVendorDirs}, logger); err != nil {
 		return err
 	}
 

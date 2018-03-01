@@ -5,17 +5,18 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 
 	"github.com/golang/dep"
+	"github.com/golang/dep/gps"
+	"github.com/golang/dep/gps/paths"
+	"github.com/golang/dep/gps/pkgtree"
 	fb "github.com/golang/dep/internal/feedback"
 	"github.com/golang/dep/internal/fs"
-	"github.com/golang/dep/internal/gps"
-	"github.com/golang/dep/internal/gps/paths"
-	"github.com/golang/dep/internal/gps/pkgtree"
 	"github.com/pkg/errors"
 )
 
@@ -23,7 +24,7 @@ import (
 // It uses its results to fill-in any missing details left by the rootAnalyzer.
 type gopathScanner struct {
 	ctx        *dep.Ctx
-	directDeps map[string]bool
+	directDeps map[gps.ProjectRoot]bool
 	sm         gps.SourceManager
 
 	pd    projectData
@@ -31,7 +32,7 @@ type gopathScanner struct {
 	origL *dep.Lock
 }
 
-func newGopathScanner(ctx *dep.Ctx, directDeps map[string]bool, sm gps.SourceManager) *gopathScanner {
+func newGopathScanner(ctx *dep.Ctx, directDeps map[gps.ProjectRoot]bool, sm gps.SourceManager) *gopathScanner {
 	return &gopathScanner{
 		ctx:        ctx,
 		directDeps: directDeps,
@@ -112,24 +113,38 @@ func (g *gopathScanner) overlay(rootM *dep.Manifest, rootL *dep.Lock) {
 		rootL.P = append(rootL.P, lp)
 		lockedProjects[pkg] = true
 
-		if _, isDirect := g.directDeps[string(pkg)]; !isDirect {
+		if _, isDirect := g.directDeps[pkg]; !isDirect {
 			f := fb.NewLockedProjectFeedback(lp, fb.DepTypeTransitive)
 			f.LogFeedback(g.ctx.Err)
 		}
 	}
 
 	// Identify projects whose version is unknown and will have to be solved for
-	var unlockedProjects []string
+	var missing []string    // all project roots missing from GOPATH
+	var missingVCS []string // all project roots missing VCS information
 	for pr := range g.pd.notondisk {
 		if _, isLocked := lockedProjects[pr]; isLocked {
 			continue
 		}
-		unlockedProjects = append(unlockedProjects, string(pr))
+		if g.pd.invalidSVC[pr] {
+			missingVCS = append(missingVCS, string(pr))
+		} else {
+			missing = append(missing, string(pr))
+		}
 	}
-	if len(unlockedProjects) > 0 {
-		g.ctx.Err.Printf("Following dependencies were not found in GOPATH. "+
-			"Dep will use the most recent versions of these projects.\n  %s",
-			strings.Join(unlockedProjects, "\n  "))
+
+	missingStr := ""
+	missingVCSStr := ""
+	if len(missing) > 0 {
+		missingStr = fmt.Sprintf("The following dependencies were not found in GOPATH:\n  %s\n\n",
+			strings.Join(missing, "\n  "))
+	}
+	if len(missingVCS) > 0 {
+		missingVCSStr = fmt.Sprintf("The following dependencies found in GOPATH were missing VCS information (a remote source is required):\n  %s\n\n",
+			strings.Join(missingVCS, "\n  "))
+	}
+	if len(missingVCS)+len(missing) > 0 {
+		g.ctx.Err.Printf("\n%s%sThe most recent version of these projects will be used.\n\n", missingStr, missingVCSStr)
 	}
 }
 
@@ -181,6 +196,7 @@ type projectData struct {
 	constraints  gps.ProjectConstraints          // constraints that could be found
 	dependencies map[gps.ProjectRoot][]string    // all dependencies (imports) found by project root
 	notondisk    map[gps.ProjectRoot]bool        // projects that were not found on disk
+	invalidSVC   map[gps.ProjectRoot]bool        // projects that were found on disk but SVC data could not be read
 	ondisk       map[gps.ProjectRoot]gps.Version // projects that were found on disk
 }
 
@@ -189,6 +205,7 @@ func (g *gopathScanner) scanGopathForDependencies() (projectData, error) {
 	dependencies := make(map[gps.ProjectRoot][]string)
 	packages := make(map[string]bool)
 	notondisk := make(map[gps.ProjectRoot]bool)
+	invalidSVC := make(map[gps.ProjectRoot]bool)
 	ondisk := make(map[gps.ProjectRoot]gps.Version)
 
 	var syncDepGroup sync.WaitGroup
@@ -203,7 +220,10 @@ func (g *gopathScanner) scanGopathForDependencies() (projectData, error) {
 		return projectData{}, nil
 	}
 
-	for ip := range g.directDeps {
+	for ippr := range g.directDeps {
+		// TODO(sdboyer) these are not import paths by this point, they've
+		// already been worked down to project roots.
+		ip := string(ippr)
 		pr, err := g.sm.DeduceProjectRoot(ip)
 		if err != nil {
 			return projectData{}, errors.Wrap(err, "sm.DeduceProjectRoot")
@@ -225,6 +245,7 @@ func (g *gopathScanner) scanGopathForDependencies() (projectData, error) {
 		}
 		v, err := gps.VCSVersion(abs)
 		if err != nil {
+			invalidSVC[pr] = true
 			notondisk[pr] = true
 			continue
 		}
@@ -379,6 +400,7 @@ func (g *gopathScanner) scanGopathForDependencies() (projectData, error) {
 	pd := projectData{
 		constraints:  constraints,
 		dependencies: dependencies,
+		invalidSVC:   invalidSVC,
 		notondisk:    notondisk,
 		ondisk:       ondisk,
 	}

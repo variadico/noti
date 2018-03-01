@@ -41,8 +41,8 @@
 [[projects]]
   name = "github.com/jmank88/nuts"
   packages = ["."]
-  revision = "a1e02c788669d022c325a8ee674f15360d7104f4"
-  version = "v0.2.0"
+  revision = "8b28145dffc87104e66d074f62ea8080edfad7c8"
+  version = "v0.3.0"
 
 [[projects]]
   branch = "master"
@@ -51,16 +51,10 @@
   revision = "e83dc5e7bba095e8d32fb2124714bf41f2a30cb5"
 
 [[projects]]
-  name = "github.com/pelletier/go-buffruneio"
-  packages = ["."]
-  revision = "c37440a7cf42ac63b919c752ca73a85067e05992"
-  version = "v0.2.0"
-
-[[projects]]
   branch = "master"
   name = "github.com/pelletier/go-toml"
   packages = ["."]
-  revision = "fe206efb84b2bc8e8cfafe6b4c1826622be969e3"
+  revision = "b8b5e7696574464b2f9bf303a7b37781bb52889f"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -95,6 +89,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "05c1cd69be2c917c0cc4b32942830c2acfa044d8200fdc94716aae48a8083702"
+  inputs-digest = "e70d26b359aed7af66f3393fc9d4985bbcf499c0b5ed3b5661a5912b4c71a32e"
   solver-name = "gps-cdcl"
   solver-version = 1

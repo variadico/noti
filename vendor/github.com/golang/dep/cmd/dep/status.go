@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"html/template"
 	"io"
 	"io/ioutil"
 	"log"
@@ -17,9 +18,8 @@ import (
 	"text/tabwriter"
 
 	"github.com/golang/dep"
-	"github.com/golang/dep/internal/gps"
-	"github.com/golang/dep/internal/gps/paths"
-	"github.com/golang/dep/internal/gps/pkgtree"
+	"github.com/golang/dep/gps"
+	"github.com/golang/dep/gps/paths"
 	"github.com/pkg/errors"
 )
 
@@ -62,49 +62,44 @@ func (cmd *statusCommand) LongHelp() string  { return statusLongHelp }
 func (cmd *statusCommand) Hidden() bool      { return false }
 
 func (cmd *statusCommand) Register(fs *flag.FlagSet) {
-	fs.BoolVar(&cmd.detailed, "detailed", false, "report more detailed status")
 	fs.BoolVar(&cmd.json, "json", false, "output in JSON format")
 	fs.StringVar(&cmd.template, "f", "", "output in text/template format")
 	fs.BoolVar(&cmd.dot, "dot", false, "output the dependency graph in GraphViz format")
 	fs.BoolVar(&cmd.old, "old", false, "only show out-of-date dependencies")
 	fs.BoolVar(&cmd.missing, "missing", false, "only show missing dependencies")
-	fs.BoolVar(&cmd.unused, "unused", false, "only show unused dependencies")
-	fs.BoolVar(&cmd.modified, "modified", false, "only show modified dependencies")
 }
 
 type statusCommand struct {
-	detailed bool
 	json     bool
 	template string
 	output   string
 	dot      bool
 	old      bool
 	missing  bool
-	unused   bool
-	modified bool
 }
 
 type outputter interface {
-	BasicHeader()
-	BasicLine(*BasicStatus)
-	BasicFooter()
-	MissingHeader()
-	MissingLine(*MissingStatus)
-	MissingFooter()
+	BasicHeader() error
+	BasicLine(*BasicStatus) error
+	BasicFooter() error
+	MissingHeader() error
+	MissingLine(*MissingStatus) error
+	MissingFooter() error
 }
 
 type tableOutput struct{ w *tabwriter.Writer }
 
-func (out *tableOutput) BasicHeader() {
-	fmt.Fprintf(out.w, "PROJECT\tCONSTRAINT\tVERSION\tREVISION\tLATEST\tPKGS USED\n")
+func (out *tableOutput) BasicHeader() error {
+	_, err := fmt.Fprintf(out.w, "PROJECT\tCONSTRAINT\tVERSION\tREVISION\tLATEST\tPKGS USED\n")
+	return err
 }
 
-func (out *tableOutput) BasicFooter() {
-	out.w.Flush()
+func (out *tableOutput) BasicFooter() error {
+	return out.w.Flush()
 }
 
-func (out *tableOutput) BasicLine(bs *BasicStatus) {
-	fmt.Fprintf(out.w,
+func (out *tableOutput) BasicLine(bs *BasicStatus) error {
+	_, err := fmt.Fprintf(out.w,
 		"%s\t%s\t%s\t%s\t%s\t%d\t\n",
 		bs.ProjectRoot,
 		bs.getConsolidatedConstraint(),
@@ -113,22 +108,25 @@ func (out *tableOutput) BasicLine(bs *BasicStatus) {
 		bs.getConsolidatedLatest(shortRev),
 		bs.PackageCount,
 	)
+	return err
 }
 
-func (out *tableOutput) MissingHeader() {
-	fmt.Fprintln(out.w, "PROJECT\tMISSING PACKAGES")
+func (out *tableOutput) MissingHeader() error {
+	_, err := fmt.Fprintln(out.w, "PROJECT\tMISSING PACKAGES")
+	return err
 }
 
-func (out *tableOutput) MissingLine(ms *MissingStatus) {
-	fmt.Fprintf(out.w,
+func (out *tableOutput) MissingLine(ms *MissingStatus) error {
+	_, err := fmt.Fprintf(out.w,
 		"%s\t%s\t\n",
 		ms.ProjectRoot,
 		ms.MissingPackages,
 	)
+	return err
 }
 
-func (out *tableOutput) MissingFooter() {
-	out.w.Flush()
+func (out *tableOutput) MissingFooter() error {
+	return out.w.Flush()
 }
 
 type jsonOutput struct {
@@ -137,28 +135,32 @@ type jsonOutput struct {
 	missing []*MissingStatus
 }
 
-func (out *jsonOutput) BasicHeader() {
+func (out *jsonOutput) BasicHeader() error {
 	out.basic = []*rawStatus{}
+	return nil
 }
 
-func (out *jsonOutput) BasicFooter() {
-	json.NewEncoder(out.w).Encode(out.basic)
+func (out *jsonOutput) BasicFooter() error {
+	return json.NewEncoder(out.w).Encode(out.basic)
 }
 
-func (out *jsonOutput) BasicLine(bs *BasicStatus) {
+func (out *jsonOutput) BasicLine(bs *BasicStatus) error {
 	out.basic = append(out.basic, bs.marshalJSON())
+	return nil
 }
 
-func (out *jsonOutput) MissingHeader() {
+func (out *jsonOutput) MissingHeader() error {
 	out.missing = []*MissingStatus{}
+	return nil
 }
 
-func (out *jsonOutput) MissingLine(ms *MissingStatus) {
+func (out *jsonOutput) MissingLine(ms *MissingStatus) error {
 	out.missing = append(out.missing, ms)
+	return nil
 }
 
-func (out *jsonOutput) MissingFooter() {
-	json.NewEncoder(out.w).Encode(out.missing)
+func (out *jsonOutput) MissingFooter() error {
+	return json.NewEncoder(out.w).Encode(out.missing)
 }
 
 type dotOutput struct {
@@ -168,30 +170,57 @@ type dotOutput struct {
 	p *dep.Project
 }
 
-func (out *dotOutput) BasicHeader() {
+func (out *dotOutput) BasicHeader() error {
 	out.g = new(graphviz).New()
 
-	ptree, _ := out.p.ParseRootPackageTree()
+	ptree, err := out.p.ParseRootPackageTree()
 	// TODO(sdboyer) should be true, true, false, out.p.Manifest.IgnoredPackages()
 	prm, _ := ptree.ToReachMap(true, false, false, nil)
 
 	out.g.createNode(string(out.p.ImportRoot), "", prm.FlattenFn(paths.IsStandardImportPath))
+
+	return err
 }
 
-func (out *dotOutput) BasicFooter() {
+func (out *dotOutput) BasicFooter() error {
 	gvo := out.g.output()
-	fmt.Fprintf(out.w, gvo.String())
+	_, err := fmt.Fprintf(out.w, gvo.String())
+	return err
 }
 
-func (out *dotOutput) BasicLine(bs *BasicStatus) {
+func (out *dotOutput) BasicLine(bs *BasicStatus) error {
 	out.g.createNode(bs.ProjectRoot, bs.getConsolidatedVersion(), bs.Children)
+	return nil
 }
 
-func (out *dotOutput) MissingHeader()                {}
-func (out *dotOutput) MissingLine(ms *MissingStatus) {}
-func (out *dotOutput) MissingFooter()                {}
+func (out *dotOutput) MissingHeader() error                { return nil }
+func (out *dotOutput) MissingLine(ms *MissingStatus) error { return nil }
+func (out *dotOutput) MissingFooter() error                { return nil }
+
+type templateOutput struct {
+	w    io.Writer
+	tmpl *template.Template
+}
+
+func (out *templateOutput) BasicHeader() error { return nil }
+func (out *templateOutput) BasicFooter() error { return nil }
+
+func (out *templateOutput) BasicLine(bs *BasicStatus) error {
+	return out.tmpl.Execute(out.w, bs)
+}
+
+func (out *templateOutput) MissingHeader() error { return nil }
+func (out *templateOutput) MissingFooter() error { return nil }
+
+func (out *templateOutput) MissingLine(ms *MissingStatus) error {
+	return out.tmpl.Execute(out.w, ms)
+}
 
 func (cmd *statusCommand) Run(ctx *dep.Ctx, args []string) error {
+	if err := cmd.validateFlags(); err != nil {
+		return err
+	}
+
 	p, err := ctx.LoadProject()
 	if err != nil {
 		return err
@@ -211,15 +240,9 @@ func (cmd *statusCommand) Run(ctx *dep.Ctx, args []string) error {
 	var buf bytes.Buffer
 	var out outputter
 	switch {
-	case cmd.modified:
-		return errors.Errorf("not implemented")
-	case cmd.unused:
-		return errors.Errorf("not implemented")
 	case cmd.missing:
 		return errors.Errorf("not implemented")
 	case cmd.old:
-		return errors.Errorf("not implemented")
-	case cmd.detailed:
 		return errors.Errorf("not implemented")
 	case cmd.json:
 		out = &jsonOutput{
@@ -230,6 +253,15 @@ func (cmd *statusCommand) Run(ctx *dep.Ctx, args []string) error {
 			p: p,
 			o: cmd.output,
 			w: &buf,
+		}
+	case cmd.template != "":
+		tmpl, err := template.New("status").Parse(cmd.template)
+		if err != nil {
+			return err
+		}
+		out = &templateOutput{
+			w:    &buf,
+			tmpl: tmpl,
 		}
 	default:
 		out = &tableOutput{
@@ -269,6 +301,42 @@ func (cmd *statusCommand) Run(ctx *dep.Ctx, args []string) error {
 
 	// Print the status output
 	ctx.Out.Print(buf.String())
+
+	return nil
+}
+
+func (cmd *statusCommand) validateFlags() error {
+	// Operating mode flags.
+	opModes := []string{}
+
+	if cmd.old {
+		opModes = append(opModes, "-old")
+	}
+
+	if cmd.missing {
+		opModes = append(opModes, "-missing")
+	}
+
+	// Check if any other flags are passed with -dot.
+	if cmd.dot {
+		if cmd.template != "" {
+			return errors.New("cannot pass template string with -dot")
+		}
+
+		if cmd.json {
+			return errors.New("cannot pass multiple output format flags")
+		}
+
+		if len(opModes) > 0 {
+			return errors.New("-dot generates dependency graph; cannot pass other flags")
+		}
+	}
+
+	if len(opModes) > 1 {
+		// List the flags because which flags are for operation mode might not
+		// be apparent to the users.
+		return errors.Wrapf(errors.New("cannot pass multiple operating mode flags"), "%v", opModes)
+	}
 
 	return nil
 }
@@ -389,7 +457,12 @@ func runStatusAll(ctx *dep.Ctx, out outputter, p *dep.Project, sm gps.SourceMana
 		return false, 0, errors.Wrapf(err, "could not set up solver for input hashing")
 	}
 
-	cm := collectConstraints(ptree, p, sm)
+	// Errors while collecting constraints should not fail the whole status run.
+	// It should count the error and tell the user about incomplete results.
+	cm, ccerrs := collectConstraints(ctx, p, sm)
+	if len(ccerrs) > 0 {
+		errCount += len(ccerrs)
+	}
 
 	// Get the project list and sort it so that the printed output users see is
 	// deterministically ordered. (This may be superfluous if the lock is always
@@ -404,7 +477,9 @@ func runStatusAll(ctx *dep.Ctx, out outputter, p *dep.Project, sm gps.SourceMana
 		// complete picture of all deps. That eliminates the need for at least
 		// some checks.
 
-		out.BasicHeader()
+		if err := out.BasicHeader(); err != nil {
+			return false, 0, err
+		}
 
 		logger.Println("Checking upstream projects:")
 
@@ -458,10 +533,13 @@ func runStatusAll(ctx *dep.Ctx, out outputter, p *dep.Project, sm gps.SourceMana
 				if pp, has := p.Manifest.Ovr[proj.Ident().ProjectRoot]; has && pp.Constraint != nil {
 					bs.hasOverride = true
 					bs.Constraint = pp.Constraint
+				} else if pp, has := p.Manifest.Constraints[proj.Ident().ProjectRoot]; has && pp.Constraint != nil {
+					// If the manifest has a constraint then set that as the constraint.
+					bs.Constraint = pp.Constraint
 				} else {
 					bs.Constraint = gps.Any()
 					for _, c := range cm[bs.ProjectRoot] {
-						bs.Constraint = c.Intersect(bs.Constraint)
+						bs.Constraint = c.Constraint.Intersect(bs.Constraint)
 					}
 				}
 
@@ -470,7 +548,13 @@ func runStatusAll(ctx *dep.Ctx, out outputter, p *dep.Project, sm gps.SourceMana
 				if bs.Version != nil && bs.Version.Type() != gps.IsVersion {
 					c, has := p.Manifest.Constraints[proj.Ident().ProjectRoot]
 					if !has {
-						c.Constraint = gps.Any()
+						// Get constraint for locked project
+						for _, lockedP := range p.Lock.P {
+							if lockedP.Ident().ProjectRoot == proj.Ident().ProjectRoot {
+								// Use the unpaired version as the constraint for checking updates.
+								c.Constraint = bs.Version
+							}
+						}
 					}
 					// TODO: This constraint is only the constraint imposed by the
 					// current project, not by any transitive deps. As a result,
@@ -486,7 +570,12 @@ func runStatusAll(ctx *dep.Ctx, out outputter, p *dep.Project, sm gps.SourceMana
 							// upgrade, the first version we encounter that
 							// matches our constraint will be what we want.
 							if c.Constraint.Matches(v) {
-								bs.Latest = v.Revision()
+								// Latest should be of the same type as the Version.
+								if bs.Version.Type() == gps.IsSemver {
+									bs.Latest = v
+								} else {
+									bs.Latest = v.Revision()
+								}
 								break
 							}
 						}
@@ -533,7 +622,7 @@ func runStatusAll(ctx *dep.Ctx, out outputter, p *dep.Project, sm gps.SourceMana
 
 			// Count ListVersions error because we get partial results when
 			// this happens.
-			errCount = len(errListVerCh)
+			errCount += len(errListVerCh)
 			if ctx.Verbose {
 				for err := range errListVerCh {
 					ctx.Err.Println(err.Error())
@@ -552,10 +641,14 @@ func runStatusAll(ctx *dep.Ctx, out outputter, p *dep.Project, sm gps.SourceMana
 
 		// Use the collected BasicStatus in outputter.
 		for _, proj := range slp {
-			out.BasicLine(bsMap[string(proj.Ident().ProjectRoot)])
+			if err := out.BasicLine(bsMap[string(proj.Ident().ProjectRoot)]); err != nil {
+				return false, 0, err
+			}
 		}
 
-		out.BasicFooter()
+		if footerErr := out.BasicFooter(); footerErr != nil {
+			return false, 0, footerErr
+		}
 
 		return false, errCount, err
 	}
@@ -601,7 +694,9 @@ func runStatusAll(ctx *dep.Ctx, out outputter, p *dep.Project, sm gps.SourceMana
 		return false, 0, errors.New("address issues with undeducible import paths to get more status information")
 	}
 
-	out.MissingHeader()
+	if err = out.MissingHeader(); err != nil {
+		return false, 0, err
+	}
 
 outer:
 	for root, pkgs := range roots {
@@ -614,9 +709,14 @@ outer:
 		}
 
 		hasMissingPkgs = true
-		out.MissingLine(&MissingStatus{ProjectRoot: string(root), MissingPackages: pkgs})
+		err := out.MissingLine(&MissingStatus{ProjectRoot: string(root), MissingPackages: pkgs})
+		if err != nil {
+			return false, 0, err
+		}
 	}
-	out.MissingFooter()
+	if err = out.MissingFooter(); err != nil {
+		return false, 0, err
+	}
 
 	// We are here because of an input-digest mismatch. Return error.
 	return hasMissingPkgs, 0, errInputDigestMismatch
@@ -639,7 +739,106 @@ func formatVersion(v gps.Version) string {
 	return v.String()
 }
 
-func collectConstraints(ptree pkgtree.PackageTree, p *dep.Project, sm gps.SourceManager) map[string][]gps.Constraint {
-	// TODO
-	return map[string][]gps.Constraint{}
+// projectConstraint stores ProjectRoot and Constraint for that project.
+type projectConstraint struct {
+	Project    gps.ProjectRoot
+	Constraint gps.Constraint
 }
+
+// constraintsCollection is a map of ProjectRoot(dependency) and a collection of
+// projectConstraint for the dependencies. This can be used to find constraints
+// on a dependency and the projects that apply those constraints.
+type constraintsCollection map[string][]projectConstraint
+
+// collectConstraints collects constraints declared by all the dependencies.
+// It returns constraintsCollection and a slice of errors encountered while
+// collecting the constraints, if any.
+func collectConstraints(ctx *dep.Ctx, p *dep.Project, sm gps.SourceManager) (constraintsCollection, []error) {
+	logger := ctx.Err
+	if !ctx.Verbose {
+		logger = log.New(ioutil.Discard, "", 0)
+	}
+
+	logger.Println("Collecting project constraints:")
+
+	var mutex sync.Mutex
+	constraintCollection := make(constraintsCollection)
+
+	// Collect the complete set of direct project dependencies, incorporating
+	// requireds and ignores appropriately.
+	_, directDeps, err := p.GetDirectDependencyNames(sm)
+	if err != nil {
+		// Return empty collection, not nil, if we fail here.
+		return constraintCollection, []error{errors.Wrap(err, "failed to get direct dependencies")}
+	}
+
+	// Create a root analyzer.
+	rootAnalyzer := newRootAnalyzer(true, ctx, directDeps, sm)
+
+	lp := p.Lock.Projects()
+
+	// Channel for receiving all the errors.
+	errCh := make(chan error, len(lp))
+
+	var wg sync.WaitGroup
+
+	// Iterate through the locked projects and collect constraints of all the projects.
+	for i, proj := range lp {
+		wg.Add(1)
+		logger.Printf("(%d/%d) %s\n", i+1, len(lp), proj.Ident().ProjectRoot)
+
+		go func(proj gps.LockedProject) {
+			defer wg.Done()
+
+			manifest, _, err := sm.GetManifestAndLock(proj.Ident(), proj.Version(), rootAnalyzer)
+			if err != nil {
+				errCh <- errors.Wrap(err, "error getting manifest and lock")
+				return
+			}
+
+			// Get project constraints.
+			pc := manifest.DependencyConstraints()
+
+			// Obtain a lock for constraintCollection.
+			mutex.Lock()
+			defer mutex.Unlock()
+			// Iterate through the project constraints to get individual dependency
+			// project and constraint values.
+			for pr, pp := range pc {
+				// Check if the project constraint is imported in the root project
+				if _, ok := directDeps[pr]; !ok {
+					continue
+				}
+
+				tempCC := append(
+					constraintCollection[string(pr)],
+					projectConstraint{proj.Ident().ProjectRoot, pp.Constraint},
+				)
+
+				// Sort the inner projectConstraint slice by Project string.
+				// Required for consistent returned value.
+				sort.Sort(byProject(tempCC))
+				constraintCollection[string(pr)] = tempCC
+			}
+		}(proj)
+	}
+
+	wg.Wait()
+	close(errCh)
+
+	var errs []error
+	if len(errCh) > 0 {
+		for e := range errCh {
+			errs = append(errs, e)
+			logger.Println(e.Error())
+		}
+	}
+
+	return constraintCollection, errs
+}
+
+type byProject []projectConstraint
+
+func (p byProject) Len() int           { return len(p) }
+func (p byProject) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p byProject) Less(i, j int) bool { return p[i].Project < p[j].Project }

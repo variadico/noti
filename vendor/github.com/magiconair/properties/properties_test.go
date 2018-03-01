@@ -44,6 +44,8 @@ var complexTests = [][]string{
 	{"\nkey=value\n", "key", "value"},
 	{"\rkey=value\r", "key", "value"},
 	{"\r\nkey=value\r\n", "key", "value"},
+	{"\nkey=value\n \nkey2=value2", "key", "value", "key2", "value2"},
+	{"\nkey=value\n\t\nkey2=value2", "key", "value", "key2", "value2"},
 
 	// escaped chars in key
 	{"k\\ ey = value", "k ey", "value"},
@@ -88,6 +90,10 @@ var complexTests = [][]string{
 	{"key=value\nkey2=${key}bb", "key", "value", "key2", "valuebb"},
 	{"key=value\nkey2=aa${key}bb", "key", "value", "key2", "aavaluebb"},
 	{"key=value\nkey2=${key}\nkey3=${key2}", "key", "value", "key2", "value", "key3", "value"},
+	{"key=value\nkey2=${key}${key}", "key", "value", "key2", "valuevalue"},
+	{"key=value\nkey2=${key}${key}${key}${key}", "key", "value", "key2", "valuevaluevaluevalue"},
+	{"key=value\nkey2=${key}${key3}\nkey3=${key}", "key", "value", "key2", "valuevalue", "key3", "value"},
+	{"key=value\nkey2=${key3}${key}${key4}\nkey3=${key}\nkey4=${key}", "key", "value", "key2", "valuevaluevalue", "key3", "value", "key4", "value"},
 	{"key=${USER}", "key", os.Getenv("USER")},
 	{"key=${USER}\nUSER=value", "key", "value", "USER", "value"},
 }
@@ -444,6 +450,30 @@ func TestErrors(t *testing.T) {
 	}
 }
 
+func TestVeryDeep(t *testing.T) {
+	input := "key0=value\n"
+	prefix := "${"
+	postfix := "}"
+	i := 0
+	for i = 0; i < maxExpansionDepth-1; i++ {
+		input += fmt.Sprintf("key%d=%skey%d%s\n", i+1, prefix, i, postfix)
+	}
+
+	p, err := Load([]byte(input), ISO_8859_1)
+	assert.Equal(t, err, nil)
+	p.Prefix = prefix
+	p.Postfix = postfix
+
+	assert.Equal(t, p.MustGet(fmt.Sprintf("key%d", i)), "value")
+
+	// Nudge input over the edge
+	input += fmt.Sprintf("key%d=%skey%d%s\n", i+1, prefix, i, postfix)
+
+	_, err = Load([]byte(input), ISO_8859_1)
+	assert.Equal(t, err != nil, true, "want error")
+	assert.Equal(t, strings.Contains(err.Error(), "expansion too deep"), true)
+}
+
 func TestDisableExpansion(t *testing.T) {
 	input := "key=value\nkey2=${key}"
 	p := mustParse(t, input)
@@ -456,6 +486,19 @@ func TestDisableExpansion(t *testing.T) {
 	p.MustSet("keyB", "${keyA}")
 	assert.Equal(t, p.MustGet("keyA"), "${keyB}")
 	assert.Equal(t, p.MustGet("keyB"), "${keyA}")
+}
+
+func TestDisableExpansionStillUpdatesKeys(t *testing.T) {
+	p := NewProperties()
+	p.MustSet("p1", "a")
+	assert.Equal(t, p.Keys(), []string{"p1"})
+	assert.Equal(t, p.String(), "p1 = a\n")
+
+	p.DisableExpansion = true
+	p.MustSet("p2", "b")
+
+	assert.Equal(t, p.Keys(), []string{"p1", "p2"})
+	assert.Equal(t, p.String(), "p1 = a\np2 = b\n")
 }
 
 func TestMustGet(t *testing.T) {

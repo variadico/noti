@@ -6,6 +6,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"fmt"
 	"go/build"
@@ -18,9 +19,9 @@ import (
 	"sync"
 
 	"github.com/golang/dep"
-	"github.com/golang/dep/internal/gps"
-	"github.com/golang/dep/internal/gps/paths"
-	"github.com/golang/dep/internal/gps/pkgtree"
+	"github.com/golang/dep/gps"
+	"github.com/golang/dep/gps/paths"
+	"github.com/golang/dep/gps/pkgtree"
 	"github.com/pkg/errors"
 )
 
@@ -66,7 +67,7 @@ dep ensure
 
 dep ensure -vendor-only
 
-    Write vendor/ from an exising Gopkg.lock file, without first verifying that
+    Write vendor/ from an existing Gopkg.lock file, without first verifying that
     the lock is in sync with imports and Gopkg.toml. (This may be useful for
     e.g. strategically layering a Docker images)
 
@@ -125,7 +126,7 @@ var (
 
 func (cmd *ensureCommand) Name() string { return "ensure" }
 func (cmd *ensureCommand) Args() string {
-	return "[-update | -add] [-no-vendor | -vendor-only] [-dry-run] [<spec>...]"
+	return "[-update | -add] [-no-vendor | -vendor-only] [-dry-run] [-v] [<spec>...]"
 }
 func (cmd *ensureCommand) ShortHelp() string { return ensureShortHelp }
 func (cmd *ensureCommand) LongHelp() string  { return ensureLongHelp }
@@ -196,6 +197,20 @@ func (cmd *ensureCommand) Run(ctx *dep.Ctx, args []string) error {
 			ctx.Out.Println(err)
 		}
 	}
+	if ineffs := p.FindIneffectualConstraints(sm); len(ineffs) > 0 {
+		ctx.Err.Printf("Warning: the following project(s) have [[constraint]] stanzas in %s:\n\n", dep.ManifestName)
+		for _, ineff := range ineffs {
+			ctx.Err.Println("  ✗ ", ineff)
+		}
+		// TODO(sdboyer) lazy wording, it does not mention ignores at all
+		ctx.Err.Printf("\nHowever, these projects are not direct dependencies of the current project:\n")
+		ctx.Err.Printf("they are not imported in any .go files, nor are they in the 'required' list in\n")
+		ctx.Err.Printf("%s. Dep only applies [[constraint]] rules to direct dependencies, so\n", dep.ManifestName)
+		ctx.Err.Printf("these rules will have no effect.\n\n")
+		ctx.Err.Printf("Either import/require packages from these projects so that they become direct\n")
+		ctx.Err.Printf("dependencies, or convert each [[constraint]] to an [[override]] to enforce rules\n")
+		ctx.Err.Printf("on these projects, if they happen to be transitive dependencies,\n\n")
+	}
 
 	if cmd.add {
 		return cmd.runAdd(ctx, args, p, sm, params)
@@ -223,6 +238,13 @@ func (cmd *ensureCommand) validateFlags() error {
 		}
 	}
 	return nil
+}
+
+func (cmd *ensureCommand) vendorBehavior() dep.VendorBehavior {
+	if cmd.noVendor {
+		return dep.VendorNever
+	}
+	return dep.VendorOnChanged
 }
 
 func (cmd *ensureCommand) runDefault(ctx *dep.Ctx, args []string, p *dep.Project, sm gps.SourceManager, params gps.SolveParameters) error {
@@ -257,7 +279,7 @@ func (cmd *ensureCommand) runDefault(ctx *dep.Ctx, args []string, p *dep.Project
 		// that "verification" is supposed to look like (#121); in the meantime,
 		// we unconditionally write out vendor/ so that `dep ensure`'s behavior
 		// is maximally compatible with what it will eventually become.
-		sw, err := dep.NewSafeWriter(nil, p.Lock, p.Lock, dep.VendorAlways)
+		sw, err := dep.NewSafeWriter(nil, p.Lock, p.Lock, dep.VendorAlways, p.Manifest.PruneOptions)
 		if err != nil {
 			return err
 		}
@@ -277,17 +299,12 @@ func (cmd *ensureCommand) runDefault(ctx *dep.Ctx, args []string, p *dep.Project
 		return errors.New("Gopkg.lock was not up to date")
 	}
 
-	solution, err := solver.Solve()
+	solution, err := solver.Solve(context.TODO())
 	if err != nil {
-		handleAllTheFailuresOfTheWorld(err)
-		return errors.Wrap(err, "ensure Solve()")
+		return handleAllTheFailuresOfTheWorld(err)
 	}
 
-	vendorBehavior := dep.VendorOnChanged
-	if cmd.noVendor {
-		vendorBehavior = dep.VendorNever
-	}
-	sw, err := dep.NewSafeWriter(nil, p.Lock, dep.LockFromSolution(solution), vendorBehavior)
+	sw, err := dep.NewSafeWriter(nil, p.Lock, dep.LockFromSolution(solution), cmd.vendorBehavior(), p.Manifest.PruneOptions)
 	if err != nil {
 		return err
 	}
@@ -312,7 +329,7 @@ func (cmd *ensureCommand) runVendorOnly(ctx *dep.Ctx, args []string, p *dep.Proj
 	}
 	// Pass the same lock as old and new so that the writer will observe no
 	// difference and choose not to write it out.
-	sw, err := dep.NewSafeWriter(nil, p.Lock, p.Lock, dep.VendorAlways)
+	sw, err := dep.NewSafeWriter(nil, p.Lock, p.Lock, dep.VendorAlways, p.Manifest.PruneOptions)
 	if err != nil {
 		return err
 	}
@@ -369,16 +386,15 @@ func (cmd *ensureCommand) runUpdate(ctx *dep.Ctx, args []string, p *dep.Project,
 	if err != nil {
 		return errors.Wrap(err, "fastpath solver prepare")
 	}
-	solution, err := solver.Solve()
+	solution, err := solver.Solve(context.TODO())
 	if err != nil {
 		// TODO(sdboyer) special handling for warning cases as described in spec
 		// - e.g., named projects did not upgrade even though newer versions
 		// were available.
-		handleAllTheFailuresOfTheWorld(err)
-		return errors.Wrap(err, "ensure Solve()")
+		return handleAllTheFailuresOfTheWorld(err)
 	}
 
-	sw, err := dep.NewSafeWriter(nil, p.Lock, dep.LockFromSolution(solution), dep.VendorOnChanged)
+	sw, err := dep.NewSafeWriter(nil, p.Lock, dep.LockFromSolution(solution), cmd.vendorBehavior(), p.Manifest.PruneOptions)
 	if err != nil {
 		return err
 	}
@@ -450,7 +466,7 @@ func (cmd *ensureCommand) runAdd(ctx *dep.Ctx, args []string, p *dep.Project, sm
 		exrmap[root] = true
 	}
 
-	// Note: these flags are only partialy used by the latter parts of the
+	// Note: these flags are only partially used by the latter parts of the
 	// algorithm; rather, it relies on inference. However, they remain in their
 	// entirety as future needs may make further use of them, being a handy,
 	// terse way of expressing the original context of the arg inputs.
@@ -513,7 +529,7 @@ func (cmd *ensureCommand) runAdd(ctx *dep.Ctx, args []string, p *dep.Project, sm
 			}
 
 			inManifest := p.Manifest.HasConstraintsOn(pc.Ident.ProjectRoot)
-			inImports := exrmap[pc.Ident.ProjectRoot]
+			inImports := exmap[string(pc.Ident.ProjectRoot)]
 			if inManifest && inImports {
 				errCh <- errors.Errorf("nothing to -add, %s is already in %s and the project's direct imports or required list", pc.Ident.ProjectRoot, dep.ManifestName)
 				return
@@ -631,11 +647,10 @@ func (cmd *ensureCommand) runAdd(ctx *dep.Ctx, args []string, p *dep.Project, sm
 	if err != nil {
 		return errors.Wrap(err, "fastpath solver prepare")
 	}
-	solution, err := solver.Solve()
+	solution, err := solver.Solve(context.TODO())
 	if err != nil {
 		// TODO(sdboyer) detect if the failure was specifically about some of the -add arguments
-		handleAllTheFailuresOfTheWorld(err)
-		return errors.Wrap(err, "ensure Solve()")
+		return handleAllTheFailuresOfTheWorld(err)
 	}
 
 	// Prep post-actions and feedback from adds.
@@ -678,7 +693,7 @@ func (cmd *ensureCommand) runAdd(ctx *dep.Ctx, args []string, p *dep.Project, sm
 	}
 	sort.Strings(reqlist)
 
-	sw, err := dep.NewSafeWriter(nil, p.Lock, dep.LockFromSolution(solution), dep.VendorOnChanged)
+	sw, err := dep.NewSafeWriter(nil, p.Lock, dep.LockFromSolution(solution), dep.VendorOnChanged, p.Manifest.PruneOptions)
 	if err != nil {
 		return err
 	}
