@@ -2,9 +2,9 @@ package nsuser
 
 /*
 // Compiler flags.
-#cgo CFLAGS: -Wall -x objective-c -arch x86_64 -std=gnu99 -fobjc-arc
+#cgo CFLAGS: -Wall -x objective-c -std=gnu99 -fobjc-arc
 // Linker flags.
-#cgo LDFLAGS: -framework Foundation -framework Cocoa -arch x86_64
+#cgo LDFLAGS: -framework Foundation -framework Cocoa
 
 #import "nsuser_darwin.h"
 */
