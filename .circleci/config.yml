@@ -4,6 +4,8 @@ jobs:
   linux-build-test:
     docker:
       - image: circleci/golang:1.10
+        environment:
+          GOCACHE: 'off'
     working_directory: /go/src/github.com/variadico/noti
     steps:
       - checkout
@@ -24,6 +26,7 @@ jobs:
       xcode: "9.0"
     environment:
       - GOVERSION: '1.10'
+      - GOCACHE: 'off'
     working_directory: ~/go/src/github.com/variadico/noti
     steps:
       - checkout

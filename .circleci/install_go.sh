@@ -15,3 +15,6 @@ curl -L -o "$godl" "$url"
 mkdir -p "$GOROOT"
 # --strip 1 to remove the extra "go" directory.
 tar -C "$GOROOT" -xzf "$godl" --strip 1
+
+go version
+go env
