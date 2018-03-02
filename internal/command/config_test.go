@@ -3,7 +3,6 @@ package command
 import (
 	"fmt"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/spf13/pflag"
@@ -124,58 +123,62 @@ func TestSetupConfigFile(t *testing.T) {
 func TestConfigureApp(t *testing.T) {
 	orig := getNotiEnv(t)
 	defer setNotiEnv(t, orig)
-	clearNotiEnv(t)
 
-	v := viper.New()
-	flags := pflag.NewFlagSet("testconfigureapp", pflag.ContinueOnError)
-	defineFlags(flags)
-	flags.Set("file", "testdata/noti.yaml")
-
-	if err := configureApp(v, flags); err != nil {
-		t.Error(err)
+	cases := []struct {
+		name       string
+		configFile string
+		env        string
+		want       string
+	}{
+		{
+			// Config file should take precedence.
+			name:       "defaults and file",
+			configFile: "testdata/noti.yaml",
+			want:       "testSoundName",
+		},
+		{
+			// Env should take precedence.
+			name:       "defaults, file, and env",
+			configFile: "testdata/noti.yaml",
+			env:        "NOTI_NSUSER_SOUNDNAME",
+			want:       "testSoundName",
+		},
+		{
+			// Defaults should take precedence.
+			name: "defaults",
+			want: baseDefaults["nsuser.soundName"].(string),
+		},
 	}
 
-	t.Run("default and file", func(t *testing.T) {
-		// File takes precedence.
-		have := v.GetString("nsuser.soundName")
-		want := "testSoundName"
-		if have != want {
-			t.Error("Unexpected config value")
-			t.Errorf("have=%s; want=%s", have, want)
-			t.Error("nsuser:", v.Sub("nsuser").AllSettings())
-		}
-	})
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			clearNotiEnv(t)
 
-	t.Run("default, file, and env", func(t *testing.T) {
-		// Env takes precedence.
-		want := "foo"
-		if err := os.Setenv("NOTI_NSUSER_SOUNDNAME", want); err != nil {
-			t.Errorf("Failed to set env: %s", err)
-		}
-		defer clearNotiEnv(t)
+			v := viper.New()
+			flags := pflag.NewFlagSet("testconfigureapp", pflag.ContinueOnError)
+			defineFlags(flags)
 
-		have := v.GetString("nsuser.soundName")
-		if have != want {
-			t.Error("Unexpected config value")
-			t.Errorf("have=%s; want=%s", have, want)
-			t.Error("nsuser:", v.Sub("nsuser").AllSettings())
-		}
-	})
+			if c.configFile != "" {
+				flags.Set("file", c.configFile)
+			}
+			if c.env != "" {
+				if err := os.Setenv(c.env, c.want); err != nil {
+					t.Errorf("Failed to set env: %s", err)
+				}
+			}
 
-	t.Run("default", func(t *testing.T) {
-		// Default takes precedence.
+			if err := configureApp(v, flags); err != nil {
+				t.Error(err)
+			}
 
-		// Clear config file.
-		v.ReadConfig(strings.NewReader(""))
-
-		have := v.GetString("nsuser.soundName")
-		want := baseDefaults["nsuser.soundName"]
-		if have != want {
-			t.Error("Unexpected config value")
-			t.Errorf("have=%s; want=%s", have, want)
-			t.Error("nsuser:", v.Sub("nsuser").AllSettings())
-		}
-	})
+			have := v.GetString("nsuser.soundName")
+			if have != c.want {
+				t.Error("Unexpected config value")
+				t.Errorf("have=%s; want=%s", have, c.want)
+				t.Error("nsuser:", v.Sub("nsuser").AllSettings())
+			}
+		})
+	}
 }
 
 func TestEnabledServices(t *testing.T) {

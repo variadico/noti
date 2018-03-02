@@ -11,6 +11,7 @@ import (
 
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"github.com/variadico/vbs"
 )
 
 // Configuration Precedence
@@ -182,7 +183,8 @@ func configureApp(v *viper.Viper, flags *pflag.FlagSet) error {
 	// Don't care about this error, fileFlag can be blank.
 	fileFlag, _ := flags.GetString("file")
 	if err := setupConfigFile(fileFlag, v); err != nil {
-		return err
+		// Not the end of the world if we can't read the config file.
+		vbs.Println(err)
 	}
 
 	if flags == nil {
