@@ -52,20 +52,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Single-dash long options. Long flags must be passed with two dashes, e.g.
   `--version`.
 
-## [2.7.0]
+## [2.7.0] - 2017-10-09
 
 ### Deprecated
 
 * Single-dash long options. Any scripts using `-banner` or `-title` should be
   updated to use `--banner` or `--title` instead.
 
-## [2.6.0]
+## [2.6.0] - 2017-07-08
 
 ### Added
 
 * Support for Pushsafer.
 
-## [2.5.0]
+## [2.5.0] - 2016-11-25
 
 ### Added
 
@@ -75,13 +75,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Formatting bug in help.
 
-## [2.4.0]
+## [2.4.0] - 2016-10-01
 
 ### Added
 
 * Support for BearyChat.
 
-## [2.3.0]
+## [2.3.0] - 2016-09-09
 
 ### Added
 
@@ -91,13 +91,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Aliases in Bash and ZSH now work.
 
-## [2.2.2]
+## [2.2.2] - 2016-08-28
 
 ### Fixed
 
 * `noti` now compiles on Windows.
 
-## [2.2.1]
+## [2.2.1] - 2016-08-27
 
 ### Added
 
@@ -107,7 +107,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Bug that caused noti to not work on macOS Sierra.
 
-## [2.2.0]
+## [2.2.0] - 2016-05-26
 
 ### Added
 
@@ -118,7 +118,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Install command changed to: `go get -u github.com/variadico/noti/cmd/noti`
 
-## [2.1.1]
+## [2.1.1] - 2016-02-27
 
 ### Added
 
@@ -135,7 +135,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Utility name default now includes subcommand too.
 * Improved error handling for notifiers that shell out.
 
-## [2.1.0]
+## [2.1.0] - 2016-02-23
 
 ### Added
 
@@ -153,7 +153,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   utility's success or failure, instead of the same sound for both.
 * `NOTI_SLACK_DEST` no longer defaults to "#random". It must be manually set.
 
-## [2.0.0]
+## [2.0.0] - 2016-01-31
 
 ### Added
 
