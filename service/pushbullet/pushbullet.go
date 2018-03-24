@@ -40,9 +40,10 @@ type apiResponse struct {
 
 // Notification is a pushbullet notification.
 type Notification struct {
-	Body  string `json:"body"`
-	Title string `json:"title"`
-	Type  string `json:"type"`
+	Body        string `json:"body"`
+	Title       string `json:"title"`
+	Type        string `json:"type"`
+	DeviceIden  string `json:"device_iden"`
 
 	AccessToken string       `json:"-"`
 	Client      *http.Client `json:"-"`

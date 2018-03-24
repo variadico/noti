@@ -41,6 +41,7 @@ func getPushbullet(title, message string, v *viper.Viper) notification {
 		Body:        message,
 		Type:        "note",
 		AccessToken: v.GetString("pushbullet.accessToken"),
+		DeviceIden:  v.GetString("pushbullet.deviceIden"),
 		Client:      httpClient,
 	}
 }

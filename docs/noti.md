@@ -130,6 +130,7 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_HIPCHAT_ACCESSTOKEN`
 * `NOTI_HIPCHAT_ROOM`
 * `NOTI_PUSHBULLET_ACCESSTOKEN`
+* `NOTI_PUSHBULLET_DEVICEIDEN`
 * `NOTI_PUSHOVER_APITOKEN`
 * `NOTI_PUSHOVER_USERKEY`
 * `NOTI_PUSHSAFER_KEY`
@@ -200,6 +201,9 @@ PUSHBULLET
 accessToken
     Pushbullet access token. Log into your Pushbullet account and retrieve a
     token from the Account Settings page.
+
+deviceIden
+    Pushbullet device iden of the target device, if sending to a single device.
 
 PUSHOVER
 
@@ -278,6 +282,7 @@ hipchat:
   room: 1234567890abcdefg
 pushbullet:
   accessToken: 1234567890abcdefg
+  deviceIden: 1234567890abcdefg
 pushover:
   userKey: 1234567890abcdefg
   apiToken: 1234567890abcdefg
