@@ -1,6 +1,6 @@
-% NOTI(1) noti 3.0.0 | Noti Manual
+% NOTI(1) noti 3.1.0 | Noti Manual
 % Jaime Piña
-% 2018/01/02
+% 2018/03/25
 
 #  NAME
 
