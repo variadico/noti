@@ -12,8 +12,9 @@ Make sure latest dev is green on CI.
 
 ## Increment version
 
-* CHANGELOG.md
-* docs/man
+* docs/CHANGELOG.md
+* docs/man/noti.1.md
+* docs/man/noti.yaml.5.md
 
 ## Merge to master
 
