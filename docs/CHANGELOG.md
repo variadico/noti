@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 
+### Added
+
+* Pushbullet config key to specify a target device.
+
+### Fixed
+
+* `--message` let's you change the message again.
+
 ## [3.0.0] - 2018-01-06
 
 ### Added
