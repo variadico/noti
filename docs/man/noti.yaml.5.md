@@ -70,6 +70,9 @@ accessToken
 : Pushbullet access token. Log into your Pushbullet account and retrieve a
   token from the Account Settings page.
 
+deviceIden
+: Pushbullet device iden of the target device, if sending to a single device.
+
 # PUSHOVER
 
 apiToken
@@ -124,6 +127,7 @@ username
       room: 1234567890abcdefg
     pushbullet:
       accessToken: 1234567890abcdefg
+      deviceIden: 1234567890abcdefg
     pushover:
       userKey: 1234567890abcdefg
       apiToken: 1234567890abcdefg
