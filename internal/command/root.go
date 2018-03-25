@@ -27,8 +27,9 @@ type notification interface {
 
 // Root is the root noti command.
 var Root = &cobra.Command{
+	Long:    "noti - Monitor a process and trigger a notification",
 	Use:     "noti [flags] [utility [args...]]",
-	Example: "noti tar -cjf music.tar.bz2 Music/",
+	Example: "noti tar -cjf music.tar.bz2 Music/\nclang foo.c; noti",
 	RunE:    rootMain,
 
 	SilenceErrors: true,
