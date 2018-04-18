@@ -74,36 +74,65 @@ func setNotiEnv(t *testing.T, m map[string]string) {
 }
 
 func TestBindNotiEnv(t *testing.T) {
-	orig := getNotiEnv(t)
-	defer setNotiEnv(t, orig)
+	t.Run("current env vars set", func(t *testing.T) {
+		orig := getNotiEnv(t)
+		defer setNotiEnv(t, orig)
 
-	clearNotiEnv(t)
+		clearNotiEnv(t)
 
-	v := viper.New()
-	bindNotiEnv(v)
+		v := viper.New()
+		bindNotiEnv(v)
 
-	haveKeys := countSettingsKeys(t, v.AllSettings())
-	if haveKeys != 0 {
-		t.Error("Environment should be cleared")
-		t.Error(v.AllSettings())
-	}
-
-	var numSet int
-	for _, env := range keyEnvBindings {
-		if err := os.Setenv(env, "foo"); err != nil {
-			t.Errorf("Setenv error: %s", err)
-			continue
+		haveKeys := countSettingsKeys(t, v.AllSettings())
+		if haveKeys != 0 {
+			t.Error("Environment should be cleared")
+			t.Error(v.AllSettings())
 		}
-		numSet++
-	}
 
-	haveKeys = countSettingsKeys(t, v.AllSettings())
-	wantKeys := numSet
-	if haveKeys != wantKeys {
-		t.Error("Unexpected base config length")
-		t.Errorf("have=%d; want=%d", haveKeys, wantKeys)
-		t.Error(v.AllSettings())
-	}
+		var numSet int
+		for _, env := range keyEnvBindings {
+			if err := os.Setenv(env, "foo"); err != nil {
+				t.Errorf("Setenv error: %s", err)
+				continue
+			}
+			numSet++
+		}
+
+		haveKeys = countSettingsKeys(t, v.AllSettings())
+		wantKeys := numSet
+		if haveKeys != wantKeys {
+			t.Error("Unexpected base config length")
+			t.Errorf("have=%d; want=%d", haveKeys, wantKeys)
+			t.Error(v.AllSettings())
+		}
+	})
+
+	t.Run("deprecated env vars set", func(t *testing.T) {
+		orig := getNotiEnv(t)
+		defer setNotiEnv(t, orig)
+
+		clearNotiEnv(t)
+
+		var numSet int
+		for oldEnv := range keyEnvBindingsDeprecated {
+			if err := os.Setenv(oldEnv, "foo"); err != nil {
+				t.Errorf("Setenv error: %s", err)
+				continue
+			}
+			numSet++
+		}
+
+		v := viper.New()
+		bindNotiEnv(v)
+
+		haveKeys := countSettingsKeys(t, v.AllSettings())
+		wantKeys := numSet
+		if haveKeys != wantKeys {
+			t.Error("Unexpected base config length")
+			t.Errorf("have=%d; want=%d", haveKeys, wantKeys)
+			t.Error(v.AllSettings())
+		}
+	})
 }
 
 func TestSetupConfigFile(t *testing.T) {
