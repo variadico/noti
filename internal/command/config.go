@@ -40,7 +40,7 @@ var baseDefaults = map[string]interface{}{
 	"hipchat.room":        "",
 
 	"pushbullet.accessToken": "",
-	"pushbullet.deviceIden":  "",
+	"pushbullet.deviceIden": "",
 
 	"pushover.apiToken": "",
 	"pushover.userKey":  "",
@@ -53,11 +53,6 @@ var baseDefaults = map[string]interface{}{
 	"slack.token":    "",
 	"slack.channel":  "",
 	"slack.username": "noti",
-
-	"mattermost.username":        "noti",
-	"mattermost.channel":         "",
-	"mattermost.incomingHookURI": "",
-	"mattermost.iconurl":         "",
 }
 
 func setNotiDefaults(v *viper.Viper) {
@@ -82,7 +77,7 @@ var keyEnvBindings = map[string]string{
 	"hipchat.room":        "NOTI_HIPCHAT_ROOM",
 
 	"pushbullet.accessToken": "NOTI_PUSHBULLET_ACCESSTOKEN",
-	"pushbullet.deviceIden":  "NOTI_PUSHBULLET_DEVICEIDEN",
+	"pushbullet.deviceIden": "NOTI_PUSHBULLET_DEVICEIDEN",
 
 	"pushover.apiToken": "NOTI_PUSHOVER_APITOKEN",
 	"pushover.userKey":  "NOTI_PUSHOVER_USERKEY",
@@ -95,12 +90,6 @@ var keyEnvBindings = map[string]string{
 	"slack.token":    "NOTI_SLACK_TOKEN",
 	"slack.channel":  "NOTI_SLACK_CHANNEL",
 	"slack.username": "NOTI_SLACK_USERNAME",
-
-	"mattermost.username":        "NOTI_MATTERMOST_USERNAME",
-	"mattermost.incomingHookURI": "NOTI_MATTERMOST_INCOMINGHOOKURI",
-	"mattermost.channel":         "NOTI_MATTERMOST_CHANNEL",
-	"mattermost.iconurl":         "NOTI_MATTERMOST_ICONURL",
-	"mattermost.type":            "NOTI_MATTERMOST_TYPE",
 }
 
 var keyEnvBindingsDeprecated = map[string]string{
@@ -221,7 +210,6 @@ func enabledFromSlice(defaults []string) map[string]bool {
 		"simplepush": false,
 		"slack":      false,
 		"speech":     false,
-		"mattermost": false,
 	}
 
 	for _, name := range defaults {
@@ -246,7 +234,6 @@ func hasServiceFlags(flags *pflag.FlagSet) bool {
 		"simplepush": false,
 		"slack":      false,
 		"speech":     false,
-		"mattermost": false,
 	}
 
 	flags.Visit(func(f *pflag.Flag) {
@@ -274,7 +261,6 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 		"simplepush": false,
 		"slack":      false,
 		"speech":     false,
-		"mattermost": false,
 	}
 
 	// Visit flags that have been set.
@@ -357,10 +343,6 @@ func getNotifications(v *viper.Viper, services map[string]struct{}) []notificati
 
 	if _, ok := services["slack"]; ok {
 		notis = append(notis, getSlack(title, message, v))
-	}
-
-	if _, ok := services["mattermost"]; ok {
-		notis = append(notis, getMattermost(title, message, v))
 	}
 
 	return notis
