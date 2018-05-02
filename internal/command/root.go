@@ -59,6 +59,7 @@ func defineFlags(flags *pflag.FlagSet) {
 	flags.BoolP("pushsafer", "u", false, "Trigger a Pushsafer notification.")
 	flags.BoolP("simplepush", "l", false, "Trigger a Simplepush notification.")
 	flags.BoolP("slack", "k", false, "Trigger a Slack notification.")
+	flags.BoolP("mattermost", "a", false, "Trigger a Mattermost notification")
 
 	flags.IntP("pwatch", "w", -1, "Monitor a process by PID and trigger a notification when the pid disappears.")
 
