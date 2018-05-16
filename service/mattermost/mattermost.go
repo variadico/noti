@@ -12,6 +12,7 @@ import (
 var ErrInvalidResponse = errors.New("Invalid Error response")
 
 // will be thrown if an error occurs
+
 type apiErrorResponse struct {
 	Id         string `json:"id"`
 	Message    string `json:"message"`
@@ -60,6 +61,7 @@ func (n *Notification) Send() error {
 			return ErrInvalidResponse
 		}
 	} else {
+
 		var errResp apiErrorResponse
 
 		if err := json.NewDecoder(resp.Body).Decode(&errResp); err != nil {
