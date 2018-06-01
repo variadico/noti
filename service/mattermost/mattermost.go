@@ -9,18 +9,20 @@ import (
 	"net/http"
 )
 
+// ErrInvalidResponse is returned when the response is not the expected result
 var ErrInvalidResponse = errors.New("Invalid Error response")
 
 // will be thrown if an error occurs
 
 type apiErrorResponse struct {
-	Id         string `json:"id"`
+	ID         string `json:"id"`
 	Message    string `json:"message"`
 	Details    string `json:"detailed_error"`
 	StatusCode int    `json:"status_code"`
-	RequestId  string `json:"request_id"`
+	RequestID  string `json:"request_id"`
 }
 
+// Notification is a Mattermost notification.
 type Notification struct {
 	Text     string `json:"text"`
 	Channel  string `json:"channel,omitempty"`
@@ -32,6 +34,7 @@ type Notification struct {
 	Client          *http.Client `json:"-"`
 }
 
+// Send triggers a Mattermost notification.
 func (n *Notification) Send() error {
 	if n.Text == "" {
 		return errors.New("missing text")
