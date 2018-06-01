@@ -65,7 +65,7 @@ func (n *Notification) Send() error {
 		var errResp apiErrorResponse
 
 		if err := json.NewDecoder(resp.Body).Decode(&errResp); err != nil {
-			return fmt.Errorf("decoding response: %s", err)
+			return fmt.Errorf("decoding response: %s", err.Error)
 		}
 		return fmt.Errorf("response: %s", errResp)
 	}
