@@ -60,7 +60,7 @@ func (n *Notification) Send() error {
 		}
 
 		// compare to mattermost success answer "ok"
-		if bytes.Compare(body, []byte("ok")) != 0 {
+		if !bytes.Equal(body, []byte("ok")) {
 			return ErrInvalidResponse
 		}
 	} else {
