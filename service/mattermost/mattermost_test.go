@@ -22,7 +22,7 @@ func TestSend(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
-
+			t.Error("Could not Parse Query parameters")
 		}
 		hitServer = true
 		checkMessage(r, n, t)
