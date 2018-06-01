@@ -61,7 +61,7 @@ func TestSend(t *testing.T) {
 	// Check error
 	hook.RawQuery = GetQueryValues("action=error", t).Encode()
 	n.IncomingHookURI = hook.String()
-	if err := n.Send(); err.Error() != `response: {Unable to parse incoming data Unable to parse incoming data  %!s(int=400) OoFaz2ra0Bahsiechu8c}` {
+	if err := n.Send(); err.Error() != `response: {"id":"Unable to parse incoming data","message":"Unable to parse incoming data","detailed_error":"","status_code":400,"request_id":"OoFaz2ra0Bahsiechu8c"}` {
 		t.Error(err)
 	}
 
