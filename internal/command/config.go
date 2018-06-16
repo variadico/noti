@@ -40,7 +40,7 @@ var baseDefaults = map[string]interface{}{
 	"hipchat.room":        "",
 
 	"pushbullet.accessToken": "",
-	"pushbullet.deviceIden": "",
+	"pushbullet.deviceIden":  "",
 
 	"pushover.apiToken": "",
 	"pushover.userKey":  "",
@@ -77,7 +77,7 @@ var keyEnvBindings = map[string]string{
 	"hipchat.room":        "NOTI_HIPCHAT_ROOM",
 
 	"pushbullet.accessToken": "NOTI_PUSHBULLET_ACCESSTOKEN",
-	"pushbullet.deviceIden": "NOTI_PUSHBULLET_DEVICEIDEN",
+	"pushbullet.deviceIden":  "NOTI_PUSHBULLET_DEVICEIDEN",
 
 	"pushover.apiToken": "NOTI_PUSHOVER_APITOKEN",
 	"pushover.userKey":  "NOTI_PUSHOVER_USERKEY",
