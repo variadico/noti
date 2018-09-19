@@ -38,7 +38,7 @@ The `master` branch always contains the latest tagged release.
 
 ```shell
 # Install the latest version on any platform.
-go get -u github.com/variadico/noti/cmd/noti
+go get -u github.com/variadico/noti/cmd/noti; noti
 
 # Install the latest version on macOS.
 brew install noti
