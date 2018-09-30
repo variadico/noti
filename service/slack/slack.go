@@ -1,6 +1,7 @@
 package slack
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -44,6 +45,8 @@ type apiResponse struct {
 
 // Notification is a Slack notification.
 type Notification struct {
+	// AppURL is your Slack App's webhook URL
+	AppURL string
 	// Token is a user's authentication token.
 	Token string
 	// Channel is a notification's destination. It can be a channel, private
@@ -93,33 +96,58 @@ func (n *Notification) Send() error {
 		return err
 	}
 
-	vals := make(url.Values)
-	vals.Set("token", n.Token)
-	vals.Set("channel", n.Channel)
-	vals.Set("text", n.Text)
-	vals.Set("parse", n.Parse)
-	vals.Set("link_names", fmt.Sprint(n.LinkNames))
-	vals.Set("attachments", string(attach))
-	vals.Set("unfurl_links", fmt.Sprintf("%t", n.UnfurlLinks))
-	vals.Set("unfurl_media", fmt.Sprintf("%t", n.UnfurlMedia))
-	vals.Set("username", n.Username)
-	vals.Set("as_user", fmt.Sprintf("%t", n.AsUser))
-	vals.Set("icon_url", n.IconURL)
-	vals.Set("icon_emoji", n.IconEmoji)
+	if n.AppURL == "" {
+		vals := make(url.Values)
+		vals.Set("token", n.Token)
+		vals.Set("channel", n.Channel)
+		vals.Set("text", n.Text)
+		vals.Set("parse", n.Parse)
+		vals.Set("link_names", fmt.Sprint(n.LinkNames))
+		vals.Set("attachments", string(attach))
+		vals.Set("unfurl_links", fmt.Sprintf("%t", n.UnfurlLinks))
+		vals.Set("unfurl_media", fmt.Sprintf("%t", n.UnfurlMedia))
+		vals.Set("username", n.Username)
+		vals.Set("as_user", fmt.Sprintf("%t", n.AsUser))
+		vals.Set("icon_url", n.IconURL)
+		vals.Set("icon_emoji", n.IconEmoji)
 
-	resp, err := n.Client.PostForm(API, vals)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
+		resp, err := n.Client.PostForm(API, vals)
+		if err != nil {
+			return err
+		}
 
-	var r apiResponse
-	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
-		return err
-	}
+		defer resp.Body.Close()
 
-	if !r.OK {
-		return errors.New(r.Error)
+		var r apiResponse
+
+		if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
+			return err
+		}
+
+		if !r.OK {
+			return errors.New(r.Error)
+		}
+	} else {
+		json, _ := json.Marshal(struct {
+			Text string `json:"text"`
+		}{n.Text})
+
+		fmt.Println(string(json))
+
+		resp, err := n.Client.Post(n.AppURL, "application/json", bytes.NewReader(json))
+		if err != nil {
+			return err
+		}
+
+		defer resp.Body.Close()
+
+		buff := new(bytes.Buffer)
+		buff.ReadFrom(resp.Body)
+		s := buff.String()
+
+		if s != "ok" {
+			return errors.New("Error invoking slack API: " + s)
+		}
 	}
 
 	return nil
