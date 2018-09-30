@@ -81,11 +81,13 @@ type Notification struct {
 
 // Send triggers a Slack notification.
 func (n *Notification) Send() error {
-	if n.Token == "" {
-		return errors.New("missing authentication token")
-	}
-	if n.Channel == "" {
-		return errors.New("missing channel, group, or username destination")
+	if n.AppURL == "" {
+		if n.Token == "" {
+			return errors.New("missing authentication token or App URL")
+		}
+		if n.Channel == "" {
+			return errors.New("missing channel, group, or username destination")
+		}
 	}
 	if n.Text == "" {
 		return errors.New("missing message text")
@@ -131,8 +133,6 @@ func (n *Notification) Send() error {
 		json, _ := json.Marshal(struct {
 			Text string `json:"text"`
 		}{n.Text})
-
-		fmt.Println(string(json))
 
 		resp, err := n.Client.Post(n.AppURL, "application/json", bytes.NewReader(json))
 		if err != nil {
