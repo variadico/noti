@@ -55,8 +55,8 @@ when it's done. You can receive messages on your computer or phone.
 : Trigger a Simplepush notification. This requires `simplepush.key` to be set.
 
 -k, \--slack
-: Trigger a Slack notification. This requires `slack.token` and `slack.channel`
-  to be set.
+: Trigger a Slack notification. This requires `slack.appurl` (for Slack apps)
+  or `slack.token` and `slack.channel` (for legacy tokens) to be set.
 
 -w <pid>, \--pwatch <pid>
 : Monitor a process by PID and trigger a notification when the pid disappears.
