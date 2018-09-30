@@ -40,7 +40,7 @@ var baseDefaults = map[string]interface{}{
 	"hipchat.room":        "",
 
 	"pushbullet.accessToken": "",
-	"pushbullet.deviceIden": "",
+	"pushbullet.deviceIden":  "",
 
 	"pushover.apiToken": "",
 	"pushover.userKey":  "",
@@ -77,7 +77,7 @@ var keyEnvBindings = map[string]string{
 	"hipchat.room":        "NOTI_HIPCHAT_ROOM",
 
 	"pushbullet.accessToken": "NOTI_PUSHBULLET_ACCESSTOKEN",
-	"pushbullet.deviceIden": "NOTI_PUSHBULLET_DEVICEIDEN",
+	"pushbullet.deviceIden":  "NOTI_PUSHBULLET_DEVICEIDEN",
 
 	"pushover.apiToken": "NOTI_PUSHOVER_APITOKEN",
 	"pushover.userKey":  "NOTI_PUSHOVER_USERKEY",
@@ -87,6 +87,7 @@ var keyEnvBindings = map[string]string{
 	"simplepush.key":   "NOTI_SIMPLEPUSH_KEY",
 	"simplepush.event": "NOTI_SIMPLEPUSH_EVENT",
 
+	"slack.appurl":   "NOTI_SLACK_APPURL",
 	"slack.token":    "NOTI_SLACK_TOKEN",
 	"slack.channel":  "NOTI_SLACK_CHANNEL",
 	"slack.username": "NOTI_SLACK_USERNAME",
