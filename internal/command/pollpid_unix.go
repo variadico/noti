@@ -1,4 +1,4 @@
-// +build !windows
+// +build !windows,!freebsd,!netbsd,!openbsd,!dragonfly,!darwin
 
 package command
 
