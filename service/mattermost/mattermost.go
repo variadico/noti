@@ -10,7 +10,7 @@ import (
 )
 
 // ErrInvalidResponse is returned when the response is not the expected result
-var ErrInvalidResponse = errors.New("Invalid Error response")
+var ErrInvalidResponse = errors.New("mattermost: invalid error response")
 
 // will be thrown if an error occurs
 // apiErrorResponse defines all fields which will be send by mattermost
@@ -57,27 +57,25 @@ func (n *Notification) Send() error {
 	}
 	defer resp.Body.Close()
 
-	// --[Check Response]--
-	if resp.StatusCode == 200 {
-
+	// Check response
+	if resp.StatusCode == http.StatusOK {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			return err
 		}
 
-		// compare to mattermost success answer "ok"
+		// Compare to mattermost success answer "ok"
 		if !bytes.Equal(body, []byte("ok")) {
 			return ErrInvalidResponse
 		}
-	} else {
 
-		var errResp apiErrorResponse
-
-		if err := json.NewDecoder(resp.Body).Decode(&errResp); err != nil {
-			return fmt.Errorf("decoding response: %s", err.Error())
-		}
-		return fmt.Errorf("response: %s", errResp.String())
+		return nil
 	}
 
-	return nil
+	var errResp apiErrorResponse
+	if err := json.NewDecoder(resp.Body).Decode(&errResp); err != nil {
+		return fmt.Errorf("mattermost decoding response: %s", err.Error())
+	}
+
+	return fmt.Errorf("mattermost response: %s", errResp.String())
 }

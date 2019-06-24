@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script is for the macOS CircleCI workflow. The Linux workflow uses a
+# Docker image.
+
 set -ex
 
 # Save Go env in bash env.

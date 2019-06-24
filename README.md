@@ -38,9 +38,6 @@ different platforms.
 The `master` branch always contains the latest tagged release.
 
 ```shell
-# Install the latest version on any platform.
-go get -u github.com/variadico/noti/cmd/noti
-
 # Install the latest version on macOS.
 brew install noti
 ```
@@ -57,6 +54,37 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 ```
 
 Or download with your browser from the [latest release] page.
+
+### From source
+
+If you want to build from source, then build like this.
+
+```shell
+make build
+# or
+make install
+```
+
+This project uses modules with vendoring. The Makefile sets `-mod=vendor`
+automatically. Otherwise, you'll need to pass a flag or export a var if you
+don't use the Makefile.
+
+```shell
+go build -mod=vendor
+# or
+export GOFLAGS="-mod=vendor"
+go build
+```
+
+If you're annoyed by either of these, then go complain here:
+https://github.com/golang/go/issues/27227
+
+`go get` doesn't really work anymore.
+
+If you're annoyed by this, then complain here
+https://github.com/golang/go/issues/27227
+and/or
+https://github.com/golang/go/issues/32502
 
 ## Examples
 

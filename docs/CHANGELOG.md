@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 
+### Added
+
+* Support for Mattermost.
+
+### Removed
+
+* Installation by `go get`.
+
 ## [3.1.0] - 2018-03-25
 
 ### Added

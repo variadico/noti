@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 	"time"
 )
@@ -61,7 +62,7 @@ func TestSend(t *testing.T) {
 	// Check error
 	hook.RawQuery = GetQueryValues("action=error", t).Encode()
 	n.IncomingHookURI = hook.String()
-	if err := n.Send(); err.Error() != `response: {"id":"Unable to parse incoming data","message":"Unable to parse incoming data","detailed_error":"","status_code":400,"request_id":"OoFaz2ra0Bahsiechu8c"}` {
+	if err := n.Send(); !strings.Contains(err.Error(), "Unable to parse incoming data") {
 		t.Error(err)
 	}
 
