@@ -15,7 +15,7 @@ func getBanner(title, message string, v *viper.Viper) notification {
 	return &freedesktop.Notification{
 		Summary:       title,
 		Body:          message,
-		ExpireTimeout: 500,
+		ExpireTimeout: 5000,
 		AppIcon:       "utilities-terminal",
 	}
 }
