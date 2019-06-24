@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
 	"github.com/variadico/noti/service/hipchat"
+	"github.com/variadico/noti/service/mattermost"
 	"github.com/variadico/noti/service/pushbullet"
 	"github.com/variadico/noti/service/pushover"
 	"github.com/variadico/noti/service/pushsafer"
@@ -82,6 +83,19 @@ func getSlack(title, message string, v *viper.Viper) notification {
 		Username:  v.GetString("slack.username"),
 		Text:      fmt.Sprintf("%s\n%s", title, message),
 		IconEmoji: ":rocket:",
+
+		Client: httpClient,
+	}
+}
+
+func getMattermost(title, message string, v *viper.Viper) notification {
+	return &mattermost.Notification{
+		IncomingHookURI: v.GetString("mattermost.incomingHookURI"),
+		Channel:         v.GetString("mattermost.channel"),
+		Username:        v.GetString("mattermost.username"),
+		Text:            fmt.Sprintf("**%s %s**\n%s", title, ":rocket:", message),
+		IconURL:         v.GetString("mattermost.iconurl"),
+		Type:            v.GetString("mattermost.type"),
 
 		Client: httpClient,
 	}
