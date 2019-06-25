@@ -26,7 +26,21 @@ jobs:
           name: Upload coverage
           command: ./.circleci/codecov-bash.sh
 
-  macos-build-test:
+  macos-build:
+    macos:
+      xcode: "9.0"
+    environment:
+      - GOVERSION: '1.12.6'
+    working_directory: ~/go/src/github.com/variadico/noti
+    steps:
+      - checkout
+      - run:
+          name: Install go
+          command: ./.circleci/install_go.sh
+      - run:
+          name: Build
+          command: make build
+  macos-test:
     macos:
       xcode: "9.0"
     environment:
@@ -55,4 +69,5 @@ workflows:
       - linux-test
   macos-flow:
     jobs:
-      - macos-build-test
+      - macos-build
+      - macos-test
