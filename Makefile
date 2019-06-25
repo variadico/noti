@@ -9,6 +9,8 @@ project_src = $(shell find . -name "*.go" | grep -v /vendor/ | grep -v _test.go)
 
 bin_prefix = "vendor/.bin"
 
+staticcheck = ./tools/staticcheck_2019.1.1_$$(go env GOOS)_$$(go env GOARCH)
+
 # Build
 cmd/noti/noti: $(project_src)
 	go build -race -o $@ \
@@ -60,6 +62,7 @@ install:
 .PHONY: test
 test:
 	go test -v -cover -race ./...
+	$(staticcheck) ./...
 
 .PHONY: vendor
 vendor:
