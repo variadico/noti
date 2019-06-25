@@ -137,9 +137,7 @@ username
       key: 1234567890abcdefg
       event: 1234567890abcdefg
     slack:
-      token: 1234567890abcdefg
-      channel: '@jaime'
-      username: noti
+      appurl: 'https://hooks.slack.com/services/xxx/yyy/zzz'
 
 # SEE ALSO
 

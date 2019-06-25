@@ -81,6 +81,7 @@ func getSlack(title, message string, v *viper.Viper) notification {
 		Token:     v.GetString("slack.token"),
 		Channel:   v.GetString("slack.channel"),
 		Username:  v.GetString("slack.username"),
+		AppURL:    v.GetString("slack.appurl"),
 		Text:      fmt.Sprintf("%s\n%s", title, message),
 		IconEmoji: ":rocket:",
 
