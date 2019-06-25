@@ -22,3 +22,5 @@ install:
     mingw32-make --version
 build_script:
 - cmd: mingw32-make build
+test_script:
+- cmd: mingw32-make test
