@@ -1,7 +1,7 @@
 ---
 version: 2
 jobs:
-  linux-build:
+  linux-build-test:
     docker:
       - image: circleci/golang:1.12.6
     working_directory: /go/src/github.com/variadico/noti
@@ -10,15 +10,9 @@ jobs:
       - run:
           name: Build
           command: make build
-  linux-test:
-    docker:
-      - image: circleci/golang:1.12.6
-    working_directory: /go/src/github.com/variadico/noti
-    steps:
-      - checkout
       - run:
-          name: Run all tests
-          command: make test
+          name: Test
+          command: make test test-integration
       - run:
           name: Get Go test coverage
           command: ./.circleci/test_coverage.sh
@@ -26,7 +20,7 @@ jobs:
           name: Upload coverage
           command: ./.circleci/codecov-bash.sh
 
-  macos-build:
+  macos-build-test:
     macos:
       xcode: "9.0"
     environment:
@@ -40,20 +34,9 @@ jobs:
       - run:
           name: Build
           command: make build
-  macos-test:
-    macos:
-      xcode: "9.0"
-    environment:
-      - GOVERSION: '1.12.6'
-    working_directory: ~/go/src/github.com/variadico/noti
-    steps:
-      - checkout
-      - run:
-          name: Install go
-          command: ./.circleci/install_go.sh
       - run:
           name: Test
-          command: make test
+          command: make test test-integration
       - run:
           name: Get test coverage
           command: ./.circleci/test_coverage.sh
@@ -65,9 +48,7 @@ workflows:
   version: 2
   linux-flow:
     jobs:
-      - linux-build
-      - linux-test
+      - linux-build-test
   macos-flow:
     jobs:
-      - macos-build
-      - macos-test
+      - macos-build-test

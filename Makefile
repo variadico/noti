@@ -24,6 +24,13 @@ test:
 	go test -v -cover -race ./...
 	$(staticcheck) ./...
 
+.PHONY: test-integration
+test-integration:
+	go install \
+		-ldflags "-X github.com/variadico/noti/internal/command.Version=$(branch)-$(rev)" \
+		github.com/variadico/noti/cmd/noti
+	go test -v -cover ./tests/...
+
 .PHONY: clean
 clean:
 	go clean
