@@ -21,7 +21,7 @@ install:
 
 .PHONY: test
 test:
-	go test -v -cover -race ./...
+	go test -v -cover -race $(shell go list ./... | grep -v "noti/tests")
 	$(staticcheck) ./...
 
 .PHONY: test-integration
