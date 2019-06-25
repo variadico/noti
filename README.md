@@ -76,15 +76,13 @@ export GOFLAGS="-mod=vendor"
 go build
 ```
 
-If you're annoyed by either of these, then go complain here:
-https://github.com/golang/go/issues/27227
+Also, `go get` doesn't really work anymore starting in Go 1.12.
 
-`go get` doesn't really work anymore.
+If you have comments about these changes, please the leave the Go team an
+experience report here.
 
-If you're annoyed by this, then complain here
-https://github.com/golang/go/issues/27227
-and/or
-https://github.com/golang/go/issues/32502
+* https://github.com/golang/go/issues/27227
+* https://github.com/golang/go/issues/32502
 
 ## Examples
 
@@ -107,7 +105,7 @@ If you already started a command, but forgot to use `noti`, then you can do
 this to get notified when that process' PID disappears.
 
 ```
-noti --pwatch $(pgrep docker-machine)
+noti --pwatch 1234
 ```
 
 You can also press `ctrl+z` after you started a process. This will temporarily
