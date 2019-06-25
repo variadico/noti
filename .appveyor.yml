@@ -4,7 +4,7 @@ version: "{build}"
 clone_folder: C:\Users\appveyor\go\src\github.com\variadico\noti
 environment:
   GOPATH: C:\Users\appveyor\go
-  GOVERSION: '1.10'
+  GOVERSION: '1.12.6'
 install:
 - cmd: >-
     set PATH=%GOPATH%\bin;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin;%PATH%
@@ -20,10 +20,5 @@ install:
     go env
 
     mingw32-make --version
-
-    mingw32-make install-tools
 build_script:
 - cmd: mingw32-make build
-test_script:
-- cmd: mingw32-make lint-only
-- cmd: mingw32-make test-only
