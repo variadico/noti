@@ -98,6 +98,7 @@ func (n *Notification) Send() error {
 		return err
 	}
 
+	// Legacy token-based integration.
 	if n.AppURL == "" {
 		vals := make(url.Values)
 		vals.Set("token", n.Token)
@@ -117,11 +118,9 @@ func (n *Notification) Send() error {
 		if err != nil {
 			return err
 		}
-
 		defer resp.Body.Close()
 
 		var r apiResponse
-
 		if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
 			return err
 		}
@@ -129,25 +128,33 @@ func (n *Notification) Send() error {
 		if !r.OK {
 			return errors.New(r.Error)
 		}
-	} else {
-		json, _ := json.Marshal(struct {
-			Text string `json:"text"`
-		}{n.Text})
 
-		resp, err := n.Client.Post(n.AppURL, "application/json", bytes.NewReader(json))
-		if err != nil {
-			return err
-		}
+		return nil
+	}
 
-		defer resp.Body.Close()
+	// New Slack app URL integration.
+	data, err := json.Marshal(struct {
+		Text string `json:"text"`
+	}{n.Text})
+	if err != nil {
+		return err
+	}
 
-		buff := new(bytes.Buffer)
-		buff.ReadFrom(resp.Body)
-		s := buff.String()
+	resp, err := n.Client.Post(n.AppURL, "application/json", bytes.NewReader(data))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
 
-		if s != "ok" {
-			return errors.New("Error invoking slack API: " + s)
-		}
+	buff := new(bytes.Buffer)
+	_, err = buff.ReadFrom(resp.Body)
+	if err != nil {
+		return err
+	}
+	s := buff.String()
+
+	if s != "ok" {
+		return fmt.Errorf("slack api error: %s", s)
 	}
 
 	return nil
