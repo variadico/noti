@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.2.0] - 2019-06-25
+
 ### Added
 
 * Support for Mattermost.
@@ -19,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-* Incorrect deprecation mapping
+* Incorrect deprecation mapping.
 
 ## [3.1.0] - 2018-03-25
 
@@ -202,7 +204,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * OS X-specific flags and usage text from Linux and FreeBSD help.
 
 
-[Unreleased]: https://github.com/variadico/noti/compare/3.1.0...dev
+[Unreleased]: https://github.com/variadico/noti/compare/3.2.0...dev
+[3.2.0]: https://github.com/variadico/noti/compare/3.1.0...3.2.0
 [3.1.0]: https://github.com/variadico/noti/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/variadico/noti/compare/v2.7.0...3.0.0
 [2.7.0]: https://github.com/variadico/noti/compare/v2.6.0...v2.7.0
