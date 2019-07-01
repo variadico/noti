@@ -58,6 +58,12 @@ var baseDefaults = map[string]interface{}{
 	"mattermost.channel":         "",
 	"mattermost.incomingHookURI": "",
 	"mattermost.iconurl":         "",
+
+	"zulip.key":        "",
+	"zulip.botAddress": "",
+	"zulip.URI":        "",
+	"zulip.type":       "private",
+	"zulip.to":         "",
 }
 
 func setNotiDefaults(v *viper.Viper) {
@@ -102,6 +108,12 @@ var keyEnvBindings = map[string]string{
 	"mattermost.channel":         "NOTI_MATTERMOST_CHANNEL",
 	"mattermost.iconurl":         "NOTI_MATTERMOST_ICONURL",
 	"mattermost.type":            "NOTI_MATTERMOST_TYPE",
+
+	"zulip.key":        "NOTI_ZULIP_KEY",
+	"zulip.botAddress": "NOTI_ZULIP_BOTADDRESS",
+	"zulip.URI":        "NOTI_ZULIP_URI",
+	"zulip.type":       "NOTI_ZULIP_TYPE",
+	"zulip.to":         "NOTI_ZULIP_TO",
 }
 
 var keyEnvBindingsDeprecated = map[string]string{
@@ -223,6 +235,7 @@ func enabledFromSlice(defaults []string) map[string]bool {
 		"slack":      false,
 		"speech":     false,
 		"mattermost": false,
+		"zulip":      false,
 	}
 
 	for _, name := range defaults {
@@ -248,6 +261,7 @@ func hasServiceFlags(flags *pflag.FlagSet) bool {
 		"slack":      false,
 		"speech":     false,
 		"mattermost": false,
+		"zulip":      false,
 	}
 
 	flags.Visit(func(f *pflag.Flag) {
@@ -276,6 +290,7 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 		"slack":      false,
 		"speech":     false,
 		"mattermost": false,
+		"zulip":      false,
 	}
 
 	// Visit flags that have been set.
@@ -362,6 +377,10 @@ func getNotifications(v *viper.Viper, services map[string]struct{}) []notificati
 
 	if _, ok := services["mattermost"]; ok {
 		notis = append(notis, getMattermost(title, message, v))
+	}
+
+	if _, ok := services["zulip"]; ok {
+		notis = append(notis, getZulip(title, message, v))
 	}
 
 	return notis
