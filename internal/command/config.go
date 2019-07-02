@@ -106,7 +106,7 @@ var keyEnvBindings = map[string]string{
 	"mattermost.iconurl":         "NOTI_MATTERMOST_ICONURL",
 	"mattermost.type":            "NOTI_MATTERMOST_TYPE",
 
-	"telegram.chat_id": "NOTI_TELEGRAM_CHATID",
+	"telegram.chatId": "NOTI_TELEGRAM_CHATID",
 	"telegram.token": "NOTI_TELEGRAM_TOKEN",
 }
 

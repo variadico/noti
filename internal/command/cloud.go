@@ -105,9 +105,9 @@ func getMattermost(title, message string, v *viper.Viper) notification {
 
 func getTelegram(title, message string, v *viper.Viper) notification {
 	return &telegram.Notification{
-		ChatID: v.GetString("telegram.chat_id"),
+		ChatID: v.GetString("telegram.chatId"),
 		Token: v.GetString("telegram.token"),
-		Message: fmt.Sprintf("**%s %s**\n%s", title, ":rocket:", message),
+		Message: fmt.Sprintf("**%s %s**\n%s", title, "🚀:", message),
 
 		Client: httpClient,
 	}

@@ -12,12 +12,12 @@ type apiResponse struct {
 	Result struct {
 		MessageID int `json:"message_id"`
 		Chat      struct {
-			ID       uint8  `json:"id"`
+			ID       int64  `json:"id"`
 			Title    string `json:"title"`
 			Username string `json:"username"`
 			Type     string `json:"type"`
 		} `json:"chat"`
-		Date int16  `json:"date"`
+		Date int64  `json:"date"`
 		Text string `json:"text"`
 	} `json:"result"`
 	ErrorCode int `json:"error_code,omitempty"`
