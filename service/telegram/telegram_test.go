@@ -12,6 +12,7 @@ func TestTelegramSend(t *testing.T) {
 	n := Notification{
 		ChatID:  "notifire",
 		Message: "Testing notification",
+		Token:   "token",
 		Client:  &http.Client{Timeout: 3 * time.Second,},
 	}
 
@@ -21,14 +22,21 @@ func TestTelegramSend(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		hitServer = true
 
+		decoder := json.NewDecoder(r.Body)
+
+		var n Notification
+
+		_ = decoder.Decode(&n)
+
 		if r.Method != "POST" {
 			t.Error("HTTP method should be POST.")
 		}
 
-		if r.FormValue("chat_id") == "" {
+		if n.ChatID == "" {
 			t.Error("bot is not a member of the ", n.ChatID)
 		}
-		if r.FormValue("text") != n.Message {
+
+		if n.Message == "" {
 			t.Error("missing message")
 		}
 
@@ -36,6 +44,8 @@ func TestTelegramSend(t *testing.T) {
 	}))
 
 	defer ts.Close()
+
+	API = ts.URL
 
 	mockResp.OK = true // successful
 	if err := n.Send(); err != nil {
