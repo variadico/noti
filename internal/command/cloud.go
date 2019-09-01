@@ -80,12 +80,17 @@ func getSimplepush(title, message string, v *viper.Viper) notification {
 }
 
 func getSlack(title, message string, v *viper.Viper) notification {
+	text := fmt.Sprintf("%s\n%s", title, message)
+	if title == v.GetString("slack.username") {
+		text = message
+	}
+
 	return &slack.Notification{
 		Token:     v.GetString("slack.token"),
 		Channel:   v.GetString("slack.channel"),
 		Username:  v.GetString("slack.username"),
 		AppURL:    v.GetString("slack.appurl"),
-		Text:      fmt.Sprintf("%s\n%s", title, message),
+		Text:      text,
 		IconEmoji: ":rocket:",
 
 		Client: httpClient,
