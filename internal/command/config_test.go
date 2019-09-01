@@ -344,6 +344,7 @@ func TestGetNotifications(t *testing.T) {
 		"simplepush",
 		"slack",
 		"speech",
+		"zulip",
 	}
 
 	for _, name := range services {
