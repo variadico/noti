@@ -21,7 +21,6 @@ install:
 
 .PHONY: lint
 lint:
-	test -z "$$(gofmt -l . | grep -v "vendor/")"
 	go vet ./...
 	$(golangci-lint) run --no-config --exclude-use-default=false --max-same-issues=0 \
 	--disable errcheck \
