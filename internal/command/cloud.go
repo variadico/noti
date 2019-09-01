@@ -2,9 +2,10 @@ package command
 
 import (
 	"fmt"
-	"github.com/variadico/noti/service/telegram"
 	"net/http"
 	"time"
+
+	"github.com/variadico/noti/service/telegram"
 
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
@@ -105,8 +106,8 @@ func getMattermost(title, message string, v *viper.Viper) notification {
 
 func getTelegram(title, message string, v *viper.Viper) notification {
 	return &telegram.Notification{
-		ChatID: v.GetString("telegram.chatId"),
-		Token: v.GetString("telegram.token"),
+		ChatID:  v.GetString("telegram.chatId"),
+		Token:   v.GetString("telegram.token"),
 		Message: fmt.Sprintf("**%s %s**\n%s", title, "🚀:", message),
 
 		Client: httpClient,

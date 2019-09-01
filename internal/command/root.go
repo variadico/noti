@@ -39,11 +39,8 @@ var Root = &cobra.Command{
 // Version is the version of noti. This is set at compile time with Make.
 var Version string
 
-func init() {
-	defineFlags(Root.Flags())
-}
-
-func defineFlags(flags *pflag.FlagSet) {
+// InitFlags initializes Root's command line flags.
+func InitFlags(flags *pflag.FlagSet) {
 	flags.SetInterspersed(false)
 	flags.SortFlags = false
 
@@ -212,7 +209,8 @@ func subshellCommand(args []string) *exec.Cmd {
 }
 
 func printEnv() {
-	var envs []string
+	alloc := len(keyEnvBindings) + len(keyEnvBindingsDeprecated)
+	envs := make([]string, 0, alloc)
 	for _, e := range keyEnvBindings {
 		envs = append(envs, e)
 	}

@@ -33,12 +33,29 @@ func TestSend(t *testing.T) {
 		case "good":
 			w.Write([]byte("ok"))
 		case "bad":
-			w.Write([]byte(`<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8"></HEAD><BODY></BODY></HTML>`))
+			w.Write([]byte(
+				`<HTML><HEAD>
+				<meta http-equiv="content-type" content="text/html;charset=utf-8">
+				</HEAD> <BODY></BODY></HTML>`,
+			))
 		case "error":
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(`{"id":"Unable to parse incoming data","message":"Unable to parse incoming data","detailed_error":"","request_id":"OoFaz2ra0Bahsiechu8c","status_code":400}`))
-		default:
+			data := struct {
+				ID            string `json:"id"`
+				Message       string `json:"message"`
+				DetailedError string `json:"detailed_error"`
+				RequestID     string `json:"request_id"`
+				StatusCode    int    `json:"status_code"`
+			}{
+				ID:         "Unable to parse incoming data",
+				Message:    "Unable to parse incoming data",
+				RequestID:  "OoFaz2ra0Bahsiechu8c",
+				StatusCode: http.StatusBadRequest,
+			}
 
+			if err := json.NewEncoder(w).Encode(data); err != nil {
+				t.Error(err)
+			}
 		}
 
 	}))
@@ -90,8 +107,6 @@ func GetQueryValues(rawStr string, t *testing.T) url.Values {
 	return query
 }
 
-// testMessage validate the payload the request method
-// and if the neccessary field text is included
 func checkMessage(r *http.Request, n Notification, t *testing.T) {
 	if r.Method != "POST" {
 		t.Error("HTTP method should be POST.")

@@ -180,12 +180,15 @@ func TestConfigureApp(t *testing.T) {
 	}
 
 	for _, c := range cases {
+		// Pin case scope.
+		c := c
+
 		t.Run(c.name, func(t *testing.T) {
 			clearNotiEnv(t)
 
 			v := viper.New()
 			flags := pflag.NewFlagSet("testconfigureapp", pflag.ContinueOnError)
-			defineFlags(flags)
+			InitFlags(flags)
 
 			if c.configFile != "" {
 				flags.Set("file", c.configFile)
@@ -222,7 +225,7 @@ func TestEnabledServices(t *testing.T) {
 		v.AddConfigPath("testdata")
 
 		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
-		defineFlags(flags)
+		InitFlags(flags)
 
 		configureApp(v, flags)
 
@@ -249,7 +252,7 @@ func TestEnabledServices(t *testing.T) {
 		v.AddConfigPath("testdata")
 
 		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
-		defineFlags(flags)
+		InitFlags(flags)
 
 		configureApp(v, flags)
 
@@ -279,7 +282,7 @@ func TestEnabledServices(t *testing.T) {
 		v.AddConfigPath("testdata")
 
 		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
-		defineFlags(flags)
+		InitFlags(flags)
 
 		configureApp(v, flags)
 
@@ -310,7 +313,7 @@ func TestEnabledServices(t *testing.T) {
 		v.AddConfigPath("testdata")
 
 		flags := pflag.NewFlagSet("testenabledservices", pflag.ContinueOnError)
-		defineFlags(flags)
+		InitFlags(flags)
 
 		configureApp(v, flags)
 
@@ -344,9 +347,11 @@ func TestGetNotifications(t *testing.T) {
 	}
 
 	for _, name := range services {
+		// Pin name scope.
+		name := name
 		t.Run(fmt.Sprintf("get %s notification", name), func(t *testing.T) {
 			v := viper.New()
-			s := map[string]struct{}{name: struct{}{}}
+			s := map[string]struct{}{name: {}}
 
 			notis := getNotifications(v, s)
 			if len(notis) != 1 {

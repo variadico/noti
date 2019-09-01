@@ -60,7 +60,7 @@ var baseDefaults = map[string]interface{}{
 	"mattermost.iconurl":         "",
 
 	"telegram.chatId": "",
-	"telegram.token": "",
+	"telegram.token":  "",
 }
 
 func setNotiDefaults(v *viper.Viper) {
@@ -107,7 +107,7 @@ var keyEnvBindings = map[string]string{
 	"mattermost.type":            "NOTI_MATTERMOST_TYPE",
 
 	"telegram.chatId": "NOTI_TELEGRAM_CHATID",
-	"telegram.token": "NOTI_TELEGRAM_TOKEN",
+	"telegram.token":  "NOTI_TELEGRAM_TOKEN",
 }
 
 var keyEnvBindingsDeprecated = map[string]string{

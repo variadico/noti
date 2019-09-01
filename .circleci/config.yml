@@ -12,7 +12,7 @@ jobs:
           command: make build
       - run:
           name: Test
-          command: make test test-integration
+          command: make lint test test-integration
       - run:
           name: Get Go test coverage
           command: ./.circleci/test_coverage.sh
@@ -36,7 +36,7 @@ jobs:
           command: make build
       - run:
           name: Test
-          command: make test test-integration
+          command: make lint test test-integration
       - run:
           name: Get test coverage
           command: ./.circleci/test_coverage.sh

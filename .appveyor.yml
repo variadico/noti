@@ -23,4 +23,4 @@ install:
 build_script:
 - cmd: mingw32-make build
 test_script:
-- cmd: mingw32-make test test-integration
+- cmd: mingw32-make lint test test-integration

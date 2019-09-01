@@ -13,7 +13,7 @@ func TestTelegramSend(t *testing.T) {
 		ChatID:  "notifire",
 		Message: "Testing notification",
 		Token:   "token",
-		Client:  &http.Client{Timeout: 3 * time.Second,},
+		Client:  &http.Client{Timeout: 3 * time.Second},
 	}
 
 	var mockResp apiResponse

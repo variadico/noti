@@ -4,7 +4,7 @@ rev = $(shell git rev-parse --short HEAD)
 
 export GOFLAGS = -mod=vendor
 
-staticcheck = ./tools/staticcheck_2019.1.1_$(shell go env GOOS)_$(shell go env GOARCH)
+golangci-lint = ./tools/golangci-lint_$(shell go env GOOS)_$(shell go env GOARCH)
 
 .PHONY: build
 build:
@@ -19,10 +19,34 @@ install:
 		-ldflags "-X github.com/variadico/noti/internal/command.Version=$(branch)-$(rev)" \
 		github.com/variadico/noti/cmd/noti
 
+.PHONY: lint
+lint:
+	test -z "$$(gofmt -l . | grep -v "vendor/")"
+	go vet ./...
+	$(golangci-lint) run --no-config --exclude-use-default=false --max-same-issues=0 \
+	--disable errcheck \
+	--enable bodyclose \
+	--enable golint \
+	--enable stylecheck \
+	--enable interfacer \
+	--enable unconvert \
+	--enable dupl \
+	--enable gocyclo \
+	--enable gofmt \
+	--enable goimports \
+	--enable misspell \
+	--enable lll \
+	--enable unparam \
+	--enable nakedret \
+	--enable prealloc \
+	--enable scopelint \
+	--enable gocritic \
+	--enable gochecknoinits \
+	./...
+
 .PHONY: test
 test:
 	go test -v -cover -race $(shell go list ./... | grep -v "noti/tests")
-	$(staticcheck) ./...
 
 .PHONY: test-integration
 test-integration:

@@ -20,19 +20,22 @@ type apiResponse struct {
 		Date int64  `json:"date"`
 		Text string `json:"text"`
 	} `json:"result"`
-	ErrorCode int `json:"error_code,omitempty"`
+	ErrorCode   int    `json:"error_code,omitempty"`
 	Description string `json:"description,omitempty"`
 }
 
+// Notification is a Telegram notification.
 type Notification struct {
-	ChatID  string `json:"chat_id"`
-	Message string `json:"text"`
-	Token string `json:"-"`
+	ChatID  string       `json:"chat_id"`
+	Message string       `json:"text"`
+	Token   string       `json:"-"`
 	Client  *http.Client `json:"-"`
 }
 
+// API is the Telegram API endpoint.
 var API = "https://api.telegram.org"
 
+// Send sends a Telegram notification.
 func (n *Notification) Send() error {
 	if n.ChatID == "" {
 		return errors.New("missing chat id")
@@ -65,7 +68,6 @@ func (n *Notification) Send() error {
 	if !r.OK {
 		return errors.New(r.Description)
 	}
-
 
 	return nil
 }
