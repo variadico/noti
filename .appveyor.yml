@@ -4,7 +4,7 @@ version: "{build}"
 clone_folder: C:\Users\appveyor\go\src\github.com\variadico\noti
 environment:
   GOPATH: C:\Users\appveyor\go
-  GOVERSION: '1.12.6'
+  GOVERSION: '1.12.9'
 install:
 - cmd: >-
     set PATH=%GOPATH%\bin;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin;%PATH%
