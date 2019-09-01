@@ -58,6 +58,7 @@ func InitFlags(flags *pflag.FlagSet) {
 	flags.BoolP("slack", "k", false, "Trigger a Slack notification.")
 	flags.BoolP("mattermost", "a", false, "Trigger a Mattermost notification")
 	flags.BoolP("telegram", "g", false, "Trigger a Telegram notification")
+	flags.BoolP("zulip", "z", false, "Trigger a Zulip notification")
 
 	flags.IntP("pwatch", "w", -1, "Monitor a process by PID and trigger a notification when the pid disappears.")
 

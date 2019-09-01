@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/variadico/noti/service/telegram"
+	"github.com/variadico/noti/service/zulip"
 
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
@@ -111,5 +112,17 @@ func getTelegram(title, message string, v *viper.Viper) notification {
 		Message: fmt.Sprintf("**%s %s**\n%s", title, "🚀:", message),
 
 		Client: httpClient,
+	}
+}
+
+func getZulip(title, message string, v *viper.Viper) notification {
+	return &zulip.Notification{
+		BotAPIKey:       v.GetString("zulip.key"),
+		BotEmailAddress: v.GetString("zulip.botAddress"),
+		Endpoint:        v.GetString("zulip.URI"),
+		Content:         fmt.Sprintf("%s:%s", title, message),
+		Type:            v.GetString("zulip.type"),
+		To:              v.GetString("zulip.to"),
+		Client:          httpClient,
 	}
 }
