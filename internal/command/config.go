@@ -58,6 +58,9 @@ var baseDefaults = map[string]interface{}{
 	"mattermost.channel":         "",
 	"mattermost.incomingHookURI": "",
 	"mattermost.iconurl":         "",
+
+	"telegram.chatId": "",
+	"telegram.token": "",
 }
 
 func setNotiDefaults(v *viper.Viper) {
@@ -102,6 +105,9 @@ var keyEnvBindings = map[string]string{
 	"mattermost.channel":         "NOTI_MATTERMOST_CHANNEL",
 	"mattermost.iconurl":         "NOTI_MATTERMOST_ICONURL",
 	"mattermost.type":            "NOTI_MATTERMOST_TYPE",
+
+	"telegram.chatId": "NOTI_TELEGRAM_CHATID",
+	"telegram.token": "NOTI_TELEGRAM_TOKEN",
 }
 
 var keyEnvBindingsDeprecated = map[string]string{
@@ -223,6 +229,7 @@ func enabledFromSlice(defaults []string) map[string]bool {
 		"slack":      false,
 		"speech":     false,
 		"mattermost": false,
+		"telegram":   false,
 	}
 
 	for _, name := range defaults {
@@ -248,6 +255,7 @@ func hasServiceFlags(flags *pflag.FlagSet) bool {
 		"slack":      false,
 		"speech":     false,
 		"mattermost": false,
+		"telegram":   false,
 	}
 
 	flags.Visit(func(f *pflag.Flag) {
@@ -276,6 +284,7 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 		"slack":      false,
 		"speech":     false,
 		"mattermost": false,
+		"telegram":   false,
 	}
 
 	// Visit flags that have been set.
@@ -362,6 +371,10 @@ func getNotifications(v *viper.Viper, services map[string]struct{}) []notificati
 
 	if _, ok := services["mattermost"]; ok {
 		notis = append(notis, getMattermost(title, message, v))
+	}
+
+	if _, ok := services["telegram"]; ok {
+		notis = append(notis, getTelegram(title, message, v))
 	}
 
 	return notis

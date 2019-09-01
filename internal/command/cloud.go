@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"github.com/variadico/noti/service/telegram"
 	"net/http"
 	"time"
 
@@ -97,6 +98,16 @@ func getMattermost(title, message string, v *viper.Viper) notification {
 		Text:            fmt.Sprintf("**%s %s**\n%s", title, ":rocket:", message),
 		IconURL:         v.GetString("mattermost.iconurl"),
 		Type:            v.GetString("mattermost.type"),
+
+		Client: httpClient,
+	}
+}
+
+func getTelegram(title, message string, v *viper.Viper) notification {
+	return &telegram.Notification{
+		ChatID: v.GetString("telegram.chatId"),
+		Token: v.GetString("telegram.token"),
+		Message: fmt.Sprintf("**%s %s**\n%s", title, "🚀:", message),
 
 		Client: httpClient,
 	}

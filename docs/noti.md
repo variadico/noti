@@ -100,6 +100,10 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 -k, --slack
     Trigger a Slack notification.  This requires slack.token and
     slack.channel to be set.
+    
+-g, --telegram
+    Trigger a Telegram notification.  This requires telegeram.token and
+    telegram.chatId to be set.
 
 -w , --pwatch
     Monitor a process by PID and trigger a notification when the pid
@@ -239,6 +243,14 @@ channel
 
 username
     Noti bot username.
+    
+TELEGRAM
+
+token
+    Telegram access token. The token can be retrieved using the [BotFather](https://telegram.me/botfather)
+    
+chatId
+    Telegram message destination: Can be either a chat or a channel
 ```
 
 ## Examples
@@ -265,7 +277,6 @@ noti --pwatch $(pgrep docker-machine)
 Sample configuration file.
 
 ```yaml
----
 nsuser:
   soundName: Ping
   soundNameFail: Basso
@@ -295,6 +306,10 @@ slack:
   token: 1234567890abcdefg
   channel: '@jaime'
   username: noti
+telegram:
+  token: 1234567890abcdefg
+  chatId: '@notifier'
+
 ```
 
 ## Setting up cloud accounts
@@ -353,6 +368,11 @@ Development] page. Create a token. This is what you'll set `slack.token` to.
 The variable `slack.channel` can be set to a channel like `#general` or
 `#random`. You can also set it to someone's username, like `@jaime` or
 `@variadico`.
+
+### Telegram
+
+Open your telegram app, and start a conversation with the [BotFather](https://telegram.me/botfather) 
+and use the `/newbot` to get the BotFather to create your bot and lastly copy and keep the bot token
 
 
 ## Reporting bugs
