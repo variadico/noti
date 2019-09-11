@@ -54,9 +54,12 @@ func TestSend(t *testing.T) {
 			t.Error("missing payload")
 		}
 
-		json.NewEncoder(rw).Encode(mockResponse)
+		if err := json.NewEncoder(rw).Encode(mockResponse); err != nil {
+			t.Error(err)
+		}
 	}))
 	defer ts.Close()
+
 	n.Endpoint = ts.URL
 	mockResponse.Result = "success"
 	if err := n.Send(); err != nil {
@@ -72,7 +75,8 @@ func TestSend(t *testing.T) {
 		t.Error(err)
 	}
 
-	mockResponse.Result = "error" // failure
+	// failure
+	mockResponse.Result = "error"
 	if err := n.Send(); err == nil {
 		t.Error("unexpected success")
 	}
@@ -80,5 +84,4 @@ func TestSend(t *testing.T) {
 	if err := n.Send(); err == nil {
 		t.Error("unexpected success")
 	}
-
 }

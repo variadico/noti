@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -45,7 +46,7 @@ func (n *Notification) Send() error {
 		return errors.New("missing token")
 	}
 
-	url := API + "/bot" + n.Token + "/sendMessage"
+	url := fmt.Sprintf("%s/bot%s/sendMessage", API, n.Token)
 
 	payload := new(bytes.Buffer)
 	if err := json.NewEncoder(payload).Encode(n); err != nil {
@@ -56,11 +57,9 @@ func (n *Notification) Send() error {
 	if err != nil {
 		return err
 	}
-
 	defer resp.Body.Close()
 
 	var r apiResponse
-
 	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
 		return err
 	}

@@ -8,11 +8,6 @@ import (
 	"strings"
 )
 
-var (
-// API is the Pushbullet API endpoint.
-
-)
-
 type apiResponse struct {
 	ID     int    `json:"id"`
 	Code   string `json:"code"`
@@ -35,7 +30,7 @@ type Notification struct {
 
 // Send sends a Pushbullet notification.
 func (n *Notification) Send() error {
-	data := url.Values{}
+	data := make(url.Values)
 	data.Set("type", n.Type)
 	if n.Type != "stream" && n.Type != "private" {
 		return fmt.Errorf("%s != stream || private", n.Type)
