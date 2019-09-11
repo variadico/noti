@@ -3,6 +3,7 @@ tag = $(shell git describe --abbrev=0 --tags)
 rev = $(shell git rev-parse --short HEAD)
 
 export GOFLAGS = -mod=vendor
+export GO111MODULE = on
 
 golangci-lint = ./tools/golangci-lint_$(shell go env GOOS)_$(shell go env GOARCH)
 
