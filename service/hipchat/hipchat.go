@@ -49,6 +49,8 @@ func (n *Notification) Send() error {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", n.AccessToken))
 	req.Header.Set("Content-Type", "application/json")
 
+	fmt.Println("--- hipchat service is deprecated, will be removed in 3.4.0 ---")
+
 	resp, err := n.Client.Do(req)
 	if err != nil {
 		return err
