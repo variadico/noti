@@ -1,11 +1,12 @@
-branch = $(shell git rev-parse --abbrev-ref HEAD)
-tag = $(shell git describe --abbrev=0 --tags)
-rev = $(shell git rev-parse --short HEAD)
+branch = $$(git rev-parse --abbrev-ref HEAD)
+tag = $$(git describe --abbrev=0 --tags)
+rev = $$(git rev-parse --short HEAD)
 
 export GOFLAGS = -mod=vendor
 export GO111MODULE = on
+export GOPROXY = off
 
-golangci-lint = ./tools/golangci-lint_$(shell go env GOOS)_$(shell go env GOARCH)
+golangci-lint = ./tools/golangci-lint_$$(go env GOOS)_$$(go env GOARCH)
 
 .PHONY: build
 build:
@@ -46,7 +47,7 @@ lint:
 
 .PHONY: test
 test:
-	go test -v -cover -race $(shell go list ./... | grep -v "noti/tests")
+	go test -v -cover -race $$(go list ./... | grep -v "noti/tests")
 
 .PHONY: test-integration
 test-integration:
