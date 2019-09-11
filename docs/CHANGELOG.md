@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.3.0] - 2019-09-11
+
+### Added
+
+* Support for Zulip.
+* Support for Telegram.
+
+### Fixed
+
+* The name "noti" was appearing twice in Slack.
+
+### Deprecated
+
+* Hipchat will be removed in next release.
+
 ## [3.2.0] - 2019-06-25
 
 ### Added
