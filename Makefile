@@ -5,6 +5,7 @@ rev = $$(git rev-parse --short HEAD)
 export GOFLAGS = -mod=vendor
 export GO111MODULE = on
 export GOPROXY = off
+export GOSUMDB = off
 
 golangci-lint = ./tools/golangci-lint_$$(go env GOOS)_$$(go env GOARCH)
 
