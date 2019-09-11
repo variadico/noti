@@ -16,6 +16,8 @@ Make sure latest dev is green on CI.
 * docs/man/noti.1.md
 * docs/man/noti.yaml.5.md
 
+Don't forget to `make man` to generate the updated man pages.
+
 ## Merge to master
 
 ```

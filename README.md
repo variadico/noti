@@ -22,12 +22,14 @@ Banner     |   ✔   |   ✔   |    ✔
 Speech     |   ✔   |   ✔   |    ✔
 BearyChat  |   ✔   |   ✔   |    ✔
 HipChat    |   ✔   |   ✔   |    ✔
+Mattermost |   ✔   |   ✔   |    ✔
 Pushbullet |   ✔   |   ✔   |    ✔
 Pushover   |   ✔   |   ✔   |    ✔
 Pushsafer  |   ✔   |   ✔   |    ✔
 Simplepush |   ✔   |   ✔   |    ✔
 Slack      |   ✔   |   ✔   |    ✔
-Mattermost |   ✔   |   ✔   |    ✔
+Telegram   |   ✔   |   ✔   |    ✔
+Zulip      |   ✔   |   ✔   |    ✔
 ```
 
 Checkout the [screenshots] directory to see what the notifications look like on
@@ -70,10 +72,11 @@ automatically. Otherwise, you'll need to pass a flag or export a var if you
 don't use the Makefile.
 
 ```shell
-go build -mod=vendor
+go build -mod=vendor github.com/variadico/noti/cmd/noti
 # or
 export GOFLAGS="-mod=vendor"
-go build
+export GO111MODULE="on"
+go build github.com/variadico/noti/cmd/noti
 ```
 
 Also, `go get` doesn't really work anymore starting in Go 1.12.

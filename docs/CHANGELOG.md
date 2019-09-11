@@ -219,7 +219,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * OS X-specific flags and usage text from Linux and FreeBSD help.
 
 
-[Unreleased]: https://github.com/variadico/noti/compare/3.2.0...dev
+[Unreleased]: https://github.com/variadico/noti/compare/3.3.0...dev
+[3.3.0]: https://github.com/variadico/noti/compare/3.2.0...3.3.0
 [3.2.0]: https://github.com/variadico/noti/compare/3.1.0...3.2.0
 [3.1.0]: https://github.com/variadico/noti/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/variadico/noti/compare/v2.7.0...3.0.0

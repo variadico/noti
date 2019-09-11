@@ -1,4 +1,4 @@
-% NOTI(1) noti 3.2.0 | Noti Manual
+% NOTI(1) noti 3.3.0 | Noti Manual
 % Jaime Piña
 % 2018/03/25
 
