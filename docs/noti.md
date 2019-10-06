@@ -63,7 +63,7 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
     Set notification title.  Default is utility name.
 
 -m <string>, --message <string>
-    Set notification message.  Default is "Done!".
+    Set notification message.  Default is "Done!". Read from stdin with "-".
 
 -b, --banner
     Trigger a banner notification.  This is enabled by default.  To disable
@@ -272,6 +272,12 @@ this to get notified when that process' PID disappears.
 
 ```
 noti --pwatch $(pgrep docker-machine)
+```
+
+Receive your message from stdin with `-`.
+
+```
+rsync -az --stats ~/  server:/backups/homedir | noti -t "backup stats" -m -
 ```
 
 Sample configuration file.
