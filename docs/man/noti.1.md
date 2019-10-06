@@ -40,6 +40,10 @@ when it's done. You can receive messages on your computer or phone.
 : Trigger a HipChat notification. This requires `hipchat.accessToken` and
   `hipchat.room` to be set.
 
+--keybase
+: Trigger a Keybase notification. This requires `keybase.conversation` to
+  be set.
+
 -p, \--pushbullet
 : Trigger a Pushbullet notification. This requires `pushbullet.accessToken` to
   be set.
@@ -84,6 +88,10 @@ when it's done. You can receive messages on your computer or phone.
 * `NOTI_BEARYCHAT_INCOMINGHOOKURI`
 * `NOTI_HIPCHAT_ACCESSTOKEN`
 * `NOTI_HIPCHAT_ROOM`
+* `NOTI_KEYBASE_CONVERSATION`
+* `NOTI_KEYBASE_CHANNEL`
+* `NOTI_KEYBASE_PUBLIC`
+* `NOTI_KEYBASE_EXPLODINGLIFETIME`
 * `NOTI_PUSHBULLET_ACCESSTOKEN`
 * `NOTI_PUSHBULLET_DEVICEIDEN`
 * `NOTI_PUSHOVER_APITOKEN`

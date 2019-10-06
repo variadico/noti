@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
 	"github.com/variadico/noti/service/hipchat"
+	"github.com/variadico/noti/service/keybase"
 	"github.com/variadico/noti/service/mattermost"
 	"github.com/variadico/noti/service/pushbullet"
 	"github.com/variadico/noti/service/pushover"
@@ -36,6 +37,28 @@ func getHipChat(title, message string, v *viper.Viper) notification {
 		Message:       fmt.Sprintf("%s\n%s", title, message),
 		MessageFormat: "text",
 		Client:        httpClient,
+	}
+}
+
+func getKeybase(title, message string, v *viper.Viper) notification {
+	var explodeTime time.Duration
+	if v.GetString("keybase.explodingLifetime") != "" {
+		// Error handling: if explodingLifetime is set to a unparseable duration,
+		// viper will assign it to zero. Replace with -1, which will cause an early
+		// error, to ensure the command does not send a regular message on accident.
+		// Keybase's exploding messages have stricter security guarantees.
+		explodeTime = v.GetDuration("keybase.explodingLifetime")
+		if explodeTime == 0 {
+			explodeTime = -1
+		}
+	}
+
+	return &keybase.Notification{
+		Conversation:      v.GetString("keybase.conversation"),
+		ChannelName:       v.GetString("keybase.channel"),
+		Public:            v.GetBool("keybase.public"),
+		ExplodingLifetime: explodeTime,
+		Message:           fmt.Sprintf("**%s**\n%s", title, message),
 	}
 }
 

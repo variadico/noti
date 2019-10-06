@@ -39,6 +39,11 @@ var baseDefaults = map[string]interface{}{
 	"hipchat.accessToken": "",
 	"hipchat.room":        "",
 
+	"keybase.conversation":      "",
+	"keybase.channel":           "",
+	"keybase.public":            "",
+	"keybase.explodingLifetime": "",
+
 	"pushbullet.accessToken": "",
 	"pushbullet.deviceIden":  "",
 
@@ -89,6 +94,11 @@ var keyEnvBindings = map[string]string{
 
 	"hipchat.accessToken": "NOTI_HIPCHAT_ACCESSTOKEN",
 	"hipchat.room":        "NOTI_HIPCHAT_ROOM",
+
+	"keybase.conversation":      "NOTI_KEYBASE_CONVERSATION",
+	"keybase.channel":           "NOTI_KEYBASE_CHANNEL",
+	"keybase.public":            "NOTI_KEYBASE_PUBLIC",
+	"keybase.explodingLifetime": "NOTI_KEYBASE_EXPLODINGLIFETIME",
 
 	"pushbullet.accessToken": "NOTI_PUSHBULLET_ACCESSTOKEN",
 	"pushbullet.deviceIden":  "NOTI_PUSHBULLET_DEVICEIDEN",
@@ -234,6 +244,7 @@ func enabledFromSlice(defaults []string) map[string]bool {
 		"banner":     false,
 		"bearychat":  false,
 		"hipchat":    false,
+		"keybase":    false,
 		"pushbullet": false,
 		"pushover":   false,
 		"pushsafer":  false,
@@ -261,6 +272,7 @@ func hasServiceFlags(flags *pflag.FlagSet) bool {
 		"banner":     false,
 		"bearychat":  false,
 		"hipchat":    false,
+		"keybase":    false,
 		"pushbullet": false,
 		"pushover":   false,
 		"pushsafer":  false,
@@ -291,6 +303,7 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 		"banner":     false,
 		"bearychat":  false,
 		"hipchat":    false,
+		"keybase":    false,
 		"pushbullet": false,
 		"pushover":   false,
 		"pushsafer":  false,
@@ -362,6 +375,10 @@ func getNotifications(v *viper.Viper, services map[string]struct{}) []notificati
 
 	if _, ok := services["hipchat"]; ok {
 		notis = append(notis, getHipChat(title, message, v))
+	}
+
+	if _, ok := services["keybase"]; ok {
+		notis = append(notis, getKeybase(title, message, v))
 	}
 
 	if _, ok := services["pushbullet"]; ok {
