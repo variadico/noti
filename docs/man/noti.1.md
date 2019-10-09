@@ -21,7 +21,7 @@ when it's done. You can receive messages on your computer or phone.
 : Set notification title. Default is utility name.
 
 -m \<string\>, \--message \<string\>
-: Set notification message. Default is "Done!".
+: Set notification message. Default is "Done!". Read from stdin with "-".
 
 -b, \--banner
 : Trigger a banner notification. This is enabled by default. To disable this
@@ -118,6 +118,10 @@ If you already started a command, but forgot to use `noti`, then you can do
 this to get notified when that process' PID disappears.
 
     noti --pwatch $(pgrep docker-machine)
+
+Receive your message from stdin with `-`.
+
+    rsync -az --stats ~/  server:/backups/homedir | noti -t "backup stats" -m -
 
 # REPORTING BUGS
 

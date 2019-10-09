@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -45,7 +46,7 @@ func InitFlags(flags *pflag.FlagSet) {
 	flags.SortFlags = false
 
 	flags.StringP("title", "t", "", "Set notification title. Default is utility name.")
-	flags.StringP("message", "m", "", `Set notification message. Default is "Done!".`)
+	flags.StringP("message", "m", "", `Set notification message. Default is "Done!". Read from stdin with "-".`)
 
 	flags.BoolP("banner", "b", false, "Trigger a banner notification. This is enabled by default.")
 	flags.BoolP("speech", "s", false, "Trigger a speech notification.")
@@ -108,6 +109,13 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	if pid, _ := cmd.Flags().GetInt("pwatch"); pid != -1 {
 		vbs.Println("Watching PID:", pid)
 		err = pollPID(pid, 2*time.Second)
+	} else if msg, _ := cmd.Flags().GetString("message"); msg == "-" {
+		var buf []byte
+		buf, err = ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			return err // buffer overflow
+		}
+		v.Set("message", string(buf))
 	} else {
 		vbs.Println("Running command:", args)
 		err = runCommand(args, os.Stdin, os.Stdout, os.Stderr)

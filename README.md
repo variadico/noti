@@ -125,6 +125,12 @@ $ fg; noti
 2097152000 bytes (2.1 GB, 2.0 GiB) copied, 12 s, 175 MB/s
 ```
 
+Additionally, `noti` can send a message piped from stdin with `-`.
+
+```
+$ make test 2>&1 | tail --lines 5 | noti -t "Test Results" -m -
+```
+
 
 [CircleCI]: https://circleci.com/gh/variadico/noti/tree/master.svg?style=svg
 [AppVeyor]: https://ci.appveyor.com/api/projects/status/qc2fgc164786jws6/branch/master?svg=true
