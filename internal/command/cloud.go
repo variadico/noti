@@ -5,9 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/variadico/noti/service/telegram"
-	"github.com/variadico/noti/service/zulip"
-
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
 	"github.com/variadico/noti/service/hipchat"
@@ -17,6 +14,8 @@ import (
 	"github.com/variadico/noti/service/pushsafer"
 	"github.com/variadico/noti/service/simplepush"
 	"github.com/variadico/noti/service/slack"
+	"github.com/variadico/noti/service/telegram"
+	"github.com/variadico/noti/service/zulip"
 )
 
 var httpClient = &http.Client{Timeout: 30 * time.Second}

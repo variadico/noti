@@ -2,6 +2,7 @@ package command
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -142,7 +143,23 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	code := exitStatus(err)
+	if code != 0 {
+		os.Exit(code)
+	}
+
 	return nil
+}
+
+func exitStatus(err error) int {
+	if err == nil {
+		return 0
+	}
+	var s *exec.ExitError
+	if errors.As(err, &s) {
+		return s.ExitCode()
+	}
+	return 1
 }
 
 func latestRelease(u string) (string, string, error) {
