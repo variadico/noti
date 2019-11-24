@@ -194,7 +194,7 @@ func runCommand(args []string, sin io.Reader, sout, serr io.Writer) error {
 	var cmd *exec.Cmd
 	if _, err := exec.LookPath(args[0]); err != nil {
 		// Maybe command is alias or builtin?
-		cmd = subshellCommand(args)
+		cmd = shellCommand(args)
 		if cmd == nil {
 			return err
 		}
@@ -208,12 +208,15 @@ func runCommand(args []string, sin io.Reader, sout, serr io.Writer) error {
 	return cmd.Run()
 }
 
-func subshellCommand(args []string) *exec.Cmd {
+// shellCommand returns a shell alias or builtin command, as opposed to a
+// program installed on the filesystem. This is needed to allow people to use
+// noti with aliases or builtins.
+func shellCommand(args []string) *exec.Cmd {
 	shell := os.Getenv("SHELL")
 
 	switch filepath.Base(shell) {
 	case "bash", "zsh":
-		args = append([]string{"-l", "-i", "-c"}, args...)
+		args = append([]string{"-i", "-c"}, args...)
 	default:
 		return nil
 	}
