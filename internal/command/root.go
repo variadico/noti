@@ -2,7 +2,6 @@ package command
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -108,22 +107,25 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	}
 	v.Set("title", title)
 
+	var cmdErr error
 	if pid, _ := cmd.Flags().GetInt("pwatch"); pid != -1 {
 		vbs.Println("Watching PID:", pid)
-		err = pollPID(pid, 2*time.Second)
+		if err := pollPID(pid, 2*time.Second); err != nil {
+			return err
+		}
 	} else if msg, _ := cmd.Flags().GetString("message"); msg == "-" {
-		var buf []byte
-		buf, err = ioutil.ReadAll(os.Stdin)
+		buf, err := ioutil.ReadAll(os.Stdin)
 		if err != nil {
-			return err // buffer overflow
+			// buffer overflow
+			return err
 		}
 		v.Set("message", string(buf))
 	} else {
 		vbs.Println("Running command:", args)
-		err = runCommand(args, os.Stdin, os.Stdout, os.Stderr)
+		cmdErr = runCommand(args, os.Stdin, os.Stdout, os.Stderr)
 	}
-	if err != nil {
-		v.Set("message", err.Error())
+	if cmdErr != nil {
+		v.Set("message", cmdErr.Error())
 		v.Set("nsuser.soundName", v.GetString("nsuser.soundNameFail"))
 	}
 
@@ -144,23 +146,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	code := exitStatus(err)
-	if code != 0 {
-		os.Exit(code)
-	}
-
-	return nil
-}
-
-func exitStatus(err error) int {
-	if err == nil {
-		return 0
-	}
-	var s *exec.ExitError
-	if errors.As(err, &s) {
-		return s.ExitCode()
-	}
-	return 1
+	return cmdErr
 }
 
 func latestRelease(u string) (string, string, error) {

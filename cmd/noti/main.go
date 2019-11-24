@@ -1,7 +1,10 @@
 package main
 
 import (
-	"log"
+	"errors"
+	"fmt"
+	"os"
+	"os/exec"
 
 	"github.com/variadico/noti/internal/command"
 )
@@ -9,6 +12,20 @@ import (
 func main() {
 	command.InitFlags(command.Root.Flags())
 	if err := command.Root.Execute(); err != nil {
-		log.Fatal(err)
+		fmt.Fprintln(os.Stderr, "noti:", err)
+		os.Exit(exitStatus(err))
 	}
+}
+
+func exitStatus(err error) int {
+	if err == nil {
+		return 0
+	}
+
+	var e *exec.ExitError
+	if errors.As(err, &e) {
+		return e.ExitCode()
+	}
+
+	return 1
 }
