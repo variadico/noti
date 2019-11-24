@@ -64,6 +64,23 @@ accessToken
 room
 : HipChat message destination. Can be either a Room name or ID.
 
+# KEYBASE
+
+conversation
+: Keybase message destination. Can be either users (comma-separated) or team.
+
+channel
+: Keybase team's chat channel to send to. Conversation must be a team.
+  If empty, the team's default channel will be used (typically "general").
+
+explodingLifetime
+: Keybase self-destructing message, after the specified time. Times are
+  written like `30s` (30 seconds), `15m` (15 minutes), `24h` (24 hours).
+
+public
+: Enables broadcasting a message to everyone (when `conversation` is
+  your username), or to teams (when `conversation` is your team name).
+
 # PUSHBULLET
 
 accessToken
@@ -125,6 +142,9 @@ username
     hipchat:
       accessToken: 1234567890abcdefg
       room: 1234567890abcdefg
+    keybase:
+      conversation: yourteam
+      channel: general
     pushbullet:
       accessToken: 1234567890abcdefg
       deviceIden: 1234567890abcdefg

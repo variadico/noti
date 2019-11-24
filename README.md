@@ -22,6 +22,7 @@ Banner     |   ✔   |   ✔   |    ✔
 Speech     |   ✔   |   ✔   |    ✔
 BearyChat  |   ✔   |   ✔   |    ✔
 HipChat    |   ✔   |   ✔   |    ✔
+Keybase    |   ✔   |   ✔   |    ✔
 Mattermost |   ✔   |   ✔   |    ✔
 Pushbullet |   ✔   |   ✔   |    ✔
 Pushover   |   ✔   |   ✔   |    ✔

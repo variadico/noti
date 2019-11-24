@@ -338,6 +338,7 @@ func TestGetNotifications(t *testing.T) {
 		"banner",
 		"bearychat",
 		"hipchat",
+		"keybase",
 		"pushbullet",
 		"pushover",
 		"pushsafer",

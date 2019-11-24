@@ -26,6 +26,7 @@ Banner     |   ✔   |   ✔   |    ✔
 Speech     |   ✔   |   ✔   |    ✔
 BearyChat  |   ✔   |   ✔   |    ✔
 HipChat    |   ✔   |   ✔   |    ✔
+Keybase    |   ✔   |   ✔   |    ✔
 Pushbullet |   ✔   |   ✔   |    ✔
 Pushover   |   ✔   |   ✔   |    ✔
 Pushsafer  |   ✔   |   ✔   |    ✔
@@ -82,6 +83,10 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
     Trigger a HipChat notification.  This requires hipchat.accessToken and
     hipchat.room to be set.
 
+--keybase
+    Trigger a Keybase notification.  This requires keybase.conversation
+    to be set.
+
 -p, --pushbullet
     Trigger a Pushbullet notification.  This requires pushbullet.accessToken
     to be set.
@@ -100,7 +105,7 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 -k, --slack
     Trigger a Slack notification.  This requires slack.token and
     slack.channel to be set.
-    
+
 -g, --telegram
     Trigger a Telegram notification.  This requires telegeram.token and
     telegram.chatId to be set.
@@ -133,6 +138,10 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_BEARYCHAT_INCOMINGHOOKURI`
 * `NOTI_HIPCHAT_ACCESSTOKEN`
 * `NOTI_HIPCHAT_ROOM`
+* `NOTI_KEYBASE_CONVERSATION`
+* `NOTI_KEYBASE_CHANNEL`
+* `NOTI_KEYBASE_PUBLIC`
+* `NOTI_KEYBASE_EXPLODINGLIFETIME`
 * `NOTI_PUSHBULLET_ACCESSTOKEN`
 * `NOTI_PUSHBULLET_DEVICEIDEN`
 * `NOTI_PUSHOVER_APITOKEN`
@@ -200,6 +209,23 @@ accessToken
 room
     HipChat message destination. Can be either a Room name or ID.
 
+KEYBASE
+
+conversation
+    Keybase message destination. Can be either users (comma-separated) or team.
+
+channel
+    Keybase team's chat channel to send to. Conversation must be a team.
+    If empty, the team's default channel will be used (typically "general").
+
+explodingLifetime
+    Keybase self-destructing message, after the specified time. Times are
+    written like `30s` (30 seconds), `15m` (15 minutes), `24h` (24 hours).
+
+public
+    Enables broadcasting a message to everyone (when `conversation` is
+    your username), or to teams (when `conversation` is your team name).
+
 PUSHBULLET
 
 accessToken
@@ -243,12 +269,12 @@ channel
 
 username
     Noti bot username.
-    
+
 TELEGRAM
 
 token
     Telegram access token. The token can be retrieved using the [BotFather](https://telegram.me/botfather)
-    
+
 chatId
     Telegram message destination: Can be either a chat or a channel
 ```
@@ -297,6 +323,9 @@ bearychat:
 hipchat:
   accessToken: 1234567890abcdefg
   room: 1234567890abcdefg
+keybase:
+  conversation: yourteam
+  channel: general
 pushbullet:
   accessToken: 1234567890abcdefg
   deviceIden: 1234567890abcdefg
@@ -335,6 +364,17 @@ you'll set `hipchat.accessToken` to.
 Next, go to My Account > Rooms > {pick a room} > Summary. Look for "API ID". You
 can set `hipchat.room` to "API ID" or you can use the Room name, like
 "MyRoom".
+
+### Keybase
+
+Log into your [Keybase] account and go to the Chat section.
+Pick a team or user to send to, and set your `keybase.conversation` to that
+name. For teams, you can also specify a channel with `keybase.channel` or have
+it send to `general`. You can also send notifications that auto-delete with
+`keybase.explodingLifetime` set between `30s` (seconds) to `168h` (hours).
+
+As long as the keybase service is running and the `keybase` binary is in your
+system path, you should be all set.
 
 ### Pushbullet
 
@@ -392,3 +432,4 @@ Report bugs on GitHub at https://github.com/variadico/noti/issues.
 [Pushsafer]: https://www.pushsafer.com
 [OAuth Tokens for Testing and Development]: https://api.slack.com/docs/oauth-test-tokens
 [bc-incoming]: https://bearychat.com/integrations/incoming
+[Keybase]: https://keybase.io/download
