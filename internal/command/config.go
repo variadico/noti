@@ -36,9 +36,6 @@ var baseDefaults = map[string]interface{}{
 
 	"bearychat.incomingHookURI": "",
 
-	"hipchat.accessToken": "",
-	"hipchat.room":        "",
-
 	"keybase.conversation":      "",
 	"keybase.channel":           "",
 	"keybase.public":            "",
@@ -92,9 +89,6 @@ var keyEnvBindings = map[string]string{
 
 	"bearychat.incomingHookURI": "NOTI_BEARYCHAT_INCOMINGHOOKURI",
 
-	"hipchat.accessToken": "NOTI_HIPCHAT_ACCESSTOKEN",
-	"hipchat.room":        "NOTI_HIPCHAT_ROOM",
-
 	"keybase.conversation":      "NOTI_KEYBASE_CONVERSATION",
 	"keybase.channel":           "NOTI_KEYBASE_CHANNEL",
 	"keybase.public":            "NOTI_KEYBASE_PUBLIC",
@@ -139,8 +133,6 @@ var keyEnvBindingsDeprecated = map[string]string{
 	"NOTI_ESPEAK_VOICENAME":          "NOTI_VOICE",
 	"NOTI_SPEECHSYNTHESIZER_VOICE":   "NOTI_VOICE",
 	"NOTI_BEARYCHAT_INCOMINGHOOKURI": "NOTI_BC_INCOMING_URI",
-	"NOTI_HIPCHAT_ACCESSTOKEN":       "NOTI_HIPCHAT_TOK",
-	"NOTI_HIPCHAT_ROOM":              "NOTI_HIPCHAT_DEST",
 	"NOTI_PUSHBULLET_ACCESSTOKEN":    "NOTI_PUSHBULLET_TOK",
 	"NOTI_PUSHOVER_APITOKEN":         "NOTI_PUSHOVER_TOK",
 	"NOTI_PUSHOVER_USERKEY":          "NOTI_PUSHOVER_DEST",
@@ -243,7 +235,6 @@ func enabledFromSlice(defaults []string) map[string]bool {
 	services := map[string]bool{
 		"banner":     false,
 		"bearychat":  false,
-		"hipchat":    false,
 		"keybase":    false,
 		"pushbullet": false,
 		"pushover":   false,
@@ -271,7 +262,6 @@ func hasServiceFlags(flags *pflag.FlagSet) bool {
 	services := map[string]bool{
 		"banner":     false,
 		"bearychat":  false,
-		"hipchat":    false,
 		"keybase":    false,
 		"pushbullet": false,
 		"pushover":   false,
@@ -302,7 +292,6 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 	services := map[string]bool{
 		"banner":     false,
 		"bearychat":  false,
-		"hipchat":    false,
 		"keybase":    false,
 		"pushbullet": false,
 		"pushover":   false,
@@ -371,10 +360,6 @@ func getNotifications(v *viper.Viper, services map[string]struct{}) []notificati
 
 	if _, ok := services["bearychat"]; ok {
 		notis = append(notis, getBearyChat(title, message, v))
-	}
-
-	if _, ok := services["hipchat"]; ok {
-		notis = append(notis, getHipChat(title, message, v))
 	}
 
 	if _, ok := services["keybase"]; ok {

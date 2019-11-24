@@ -51,7 +51,6 @@ func InitFlags(flags *pflag.FlagSet) {
 	flags.BoolP("banner", "b", false, "Trigger a banner notification. This is enabled by default.")
 	flags.BoolP("speech", "s", false, "Trigger a speech notification.")
 	flags.BoolP("bearychat", "c", false, "Trigger a BearyChat notification.")
-	flags.BoolP("hipchat", "i", false, "Trigger a HipChat notification.")
 	flags.Bool("keybase", false, "Trigger a Keybase notification.")
 	flags.BoolP("pushbullet", "p", false, "Trigger a Pushbullet notification.")
 	flags.BoolP("pushover", "o", false, "Trigger a Pushover notification.")

@@ -337,7 +337,6 @@ func TestGetNotifications(t *testing.T) {
 	services := []string{
 		"banner",
 		"bearychat",
-		"hipchat",
 		"keybase",
 		"pushbullet",
 		"pushover",

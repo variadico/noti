@@ -21,7 +21,6 @@ Noti can send notifications on a number of services.
 Banner     |   ✔   |   ✔   |    ✔
 Speech     |   ✔   |   ✔   |    ✔
 BearyChat  |   ✔   |   ✔   |    ✔
-HipChat    |   ✔   |   ✔   |    ✔
 Keybase    |   ✔   |   ✔   |    ✔
 Mattermost |   ✔   |   ✔   |    ✔
 Pushbullet |   ✔   |   ✔   |    ✔

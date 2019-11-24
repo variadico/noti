@@ -22,6 +22,7 @@ Default is utility name.
 .B -m <string>, --message <string>
 Set notification message.
 Default is \[lq]Done!\[rq].
+Read from stdin with \[lq]-\[rq].
 .TP
 .B -b, --banner
 Trigger a banner notification.
@@ -39,10 +40,9 @@ This will be either \f[C]say\f[R], \f[C]espeak\f[R], or
 Trigger a BearyChat notification.
 This requires \f[C]bearychat.incomingHookURI\f[R] to be set.
 .TP
-.B -i, --hipchat
-Trigger a HipChat notification.
-This requires \f[C]hipchat.accessToken\f[R] and \f[C]hipchat.room\f[R]
-to be set.
+.B \[en]keybase
+Trigger a Keybase notification.
+This requires \f[C]keybase.conversation\f[R] to be set.
 .TP
 .B -p, --pushbullet
 Trigger a Pushbullet notification.
@@ -98,9 +98,13 @@ Print \f[C]noti\f[R] help and exit.
 .IP \[bu] 2
 \f[C]NOTI_BEARYCHAT_INCOMINGHOOKURI\f[R]
 .IP \[bu] 2
-\f[C]NOTI_HIPCHAT_ACCESSTOKEN\f[R]
+\f[C]NOTI_KEYBASE_CONVERSATION\f[R]
 .IP \[bu] 2
-\f[C]NOTI_HIPCHAT_ROOM\f[R]
+\f[C]NOTI_KEYBASE_CHANNEL\f[R]
+.IP \[bu] 2
+\f[C]NOTI_KEYBASE_PUBLIC\f[R]
+.IP \[bu] 2
+\f[C]NOTI_KEYBASE_EXPLODINGLIFETIME\f[R]
 .IP \[bu] 2
 \f[C]NOTI_PUSHBULLET_ACCESSTOKEN\f[R]
 .IP \[bu] 2
@@ -153,6 +157,14 @@ you can do this to get notified when that process\[cq] PID disappears.
 .nf
 \f[C]
 noti --pwatch $(pgrep docker-machine)
+\f[R]
+.fi
+.PP
+Receive your message from stdin with \f[C]-\f[R].
+.IP
+.nf
+\f[C]
+rsync -az --stats \[ti]/  server:/backups/homedir | noti -t \[dq]backup stats\[dq] -m -
 \f[R]
 .fi
 .SH REPORTING BUGS

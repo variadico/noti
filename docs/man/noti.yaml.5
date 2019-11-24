@@ -52,16 +52,27 @@ Name of voice used for speech notifications.
 .TP
 .B incomingHookURI
 BearyChat incoming URI.
-.SH HIPCHAT
+.SH KEYBASE
 .TP
-.B accessToken
-HipChat access token.
-Log into your HipChat account and retrieve a token from the Room
-Notification Tokens page.
+.B conversation
+Keybase message destination.
+Can be either users (comma-separated) or team.
 .TP
-.B room
-HipChat message destination.
-Can be either a Room name or ID.
+.B channel
+Keybase team\[cq]s chat channel to send to.
+Conversation must be a team.
+If empty, the team\[cq]s default channel will be used (typically
+\[lq]general\[rq]).
+.TP
+.B explodingLifetime
+Keybase self-destructing message, after the specified time.
+Times are written like \f[C]30s\f[R] (30 seconds), \f[C]15m\f[R] (15
+minutes), \f[C]24h\f[R] (24 hours).
+.TP
+.B public
+Enables broadcasting a message to everyone (when \f[C]conversation\f[R]
+is your username), or to teams (when \f[C]conversation\f[R] is your team
+name).
 .SH PUSHBULLET
 .TP
 .B accessToken
@@ -124,9 +135,9 @@ speechsynthesizer:
   voice: Microsoft David Desktop
 bearychat:
   incomingHookURI: 1234567890abcdefg
-hipchat:
-  accessToken: 1234567890abcdefg
-  room: 1234567890abcdefg
+keybase:
+  conversation: yourteam
+  channel: general
 pushbullet:
   accessToken: 1234567890abcdefg
   deviceIden: 1234567890abcdefg

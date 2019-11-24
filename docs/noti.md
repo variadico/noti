@@ -25,7 +25,6 @@ Noti can send notifications on a number of services.
 Banner     |   ✔   |   ✔   |    ✔
 Speech     |   ✔   |   ✔   |    ✔
 BearyChat  |   ✔   |   ✔   |    ✔
-HipChat    |   ✔   |   ✔   |    ✔
 Keybase    |   ✔   |   ✔   |    ✔
 Pushbullet |   ✔   |   ✔   |    ✔
 Pushover   |   ✔   |   ✔   |    ✔
@@ -78,10 +77,6 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 -c, --bearychat
     Trigger a BearyChat notification.  This requires
     bearychat.incomingHookURI to be set.
-
--i, --hipchat
-    Trigger a HipChat notification.  This requires hipchat.accessToken and
-    hipchat.room to be set.
 
 --keybase
     Trigger a Keybase notification.  This requires keybase.conversation
@@ -136,8 +131,6 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_ESPEAK_VOICENAME`
 * `NOTI_SPEECHSYNTHESIZER_VOICE`
 * `NOTI_BEARYCHAT_INCOMINGHOOKURI`
-* `NOTI_HIPCHAT_ACCESSTOKEN`
-* `NOTI_HIPCHAT_ROOM`
 * `NOTI_KEYBASE_CONVERSATION`
 * `NOTI_KEYBASE_CHANNEL`
 * `NOTI_KEYBASE_PUBLIC`
@@ -199,15 +192,6 @@ BEARYCHAT
 
 incomingHookURI
     BearyChat incoming URI.
-
-HIPCHAT
-
-accessToken
-    HipChat access token. Log into your HipChat account and retrieve a token
-    from the Room Notification Tokens page.
-
-room
-    HipChat message destination. Can be either a Room name or ID.
 
 KEYBASE
 
@@ -320,9 +304,6 @@ speechsynthesizer:
   voice: Microsoft David Desktop
 bearychat:
   incomingHookURI: 1234567890abcdefg
-hipchat:
-  accessToken: 1234567890abcdefg
-  room: 1234567890abcdefg
 keybase:
   conversation: yourteam
   channel: general
@@ -354,16 +335,6 @@ telegram:
 Log into your BearyChat account. Then create an [incoming robot][bc-incoming].
 Next, look for the "Hook Address" (or "Hook 地址" in Chinese), this is what
 you'll set `bearychat.incomingHookURI` to.
-
-### HipChat
-
-Log into your HipChat account. Go to My Account > Rooms > {pick a room} >
-Tokens. Create a new token. Set the Scope to "Send Notification". That's what
-you'll set `hipchat.accessToken` to.
-
-Next, go to My Account > Rooms > {pick a room} > Summary. Look for "API ID". You
-can set `hipchat.room` to "API ID" or you can use the Room name, like
-"MyRoom".
 
 ### Keybase
 
@@ -417,7 +388,7 @@ The variable `slack.channel` can be set to a channel like `#general` or
 
 ### Telegram
 
-Open your telegram app, and start a conversation with the [BotFather](https://telegram.me/botfather) 
+Open your telegram app, and start a conversation with the [BotFather](https://telegram.me/botfather)
 and use the `/newbot` to get the BotFather to create your bot and lastly copy and keep the bot token
 
 

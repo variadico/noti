@@ -7,7 +7,6 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
-	"github.com/variadico/noti/service/hipchat"
 	"github.com/variadico/noti/service/keybase"
 	"github.com/variadico/noti/service/mattermost"
 	"github.com/variadico/noti/service/pushbullet"
@@ -26,16 +25,6 @@ func getBearyChat(title, message string, v *viper.Viper) notification {
 		Text:            fmt.Sprintf("**%s**\n%s", title, message),
 		IncomingHookURI: v.GetString("bearychat.incomingHookURI"),
 		Client:          httpClient,
-	}
-}
-
-func getHipChat(title, message string, v *viper.Viper) notification {
-	return &hipchat.Notification{
-		AccessToken:   v.GetString("hipchat.accessToken"),
-		Room:          v.GetString("hipchat.room"),
-		Message:       fmt.Sprintf("%s\n%s", title, message),
-		MessageFormat: "text",
-		Client:        httpClient,
 	}
 }
 

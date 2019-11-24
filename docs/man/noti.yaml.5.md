@@ -55,15 +55,6 @@ voice
 incomingHookURI
 : BearyChat incoming URI.
 
-# HIPCHAT
-
-accessToken
-: HipChat access token. Log into your HipChat account and retrieve a token
-  from the Room Notification Tokens page.
-
-room
-: HipChat message destination. Can be either a Room name or ID.
-
 # KEYBASE
 
 conversation
@@ -139,9 +130,6 @@ username
       voice: Microsoft David Desktop
     bearychat:
       incomingHookURI: 1234567890abcdefg
-    hipchat:
-      accessToken: 1234567890abcdefg
-      room: 1234567890abcdefg
     keybase:
       conversation: yourteam
       channel: general

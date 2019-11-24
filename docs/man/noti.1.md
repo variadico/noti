@@ -36,10 +36,6 @@ when it's done. You can receive messages on your computer or phone.
 : Trigger a BearyChat notification. This requires `bearychat.incomingHookURI` to
   be set.
 
--i, \--hipchat
-: Trigger a HipChat notification. This requires `hipchat.accessToken` and
-  `hipchat.room` to be set.
-
 --keybase
 : Trigger a Keybase notification. This requires `keybase.conversation` to
   be set.
@@ -86,8 +82,6 @@ when it's done. You can receive messages on your computer or phone.
 * `NOTI_ESPEAK_VOICENAME`
 * `NOTI_SPEECHSYNTHESIZER_VOICE`
 * `NOTI_BEARYCHAT_INCOMINGHOOKURI`
-* `NOTI_HIPCHAT_ACCESSTOKEN`
-* `NOTI_HIPCHAT_ROOM`
 * `NOTI_KEYBASE_CONVERSATION`
 * `NOTI_KEYBASE_CHANNEL`
 * `NOTI_KEYBASE_PUBLIC`
