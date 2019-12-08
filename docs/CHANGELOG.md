@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 
+## [3.4.0] - 2019-12-07
+
+### Added
+
+* Support to read message body from stdin
+* Support for keybase
+
+### Removed
+
+* Support for HipChat
+
+### Changed
+
+* Noti's exit status is now based on executed subcommand's status
+* Shell login flag is no longer passed when executing an alias
+
 ## [3.3.0] - 2019-09-11
 
 ### Added
@@ -219,7 +235,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * OS X-specific flags and usage text from Linux and FreeBSD help.
 
 
-[Unreleased]: https://github.com/variadico/noti/compare/3.3.0...dev
+[Unreleased]: https://github.com/variadico/noti/compare/3.4.0...dev
+[3.4.0]: https://github.com/variadico/noti/compare/3.3.0...3.4.0
 [3.3.0]: https://github.com/variadico/noti/compare/3.2.0...3.3.0
 [3.2.0]: https://github.com/variadico/noti/compare/3.1.0...3.2.0
 [3.1.0]: https://github.com/variadico/noti/compare/3.0.0...3.1.0
