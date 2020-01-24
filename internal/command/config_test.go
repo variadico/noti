@@ -28,6 +28,11 @@ func countSettingsKeys(t *testing.T, m map[string]interface{}) int {
 			// v is just a string key.
 			keys++
 		}
+
+		if _, ok := v.(bool); ok {
+			// v is just a bool key.
+			keys++
+		}
 	}
 	return keys
 }
