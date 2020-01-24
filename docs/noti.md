@@ -65,6 +65,9 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 -m <string>, --message <string>
     Set notification message.  Default is "Done!". Read from stdin with "-".
 
+-e, --time
+    Show command execution time in message.
+
 -b, --banner
     Trigger a banner notification.  This is enabled by default.  To disable
     this service, set this flag to false.  This will be either nsuser,

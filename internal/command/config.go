@@ -24,6 +24,7 @@ import (
 var baseDefaults = map[string]interface{}{
 	"defaults": []string{"banner"},
 	"message":  "Done!",
+	"time":     false,
 
 	"nsuser.soundName":     "Ping",
 	"nsuser.soundNameFail": "Basso",

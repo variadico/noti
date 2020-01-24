@@ -47,6 +47,7 @@ func InitFlags(flags *pflag.FlagSet) {
 
 	flags.StringP("title", "t", "", "Set notification title. Default is utility name.")
 	flags.StringP("message", "m", "", `Set notification message. Default is "Done!". Read from stdin with "-".`)
+	flags.BoolP("time", "e", false, "Show execution time in message.")
 
 	flags.BoolP("banner", "b", false, "Trigger a banner notification. This is enabled by default.")
 	flags.BoolP("speech", "s", false, "Trigger a speech notification.")
@@ -106,7 +107,10 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	}
 	v.Set("title", title)
 
-	var cmdErr error
+	var (
+		cmdErr  error
+		cmdTime time.Duration
+	)
 	if pid, _ := cmd.Flags().GetInt("pwatch"); pid != -1 {
 		vbs.Println("Watching PID:", pid)
 		if err := pollPID(pid, 2*time.Second); err != nil {
@@ -121,15 +125,21 @@ func rootMain(cmd *cobra.Command, args []string) error {
 		v.Set("message", string(buf))
 	} else {
 		vbs.Println("Running command:", args)
+		timeBefore := time.Now()
 		cmdErr = runCommand(args, os.Stdin, os.Stdout, os.Stderr)
+		cmdTime = time.Since(timeBefore).Round(time.Second)
 	}
 	if cmdErr != nil {
 		v.Set("message", cmdErr.Error())
 		v.Set("nsuser.soundName", v.GetString("nsuser.soundNameFail"))
 	}
+	if enabledTime(v, cmd.Flags()) {
+		v.Set("message", fmt.Sprintf("%s (%s)", v.GetString("message"), cmdTime))
+	}
 
 	vbs.Println("Title:", v.GetString("title"))
 	vbs.Println("Message:", v.GetString("message"))
+	vbs.Println("Time:", enabledTime(v, cmd.Flags()))
 
 	enabled := enabledServices(v, cmd.Flags())
 	vbs.Println("Services:", enabled)
@@ -146,6 +156,16 @@ func rootMain(cmd *cobra.Command, args []string) error {
 	}
 
 	return cmdErr
+}
+
+func enabledTime(v *viper.Viper, flags *pflag.FlagSet) bool {
+	if measureTime, _ := flags.GetBool("time"); measureTime {
+		return true
+	}
+	if v.GetBool("time") {
+		return true
+	}
+	return false
 }
 
 func latestRelease(u string) (string, string, error) {
