@@ -57,6 +57,7 @@ func InitFlags(flags *pflag.FlagSet) {
 	flags.BoolP("pushsafer", "u", false, "Trigger a Pushsafer notification.")
 	flags.BoolP("simplepush", "l", false, "Trigger a Simplepush notification.")
 	flags.BoolP("slack", "k", false, "Trigger a Slack notification.")
+	flags.BoolP("gchat", "n", false, "Trigger a Google Chat notification.")
 	flags.BoolP("mattermost", "a", false, "Trigger a Mattermost notification")
 	flags.BoolP("telegram", "g", false, "Trigger a Telegram notification")
 	flags.BoolP("zulip", "z", false, "Trigger a Zulip notification")
