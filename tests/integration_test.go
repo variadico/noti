@@ -22,12 +22,15 @@ func TestNoti(t *testing.T) {
 		out := string(data)
 
 		if !strings.Contains(out, "noti version") {
+			t.Error(out)
 			t.Error("Missing 'noti version'")
 		}
 		if !strings.Contains(out, "Latest:") {
+			t.Error(out)
 			t.Error("Missing name of latest version")
 		}
 		if !strings.Contains(out, "Download: https://github.com/variadico/noti/releases") {
+			t.Error(out)
 			t.Error("Missing latest download link")
 		}
 	})
