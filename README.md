@@ -1,8 +1,6 @@
 # noti
 
-[![CircleCI]](https://circleci.com/gh/variadico/noti)
-[![AppVeyor]](https://ci.appveyor.com/project/variadico/noti)
-[![Codecov]](https://codecov.io/gh/variadico/noti)
+![Go](https://github.com/variadico/noti/workflows/Go/badge.svg)
 
 Monitor a process and trigger a notification.
 
