@@ -1,0 +1,6 @@
+* text=auto
+*.go text eol=lf
+
+golangci-lint-1.30.0-darwin-amd64 binary
+golangci-lint-1.30.0-linux-amd64 binary
+golangci-lint-1.30.0-windows-amd64.exe binary
