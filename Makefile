@@ -7,7 +7,7 @@ export GO111MODULE = on
 export GOPROXY = off
 export GOSUMDB = off
 
-golangci-lint = ./tools/golangci-lint_$$(go env GOOS)_$$(go env GOARCH)
+golangci-lint = ./tools/golangci-lint-1.30.0-$$(go env GOOS)-amd64
 
 .PHONY: build
 build:
@@ -27,9 +27,9 @@ lint:
 	go vet ./...
 	$(golangci-lint) run --no-config --exclude-use-default=false --max-same-issues=0 \
 	--disable errcheck \
+	--disable stylecheck \
 	--enable bodyclose \
 	--enable golint \
-	--enable stylecheck \
 	--enable interfacer \
 	--enable unconvert \
 	--enable dupl \

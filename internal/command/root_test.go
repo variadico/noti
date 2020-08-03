@@ -17,8 +17,10 @@ func TestRunCommand(t *testing.T) {
 	if err != nil {
 		if runtime.GOOS == "windows" {
 			lsAbs, err = exec.LookPath("dir")
+			if err != nil {
+				t.Skipf("Missing command for test, skipping: %s", err)
+			}
 		}
-		t.Skipf("Missing command for test, skipping: %s", err)
 	}
 
 	if err := runCommand([]string{lsAbs}, nil, nil, nil); err != nil {
