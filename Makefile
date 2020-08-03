@@ -1,13 +1,13 @@
-branch = $$(git rev-parse --abbrev-ref HEAD)
-tag = $$(git describe --abbrev=0 --tags)
-rev = $$(git rev-parse --short HEAD)
+branch := $(shell git rev-parse --abbrev-ref HEAD)
+tag := $(shell git describe --abbrev=0 --tags)
+rev := $(shell git rev-parse --short HEAD)
 
-export GOFLAGS = -mod=vendor
-export GO111MODULE = on
-export GOPROXY = off
-export GOSUMDB = off
+export GOFLAGS := -mod=vendor
+export GO111MODULE := on
+export GOPROXY := off
+export GOSUMDB := off
 
-golangci-lint = ./tools/golangci-lint-1.30.0-$$(go env GOOS)-amd64
+golangci-lint := ./tools/golangci-lint-1.30.0-$(shell go env GOOS)-amd64
 
 .PHONY: build
 build:
