@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
+	"html"
+	
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
 	"github.com/variadico/noti/service/keybase"
@@ -125,7 +126,7 @@ func getTelegram(title, message string, v *viper.Viper) notification {
 	return &telegram.Notification{
 		ChatID:  v.GetString("telegram.chatId"),
 		Token:   v.GetString("telegram.token"),
-		Message: fmt.Sprintf("**%s %s**\n%s", title, "🚀:", message),
+		Message: fmt.Sprintf("<b>%s %s</b>\n%s", html.EscapeString(title), "🚀:", message),
 
 		Client: httpClient,
 	}

@@ -46,7 +46,7 @@ func (n *Notification) Send() error {
 		return errors.New("missing token")
 	}
 
-	url := fmt.Sprintf("%s/bot%s/sendMessage", API, n.Token)
+	url := fmt.Sprintf("%s/bot%s/sendMessage?parse_mode=html", API, n.Token)
 
 	payload := new(bytes.Buffer)
 	if err := json.NewEncoder(payload).Encode(n); err != nil {
