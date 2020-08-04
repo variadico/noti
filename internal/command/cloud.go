@@ -2,10 +2,10 @@ package command
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"time"
-	"html"
-	
+
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
 	"github.com/variadico/noti/service/keybase"
