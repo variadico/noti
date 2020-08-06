@@ -2,6 +2,7 @@ package command
 
 import (
 	"fmt"
+	"html"
 	"net/http"
 	"time"
 
@@ -125,7 +126,7 @@ func getTelegram(title, message string, v *viper.Viper) notification {
 	return &telegram.Notification{
 		ChatID:  v.GetString("telegram.chatId"),
 		Token:   v.GetString("telegram.token"),
-		Message: fmt.Sprintf("**%s %s**\n%s", title, "🚀:", message),
+		Message: fmt.Sprintf("<b>%s %s</b>\n%s", html.EscapeString(title), "🚀:", message),
 
 		Client: httpClient,
 	}
