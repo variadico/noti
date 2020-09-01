@@ -116,6 +116,21 @@ channel
 username
 : Noti bot username.
 
+# TWILIO
+
+AuthToken
+: Twilio access token. Log into your Twilio account and copy the AuthToken from your project dashboard
+
+accountSid
+: Twilio account id. Log into your Twilio account and copy the accountSid from your project dashboard.
+
+numberTo
+: This parameter determines the destination phone number for your SMS message. Format this number with a '+' and a country code, e.g., +16175551212
+
+numberFrom
+: From specifies the Twilio phone number, short code, or Messaging Service that sends this message. This must be a Twilio phone number that you own, formatted with a '+' and country code, e.g. +16175551212 (E.164 format)
+
+
 # EXAMPLES
 
     ---
@@ -146,6 +161,13 @@ username
       event: 1234567890abcdefg
     slack:
       appurl: 'https://hooks.slack.com/services/xxx/yyy/zzz'
+    twilio:
+      numberto: +972542877978
+      numberfrom: +18111119711
+      accountsid: AC3cd135aa82XXXXXXXXf792ba23fc98
+      authtoken: 74efd0bXXXXXXXXXXX32f7daca
+
+
 
 # SEE ALSO
 

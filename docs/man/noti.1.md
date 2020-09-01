@@ -58,6 +58,9 @@ when it's done. You can receive messages on your computer or phone.
 : Trigger a Slack notification. This requires `slack.appurl` (for Slack apps)
   or `slack.token` and `slack.channel` (for legacy tokens) to be set.
 
+--twilio
+: Trigger a Twilio notification. This requires `twilio.authToken`, `twilio.accountSid`, `twilio.numberFrom` and `twilio.numberTo` to be set.
+
 -w <pid>, \--pwatch <pid>
 : Monitor a process by PID and trigger a notification when the pid disappears.
 
@@ -96,6 +99,10 @@ when it's done. You can receive messages on your computer or phone.
 * `NOTI_SLACK_TOKEN`
 * `NOTI_SLACK_CHANNEL`
 * `NOTI_SLACK_USERNAME`
+*	`NOTI_TWILIO_TO`
+* `NOTI_TWILIO_FROM`
+* `NOTI_TWILIO_ACCOUNTSID`
+* `NOTI_TWILIO_AUTHTOKEN`
 
 
 # FILES

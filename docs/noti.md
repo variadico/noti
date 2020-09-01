@@ -31,6 +31,7 @@ Pushover   |   ✔   |   ✔   |    ✔
 Pushsafer  |   ✔   |   ✔   |    ✔
 Simplepush |   ✔   |   ✔   |    ✔
 Slack      |   ✔   |   ✔   |    ✔
+Twilio     |   ✔   |   ✔   |    ✔
 ```
 
 ## Installation

@@ -70,6 +70,11 @@ var baseDefaults = map[string]interface{}{
 	"zulip.URI":        "",
 	"zulip.type":       "private",
 	"zulip.to":         "",
+
+	"twilio.numberTo":   "",
+	"twilio.numberFrom": "",
+	"twilio.accountSid": "",
+	"twilio.authToken":  "",
 }
 
 func setNotiDefaults(v *viper.Viper) {
@@ -125,6 +130,11 @@ var keyEnvBindings = map[string]string{
 	"zulip.URI":        "NOTI_ZULIP_URI",
 	"zulip.type":       "NOTI_ZULIP_TYPE",
 	"zulip.to":         "NOTI_ZULIP_TO",
+
+	"twilio.numberTo":   "NOTI_TWILIO_TO",
+	"twilio.numberFrom": "NOTI_TWILIO_FROM",
+	"twilio.accountSid": "NOTI_TWILIO_ACCOUNTSID",
+	"twilio.authToken":  "NOTI_TWILIO_AUTHTOKEN",
 }
 
 var keyEnvBindingsDeprecated = map[string]string{
@@ -246,6 +256,7 @@ func enabledFromSlice(defaults []string) map[string]bool {
 		"mattermost": false,
 		"telegram":   false,
 		"zulip":      false,
+		"twilio":     false,
 	}
 
 	for _, name := range defaults {
@@ -273,6 +284,7 @@ func hasServiceFlags(flags *pflag.FlagSet) bool {
 		"mattermost": false,
 		"telegram":   false,
 		"zulip":      false,
+		"twilio":     false,
 	}
 
 	flags.Visit(func(f *pflag.Flag) {
@@ -303,6 +315,7 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 		"mattermost": false,
 		"telegram":   false,
 		"zulip":      false,
+		"twilio":     false,
 	}
 
 	// Visit flags that have been set.
@@ -397,6 +410,10 @@ func getNotifications(v *viper.Viper, services map[string]struct{}) []notificati
 
 	if _, ok := services["zulip"]; ok {
 		notis = append(notis, getZulip(title, message, v))
+	}
+
+	if _, ok := services["twilio"]; ok {
+		notis = append(notis, getTwilio(title, message, v))
 	}
 
 	return notis
