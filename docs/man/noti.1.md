@@ -99,7 +99,7 @@ when it's done. You can receive messages on your computer or phone.
 * `NOTI_SLACK_TOKEN`
 * `NOTI_SLACK_CHANNEL`
 * `NOTI_SLACK_USERNAME`
-*	`NOTI_TWILIO_TO`
+* `NOTI_TWILIO_TO`
 * `NOTI_TWILIO_FROM`
 * `NOTI_TWILIO_ACCOUNTSID`
 * `NOTI_TWILIO_AUTHTOKEN`
