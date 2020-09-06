@@ -28,6 +28,7 @@ Simplepush |   ✔   |   ✔   |    ✔
 Slack      |   ✔   |   ✔   |    ✔
 Telegram   |   ✔   |   ✔   |    ✔
 Zulip      |   ✔   |   ✔   |    ✔
+Twilio     |   ✔   |   ✔   |    ✔
 ```
 
 Checkout the [screenshots] directory to see what the notifications look like on

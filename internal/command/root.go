@@ -61,7 +61,7 @@ func InitFlags(flags *pflag.FlagSet) {
 	flags.BoolP("mattermost", "a", false, "Trigger a Mattermost notification")
 	flags.BoolP("telegram", "g", false, "Trigger a Telegram notification")
 	flags.BoolP("zulip", "z", false, "Trigger a Zulip notification")
-
+	flags.Bool("twilio", false, "Trigger a twilio SMS notification")
 	flags.IntP("pwatch", "w", -1, "Monitor a process by PID and trigger a notification when the pid disappears.")
 
 	flags.StringP("file", "f", "", "Path to noti.yaml configuration file.")

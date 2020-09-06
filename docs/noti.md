@@ -31,6 +31,7 @@ Pushover   |   ✔   |   ✔   |    ✔
 Pushsafer  |   ✔   |   ✔   |    ✔
 Simplepush |   ✔   |   ✔   |    ✔
 Slack      |   ✔   |   ✔   |    ✔
+Twilio     |   ✔   |   ✔   |    ✔
 ```
 
 ## Installation
@@ -108,6 +109,10 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
     Trigger a Telegram notification.  This requires telegeram.token and
     telegram.chatId to be set.
 
+--twilio
+    Trigger a Twilio notification.  This requires twilio.authToken, twilio.accountSid, 
+    twilio.numberFrom and twilio.numberTo to be set.
+
 -w , --pwatch
     Monitor a process by PID and trigger a notification when the pid
     disappears.
@@ -148,6 +153,10 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_SLACK_TOKEN`
 * `NOTI_SLACK_CHANNEL`
 * `NOTI_SLACK_USERNAME`
+* `NOTI_TWILIO_TO`
+* `NOTI_TWILIO_FROM`
+* `NOTI_TWILIO_ACCOUNTSID`
+* `NOTI_TWILIO_AUTHTOKEN`
 
 
 ## Files
@@ -264,6 +273,26 @@ token
 
 chatId
     Telegram message destination: Can be either a chat or a channel
+
+TWILIO
+
+AuthToken
+    Twilio access token. Log into your Twilio account and copy the AuthToken from your 
+    project dashboard.
+
+accountSid
+    Twilio account id. Log into your Twilio account and copy the accountSid from your 
+    project dashboard.
+
+numberTo
+    This parameter determines the destination phone number for your SMS message. 
+    Format this number with a '+' and a country code, e.g., +16175551212
+
+numberFrom
+    From specifies the Twilio phone number, short code, or Messaging Service that sends 
+    this message.
+    This must be a Twilio phone number that you own,
+    formatted with a '+' and country code, e.g. +16175551212 (E.164 format)
 ```
 
 ## Examples
@@ -328,6 +357,11 @@ slack:
 telegram:
   token: 1234567890abcdefg
   chatId: '@notifier'
+twilio:
+  numberto: +972542877978
+  numberfrom: +18111119711
+  accountsid: 1234567890abcdefg
+  authtoken: 1234567890abcdefg
 
 ```
 
@@ -394,6 +428,9 @@ The variable `slack.channel` can be set to a channel like `#general` or
 Open your telegram app, and start a conversation with the [BotFather](https://telegram.me/botfather)
 and use the `/newbot` to get the BotFather to create your bot and lastly copy and keep the bot token
 
+### Twilio
+
+Log into your [Twilio] account. Next go to the "Project info" tab. look for "ACCOUNT SID" that's what you will set for `twilio.accountsid` and look for "AUTH TOKEN" that's what you will set for `twilio.authtoken`
 
 ## Reporting bugs
 
@@ -407,3 +444,4 @@ Report bugs on GitHub at https://github.com/variadico/noti/issues.
 [OAuth Tokens for Testing and Development]: https://api.slack.com/docs/oauth-test-tokens
 [bc-incoming]: https://bearychat.com/integrations/incoming
 [Keybase]: https://keybase.io/download
+[Twilio]: https://www.twilio.com/console

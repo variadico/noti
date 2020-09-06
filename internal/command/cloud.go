@@ -16,6 +16,7 @@ import (
 	"github.com/variadico/noti/service/simplepush"
 	"github.com/variadico/noti/service/slack"
 	"github.com/variadico/noti/service/telegram"
+	"github.com/variadico/noti/service/twilio"
 	"github.com/variadico/noti/service/zulip"
 )
 
@@ -141,5 +142,15 @@ func getZulip(title, message string, v *viper.Viper) notification {
 		Type:            v.GetString("zulip.type"),
 		To:              v.GetString("zulip.to"),
 		Client:          httpClient,
+	}
+}
+
+func getTwilio(title, message string, v *viper.Viper) notification {
+	return &twilio.Notification{
+		Content:    fmt.Sprintf("%s:%s", title, message),
+		NumberTo:   v.GetString("twilio.numberTo"),
+		NumberFrom: v.GetString("twilio.numberFrom"),
+		AccountSid: v.GetString("twilio.accountSid"),
+		AuthToken:  v.GetString("twilio.authToken"),
 	}
 }
