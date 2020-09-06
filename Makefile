@@ -1,26 +1,62 @@
-branch := $(shell git rev-parse --abbrev-ref HEAD)
-tag := $(shell git describe --abbrev=0 --tags)
-rev := $(shell git rev-parse --short HEAD)
-
 export GOFLAGS := -mod=vendor
 export GO111MODULE := on
 export GOPROXY := off
 export GOSUMDB := off
 
+branch := $(shell git rev-parse --abbrev-ref HEAD)
+tag := $(shell git describe --abbrev=0 --tags)
+rev := $(shell git rev-parse --short HEAD)
+
 golangci-lint := ./tools/golangci-lint-1.30.0-$(shell go env GOOS)-amd64
 
+gosrc := $(shell find cmd internal -name "*.go")
+
+gobin := $(strip $(shell go env GOBIN))
+ifeq ($(gobin),)
+gobin := $(shell go env GOPATH)/bin
+endif
+
+ldflags := -ldflags "-X github.com/variadico/noti/internal/command.Version=$(branch)-$(rev)"
+ldflags_rel := -ldflags "-s -w -X github.com/variadico/noti/internal/command.Version=$(tag)"
+
+cmd/noti/noti: $(gosrc) vendor
+	go build -race -o $@ $(ldflags) github.com/variadico/noti/cmd/noti
+
+vendor: go.mod go.sum
+	go mod vendor
+
+release/noti.linuxrelease: $(gosrc) vendor
+	mkdir --parents release
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+		go build -o $@ $(ldflags_rel) github.com/variadico/noti/cmd/noti
+release/noti$(tag).linux-amd64.tar.gz: release/noti.linuxrelease
+	tar czvf $@ --transform 's#$<#noti#g' $<
+
+release/noti.darwinrelease: $(gosrc) vendor
+	mkdir -p release
+	GOOS=darwin GOARCH=amd64 \
+		go build -o $@ $(ldflags_rel) github.com/variadico/noti/cmd/noti
+release/noti$(tag).darwin-amd64.tar.gz: release/noti.darwinrelease
+	tar czvf $@ --transform 's#$<#noti#g' $<
+
+release/noti.windowsrelease: $(gosrc) vendor
+	mkdir --parents release
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
+		go build -o $@ $(ldflags_rel) github.com/variadico/noti/cmd/noti
+release/noti$(tag).windows-amd64.tar.gz: release/noti.windowsrelease
+	tar czvf $@ --transform 's#$<#noti.exe#g' $<
+
+docs/man/noti.1: docs/man/noti.1.md
+	pandoc -s -t man $< -o $@
+docs/man/noti.yaml.5: docs/man/noti.yaml.5.md
+	pandoc -s -t man $< -o $@
+
 .PHONY: build
-build:
-	go build \
-		-race -o cmd/noti/noti \
-		-ldflags "-X github.com/variadico/noti/internal/command.Version=$(branch)-$(rev)" \
-		github.com/variadico/noti/cmd/noti
+build: cmd/noti/noti
 
 .PHONY: install
-install:
-	go install \
-		-ldflags "-X github.com/variadico/noti/internal/command.Version=$(branch)-$(rev)" \
-		github.com/variadico/noti/cmd/noti
+install: cmd/noti/noti
+	mv cmd/noti/noti $(gobin)
 
 .PHONY: lint
 lint:
@@ -63,39 +99,12 @@ clean:
 	rm -f cmd/noti/noti
 	rm -rf release/
 	git clean -x -f -d
-	git remote prune origin
-
-.PHONY: release-linux
-release-linux:
-	mkdir -p release
-	GOOS=linux GOARCH=amd64 \
-		go build \
-		-ldflags "-s -w -X github.com/variadico/noti/internal/command.Version=$(tag)" \
-		github.com/variadico/noti/cmd/noti
-	tar -czf release/noti$(tag).linux-amd64.tar.gz noti
-	rm -f noti
-
-.PHONY: release-darwin
-release-darwin:
-	mkdir -p release
-	GOOS=darwin GOARCH=amd64 \
-		go build \
-		-ldflags "-s -w -X github.com/variadico/noti/internal/command.Version=$(tag)" \
-		github.com/variadico/noti/cmd/noti
-	tar -czf release/noti$(tag).darwin-amd64.tar.gz noti
-	rm -f noti
-
-.PHONY: release-windows
-release-windows:
-	mkdir -p release
-	GOOS=windows GOARCH=amd64 \
-		go build \
-		-ldflags "-s -w -X github.com/variadico/noti/internal/command.Version=$(tag)" \
-		github.com/variadico/noti/cmd/noti
-	tar -czf release/noti$(tag).windows-amd64.tar.gz noti.exe
-	rm -f noti.exe
 
 .PHONY: man
-man:
-	pandoc -s -t man docs/man/noti.1.md -o docs/man/noti.1
-	pandoc -s -t man docs/man/noti.yaml.5.md -o docs/man/noti.yaml.5
+man: docs/man/noti.1 docs/man/noti.yaml.5
+
+.PHONY: release
+release: release/noti$(tag).linux-amd64.tar.gz release/noti$(tag).windows-amd64.tar.gz
+
+.PHONY: release-darwin
+release-darwin: release/noti$(tag).darwin-amd64.tar.gz
