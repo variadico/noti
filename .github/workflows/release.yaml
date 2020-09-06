@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  release_darwin:
+    name: Release Darwin
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create tarball
+        run: |
+          make release/noti.darwinrelease
+      - name: Set tag env var
+        run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/*/}
+      - name: Stash release
+        uses: actions/upload-artifact@v2
+        with:
+          name: noti.darwinrelease
+          path: release/noti.darwinrelease
+  release:
+    needs: release_darwin
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create release draft
+        id: create_release_draft
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          tag_name: ${{github.ref}}
+          release_name: ${{github.ref}}
+          draft: true
+          prerelease: false
+      - name: Set tag env var
+        run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/*/}
+      - name: Download Darwin release
+        uses: actions/download-artifact@v2
+        with:
+          name: noti.darwinrelease
+          path: release
+      - name: Create tarballs
+        run: |
+          make release
+          make release-darwin
+      - name: Upload Linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          upload_url: ${{steps.create_release_draft.outputs.upload_url}}
+          asset_path: ./release/noti${{env.GIT_TAG}}.linux-amd64.tar.gz
+          asset_name: noti${{env.GIT_TAG}}.linux-amd64.tar.gz
+          asset_content_type: application/gzip; charset=binary
+      - name: Upload Darwin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          upload_url: ${{steps.create_release_draft.outputs.upload_url}}
+          asset_path: ./release/noti${{env.GIT_TAG}}.darwin-amd64.tar.gz
+          asset_name: noti${{env.GIT_TAG}}.darwin-amd64.tar.gz
+          asset_content_type: application/gzip; charset=binary
+      - name: Upload Windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          upload_url: ${{steps.create_release_draft.outputs.upload_url}}
+          asset_path: ./release/noti${{env.GIT_TAG}}.windows-amd64.tar.gz
+          asset_name: noti${{env.GIT_TAG}}.windows-amd64.tar.gz
+          asset_content_type: application/gzip; charset=binary
