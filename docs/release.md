@@ -7,8 +7,7 @@ just writing this down for myself.
 
 Make sure latest dev is green on CI.
 
-* https://circleci.com/gh/variadico/noti
-* https://ci.appveyor.com/project/variadico/noti
+https://github.com/variadico/noti/actions?query=workflow%3ATesting
 
 ## Increment version
 
@@ -30,8 +29,7 @@ git push origin master
 
 Make sure latest master is green on CI.
 
-* https://circleci.com/gh/variadico/noti
-* https://ci.appveyor.com/project/variadico/noti
+https://github.com/variadico/noti/actions?query=workflow%3ATesting
 
 ## Double check
 
@@ -49,17 +47,12 @@ git push origin 1.2.3
 
 ## Edit GitHub release information
 
-* Click on Releases > 1.2.3 > Edit tag.
-* Make the release title 1.2.3.
-* Copy and paste the changes from CHANGELOG.md into the description box.
-
-Create release tarballs.
-
-```
-make release
-```
-
-Upload files.
+* Hopefully, when you pushed, GitHub Actions automatically created a release
+  draft and uploaded tarballs
+* Go to https://github.com/variadico/noti/actions?query=workflow%3ARelease and
+  delete `noti.darwinrelease`, it's temporary junk. It's fine.
+* Add CHANGELOG notes to release body
+* Publish release
 
 ## Eventually update Homebrew
 

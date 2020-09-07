@@ -41,6 +41,9 @@ The `master` branch always contains the latest tagged release.
 ```shell
 # Install the latest version on macOS.
 brew install noti
+
+# Install latest version, if you have Go installed.
+go get github.com/variadico/noti/cmd/noti
 ```
 
 If you don't want to build from source or install anything extra, just download
@@ -61,30 +64,11 @@ Or download with your browser from the [latest release] page.
 If you want to build from source, then build like this.
 
 ```shell
+# build binary
 make build
-# or
+# build binary and move to Go bin dir
 make install
 ```
-
-This project uses modules with vendoring. The Makefile sets `-mod=vendor`
-automatically. Otherwise, you'll need to pass a flag or export a var if you
-don't use the Makefile.
-
-```shell
-go build -mod=vendor github.com/variadico/noti/cmd/noti
-# or
-export GOFLAGS="-mod=vendor"
-export GO111MODULE="on"
-go build github.com/variadico/noti/cmd/noti
-```
-
-Also, `go get` doesn't really work anymore starting in Go 1.12.
-
-If you have comments about these changes, please the leave the Go team an
-experience report here.
-
-* https://github.com/golang/go/issues/27227
-* https://github.com/golang/go/issues/32502
 
 ## Examples
 
