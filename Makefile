@@ -62,6 +62,7 @@ install: cmd/noti/noti
 lint:
 	go vet ./...
 	$(golangci-lint) run --no-config --exclude-use-default=false --max-same-issues=0 \
+	--timeout 15s \
 	--disable errcheck \
 	--disable stylecheck \
 	--enable bodyclose \
