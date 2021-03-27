@@ -1,7 +1,2 @@
-cmd/noti/noti
-vendor/.bin
-release/
-.DS_Store
-*.swp
-.noti.yaml
-!internal/command/testdata/.noti.yaml
+/noti
+/release
