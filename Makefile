@@ -7,7 +7,7 @@ branch := $(shell git rev-parse --abbrev-ref HEAD)
 tag := $(shell git describe --abbrev=0 --tags)
 rev := $(shell git rev-parse --short HEAD)
 
-golangciLint := ./tools/golangci-lint-1.30.0-$(shell go env GOOS)-amd64
+golangciLint := ./tools/golangci-lint-1.39.0-$(shell go env GOOS)-amd64
 
 goSrc := $(shell find cmd internal service -name "*.go")
 
@@ -72,7 +72,6 @@ lint:
 	--disable stylecheck \
 	--enable bodyclose \
 	--enable golint \
-	--enable interfacer \
 	--enable unconvert \
 	--enable dupl \
 	--enable gocyclo \
@@ -83,7 +82,7 @@ lint:
 	--enable unparam \
 	--enable nakedret \
 	--enable prealloc \
-	--enable scopelint \
+	--enable exportloopref \
 	--enable gocritic \
 	--enable gochecknoinits \
 	./...
