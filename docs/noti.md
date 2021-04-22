@@ -157,6 +157,8 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_TWILIO_FROM`
 * `NOTI_TWILIO_ACCOUNTSID`
 * `NOTI_TWILIO_AUTHTOKEN`
+* `NOTI_TELEGRAM_CHATID`
+* `NOTI_TELEGRAM_TOKEN`
 
 
 ## Files
