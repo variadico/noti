@@ -116,6 +116,14 @@ channel
 username
 : Noti bot username.
 
+# TELEGRAM
+
+token
+: Telegram access token. The token can be retrieved using the [BotFather](https://telegram.me/botfather)
+
+chatId
+    Telegram message destination: Can be either a chat or a channel
+
 # TWILIO
 
 AuthToken
@@ -161,6 +169,9 @@ numberFrom
       event: 1234567890abcdefg
     slack:
       appurl: 'https://hooks.slack.com/services/xxx/yyy/zzz'
+    telegram:
+      token: '110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw'
+      chatId: 1234567890
     twilio:
       numberto: +972542877978
       numberfrom: +18111119711

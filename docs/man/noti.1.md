@@ -23,6 +23,9 @@ when it's done. You can receive messages on your computer or phone.
 -m \<string\>, \--message \<string\>
 : Set notification message. Default is "Done!". Read from stdin with "-".
 
+-e, \--time
+: Show command execution time in message.
+
 -b, \--banner
 : Trigger a banner notification. This is enabled by default. To disable this
   service, set this flag to false. This will be either `nsuser`, `freedesktop`,
@@ -58,10 +61,14 @@ when it's done. You can receive messages on your computer or phone.
 : Trigger a Slack notification. This requires `slack.appurl` (for Slack apps)
   or `slack.token` and `slack.channel` (for legacy tokens) to be set.
 
+-g, \--telegram
+: Trigger a Telegram notification.  This requires `telegeram.token` and
+  `telegram.chatId` to be set.
+
 --twilio
 : Trigger a Twilio notification. This requires `twilio.authToken`, `twilio.accountSid`, `twilio.numberFrom` and `twilio.numberTo` to be set.
 
--w <pid>, \--pwatch <pid>
+-w \<pid\>, \--pwatch \<pid\>
 : Monitor a process by PID and trigger a notification when the pid disappears.
 
 -f, \--file
@@ -103,6 +110,8 @@ when it's done. You can receive messages on your computer or phone.
 * `NOTI_TWILIO_FROM`
 * `NOTI_TWILIO_ACCOUNTSID`
 * `NOTI_TWILIO_AUTHTOKEN`
+* `NOTI_TELEGRAM_CHATID`
+* `NOTI_TELEGRAM_TOKEN`
 
 
 # FILES

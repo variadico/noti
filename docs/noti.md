@@ -113,7 +113,7 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
     Trigger a Twilio notification.  This requires twilio.authToken, twilio.accountSid, 
     twilio.numberFrom and twilio.numberTo to be set.
 
--w , --pwatch
+-w <pid>, --pwatch <pid>
     Monitor a process by PID and trigger a notification when the pid
     disappears.
 
@@ -271,10 +271,10 @@ username
 TELEGRAM
 
 token
-    Telegram access token. The token can be retrieved using the [BotFather](https://telegram.me/botfather)
+    Telegram access token. The token can be retrieved using the [BotFather](https://telegram.me/botfather).
 
 chatId
-    Telegram message destination: Can be either a chat or a channel
+    Telegram message destination: Can be either a chat or a channel.
 
 TWILIO
 
@@ -357,8 +357,8 @@ slack:
   channel: '@jaime'
   username: noti
 telegram:
-  token: 1234567890abcdefg
-  chatId: '@notifier'
+  token: '110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw'
+  chatId: 1234567890
 twilio:
   numberto: +972542877978
   numberfrom: +18111119711
@@ -427,8 +427,9 @@ The variable `slack.channel` can be set to a channel like `#general` or
 
 ### Telegram
 
-Open your telegram app, and start a conversation with the [BotFather](https://telegram.me/botfather)
-and use the `/newbot` to get the BotFather to create your bot and lastly copy and keep the bot token
+Open your telegram app, and start a conversation with the [BotFather](https://telegram.me/botfather).
+Use the `/newbot` command to get the BotFather to create your bot, and lastly copy and keep the bot token.
+Send the new bot a message from the chat you want to notify, then go to `https://api.telegram.org/bot<TOKEN>/getUpdates` and find the `id` for the chat.
 
 ### Twilio
 
