@@ -15,13 +15,13 @@ jobs:
         - windows-2019
     runs-on: ${{matrix.os}}
     steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
     - name: Setup Go
       id: setup-go
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
-        go-version: ^1.14
-    - name: Checkout source
-      uses: actions/checkout@v2
+        go-version-file: go.mod
     - name: Build
       run: make build
     - name: Test
