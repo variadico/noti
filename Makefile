@@ -48,9 +48,11 @@ release/noti.windowsrelease: $(gosrc) vendor
 release/noti$(tag).windows-amd64.tar.gz: release/noti.windowsrelease
 	tar czvf $@ --transform 's#$<#noti.exe#g' $<
 
-docs/man/noti.1: docs/man/noti.1.md
+docs/man/dist/noti.1: docs/man/noti.1.md
+	mkdir --parents $(dir $@)
 	pandoc -s -t man $< -o $@
-docs/man/noti.yaml.5: docs/man/noti.yaml.5.md
+docs/man/dist/noti.yaml.5: docs/man/noti.yaml.5.md
+	mkdir --parents $(dir $@)
 	pandoc -s -t man $< -o $@
 
 .PHONY: build
@@ -102,7 +104,7 @@ clean:
 	git clean -x -f -d
 
 .PHONY: man
-man: docs/man/noti.1 docs/man/noti.yaml.5
+man: docs/man/dist/noti.1 docs/man/dist/noti.yaml.5
 
 .PHONY: release
 release: release/noti$(tag).linux-amd64.tar.gz release/noti$(tag).windows-amd64.tar.gz
