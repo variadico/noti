@@ -1,12 +1,12 @@
-// +build !darwin
-// +build !windows
+//go:build !darwin && !windows
+// +build !darwin,!windows
 
 package freedesktop
 
 import (
 	"fmt"
 
-	"github.com/godbus/dbus"
+	dbus "github.com/godbus/dbus/v5"
 )
 
 // Notification is a Freedesktop notification.
