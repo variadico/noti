@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os/exec"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -15,6 +16,11 @@ func TestNoti(t *testing.T) {
 	}
 
 	t.Run("show version", func(t *testing.T) {
+		if runtime.GOOS == "darwin" {
+			// Too slow on macOS CI.
+			t.SkipNow()
+		}
+
 		data, err := exec.Command("noti", "--version").Output()
 		if err != nil {
 			t.Error(err)

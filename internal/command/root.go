@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -182,6 +183,17 @@ func latestRelease(u string) (string, string, error) {
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&r); err != nil {
 		return "", "", err
+	}
+
+	missing := make([]string, 0, 2)
+	if r.HTMLURL == "" {
+		missing = append(missing, "HTML URL")
+	}
+	if r.TagName == "" {
+		missing = append(missing, "tag name")
+	}
+	if len(missing) > 0 {
+		return "", "", fmt.Errorf("latest release: missing %q", strings.Join(missing, ","))
 	}
 
 	return r.TagName, r.HTMLURL, nil
