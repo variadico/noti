@@ -1,6 +1,6 @@
 export GOFLAGS := -mod=vendor
 export GO111MODULE := on
-export GOPROXY := off
+export GOPROXY := direct
 export GOSUMDB := off
 
 branch := $(shell git rev-parse --abbrev-ref HEAD)
@@ -9,7 +9,7 @@ rev := $(shell git rev-parse --short HEAD)
 
 golangci-lint := ./tools/golangci-lint-1.30.0-$(shell go env GOOS)-amd64
 
-gosrc := $(shell find cmd internal -name "*.go")
+gosrc := $(shell find cmd internal service -name "*.go")
 
 gobin := $(strip $(shell go env GOBIN))
 ifeq ($(gobin),)
@@ -23,7 +23,9 @@ cmd/noti/noti: $(gosrc) vendor
 	go build -race -o $@ $(ldflags) github.com/variadico/noti/cmd/noti
 
 vendor: go.mod go.sum
+	go mod tidy
 	go mod vendor
+	touch $@
 
 release/noti.linuxrelease: $(gosrc) vendor
 	mkdir --parents release
@@ -56,7 +58,7 @@ build: cmd/noti/noti
 
 .PHONY: install
 install: cmd/noti/noti
-	mv cmd/noti/noti $(gobin)
+	mv $< $(gobin)
 
 .PHONY: lint
 lint:
@@ -109,3 +111,10 @@ release: release/noti$(tag).linux-amd64.tar.gz release/noti$(tag).windows-amd64.
 
 .PHONY: release-darwin
 release-darwin: release/noti$(tag).darwin-amd64.tar.gz
+
+.PHONY: update-mod
+update-mod:
+	go get -u ./cmd/...
+	go get -u ./internal/...
+	go get -u ./service/...
+	go mod tidy
