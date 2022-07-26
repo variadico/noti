@@ -10,9 +10,9 @@ jobs:
     strategy:
       matrix:
         os:
-        - macos-10.15
-        - ubuntu-18.04
-        - windows-2019
+        - macos-latest
+        - ubuntu-latest
+        - windows-latest
     runs-on: ${{matrix.os}}
     steps:
     - name: Checkout source
