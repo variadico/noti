@@ -36,24 +36,16 @@ different platforms.
 
 ## Installation
 
-The `master` branch always contains the latest tagged release.
+Install the Go binary with these commands.
 
 ```shell
-# Install the latest version on macOS.
+# macOS install with Brew
 brew install noti
 
-# Install latest version, if you have Go installed.
-go get github.com/variadico/noti/cmd/noti
-```
-
-If you don't want to build from source or install anything extra, just download
-the latest binary.
-
-```shell
-# macOS
+# macOS install with curl
 curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | awk '/browser_download_url/ { print $2 }' | grep 'darwin-amd64' | sed 's/"//g') | tar -xz
 
-# Linux
+# Linux install with curl
 curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | awk '/browser_download_url/ { print $2 }' | grep 'linux-amd64' | sed 's/"//g') | tar -xz
 ```
 
@@ -115,10 +107,7 @@ $ make test 2>&1 | tail --lines 5 | noti -t "Test Results" -m -
 ```
 
 
-[CircleCI]: https://circleci.com/gh/variadico/noti/tree/master.svg?style=svg
-[AppVeyor]: https://ci.appveyor.com/api/projects/status/qc2fgc164786jws6/branch/master?svg=true
-[Codecov]: https://codecov.io/gh/variadico/noti/branch/master/graph/badge.svg
-[macOS Banner Notification]: https://raw.githubusercontent.com/variadico/noti/master/docs/screenshots/macos_banner.png
-[screenshots]: https://github.com/variadico/noti/tree/master/docs/screenshots
+[macOS Banner Notification]: https://raw.githubusercontent.com/variadico/noti/main/docs/screenshots/macos_banner.png
+[screenshots]: https://github.com/variadico/noti/tree/main/docs/screenshots
 [latest release]: https://github.com/variadico/noti/releases/latest
-[docs]: https://github.com/variadico/noti/blob/master/docs/noti.md
+[docs]: https://github.com/variadico/noti/blob/main/docs/noti.md

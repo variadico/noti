@@ -1,5 +1,5 @@
 % NOTI(1) noti 3.5.0 | Noti Manual
-% Jaime Piña
+% variadico
 % 2018/03/25
 
 #  NAME

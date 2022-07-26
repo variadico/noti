@@ -1,5 +1,5 @@
 % NOTI.YAML(5) noti 3.5.0 | Noti Configuration File Format
-% Jaime Piña
+% variadico
 % 2018/03/25
 
 #  NAME
