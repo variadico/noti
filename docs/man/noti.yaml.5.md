@@ -131,6 +131,15 @@ numberFrom
 : From specifies the Twilio phone number, short code, or Messaging Service that sends this message. This must be a Twilio phone number that you own, formatted with a '+' and country code, e.g. +16175551212 (E.164 format)
 
 
+# GCHAT
+
+appurl
+: This parameter defines the URL for the Google Chat webhook. 
+
+template
+: This parameter defines the template combining the title and the message. The default is: '*{{.title}}*: {{.message}}'
+
+
 # EXAMPLES
 
     ---
@@ -166,6 +175,9 @@ numberFrom
       numberfrom: +18111119711
       accountsid: AC3cd135aa82XXXXXXXXf792ba23fc98
       authtoken: 74efd0bXXXXXXXXXXX32f7daca
+	gchat:
+	  appurl: 'https://chat.googleapis.com/v1/spaces/example/messages?key=keyexample'
+	  template: '*{{.title}}*: {{.message}}'
 
 
 

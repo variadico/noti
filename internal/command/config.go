@@ -56,6 +56,9 @@ var baseDefaults = map[string]interface{}{
 	"slack.channel":  "",
 	"slack.username": "noti",
 
+	"gchat.appurl":   "",
+	"gchat.template": "*{{.title}}*: {{.message}}",
+
 	"mattermost.username":        "noti",
 	"mattermost.channel":         "",
 	"mattermost.incomingHookURI": "",
@@ -114,6 +117,9 @@ var keyEnvBindings = map[string]string{
 	"slack.token":    "NOTI_SLACK_TOKEN",
 	"slack.channel":  "NOTI_SLACK_CHANNEL",
 	"slack.username": "NOTI_SLACK_USERNAME",
+
+	"gchat.appurl":   "NOTI_GCHAT_APPURL",
+	"gchat.template": "NOTI_GCHAT_TEMPLATE",
 
 	"mattermost.username":        "NOTI_MATTERMOST_USERNAME",
 	"mattermost.incomingHookURI": "NOTI_MATTERMOST_INCOMINGHOOKURI",
@@ -251,6 +257,7 @@ func enabledFromSlice(defaults []string) map[string]bool {
 		"pushsafer":  false,
 		"simplepush": false,
 		"slack":      false,
+		"gchat":      false,
 		"speech":     false,
 		"mattermost": false,
 		"telegram":   false,
@@ -279,6 +286,7 @@ func hasServiceFlags(flags *pflag.FlagSet) bool {
 		"pushsafer":  false,
 		"simplepush": false,
 		"slack":      false,
+		"gchat":      false,
 		"speech":     false,
 		"mattermost": false,
 		"telegram":   false,
@@ -310,6 +318,7 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 		"pushsafer":  false,
 		"simplepush": false,
 		"slack":      false,
+		"gchat":      false,
 		"speech":     false,
 		"mattermost": false,
 		"telegram":   false,
@@ -397,6 +406,10 @@ func getNotifications(v *viper.Viper, services map[string]struct{}) []notificati
 
 	if _, ok := services["slack"]; ok {
 		notis = append(notis, getSlack(title, message, v))
+	}
+
+	if _, ok := services["gchat"]; ok {
+		notis = append(notis, getGChat(title, message, v))
 	}
 
 	if _, ok := services["mattermost"]; ok {
