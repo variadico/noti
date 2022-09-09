@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
+	"github.com/variadico/noti/service/gchat"
 	"github.com/variadico/noti/service/keybase"
 	"github.com/variadico/noti/service/mattermost"
 	"github.com/variadico/noti/service/pushbullet"
@@ -107,6 +108,16 @@ func getSlack(title, message string, v *viper.Viper) notification {
 		IconEmoji: ":rocket:",
 
 		Client: httpClient,
+	}
+}
+
+func getGChat(title, message string, v *viper.Viper) notification {
+	return &gchat.Notification{
+		Message:  message,
+		Title:    title,
+		Template: v.GetString("gchat.template"),
+		AppURL:   v.GetString("gchat.appurl"),
+		Client:   httpClient,
 	}
 }
 

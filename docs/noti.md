@@ -32,6 +32,7 @@ Pushsafer  |   ✔   |   ✔   |    ✔
 Simplepush |   ✔   |   ✔   |    ✔
 Slack      |   ✔   |   ✔   |    ✔
 Twilio     |   ✔   |   ✔   |    ✔
+GChat      |   ✔   |   ✔   |    ✔
 ```
 
 ## Installation
@@ -105,6 +106,9 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
     Trigger a Slack notification.  This requires slack.token and
     slack.channel to be set.
 
+-n, --gchat
+    Trigger a Google Chat notification.  This requires gchat.appurl to be set.
+
 -g, --telegram
     Trigger a Telegram notification.  This requires telegeram.token and
     telegram.chatId to be set.
@@ -159,6 +163,8 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_TWILIO_AUTHTOKEN`
 * `NOTI_TELEGRAM_CHATID`
 * `NOTI_TELEGRAM_TOKEN`
+* `NOTI_GCHAT_APPURL`
+* `NOTI_GCHAT_TEMPLATE`
 
 
 ## Files
@@ -295,6 +301,15 @@ numberFrom
     this message.
     This must be a Twilio phone number that you own,
     formatted with a '+' and country code, e.g. +16175551212 (E.164 format)
+
+GCHAT
+
+appurl
+	This parameter determines the Google Chat Webhook URL
+
+template
+	This parameter is the golang template used for producing the message text. It can include the title and message.
+
 ```
 
 ## Examples
@@ -364,7 +379,9 @@ twilio:
   numberfrom: +18111119711
   accountsid: 1234567890abcdefg
   authtoken: 1234567890abcdefg
-
+gchat:
+  appurl: 'https://chat.googleapis.com/v1/spaces/example/messages?key=keyexample'
+  template: '*{{.title}}*: {{.message}}'
 ```
 
 ## Setting up cloud accounts
@@ -433,6 +450,10 @@ and use the `/newbot` to get the BotFather to create your bot and lastly copy an
 ### Twilio
 
 Log into your [Twilio] account. Next go to the "Project info" tab. look for "ACCOUNT SID" that's what you will set for `twilio.accountsid` and look for "AUTH TOKEN" that's what you will set for `twilio.authtoken`
+
+### Google Chat
+
+Configure a Google Spaces webhook (see [setting up webhooks](https://developers.google.com/chat/how-tos/webhooks)) and use the webhook URL as `gchat.appurl`
 
 ## Reporting bugs
 

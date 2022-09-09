@@ -29,6 +29,7 @@ Slack      |   ✔   |   ✔   |    ✔
 Telegram   |   ✔   |   ✔   |    ✔
 Zulip      |   ✔   |   ✔   |    ✔
 Twilio     |   ✔   |   ✔   |    ✔
+GChat      |   ✔   |   ✔   |    ✔
 ```
 
 Checkout the [screenshots] directory to see what the notifications look like on
