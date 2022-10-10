@@ -1,4 +1,4 @@
-% NOTI.YAML(5) noti 3.5.0 | Noti Configuration File Format
+% NOTI.YAML(5) noti 3.6.0 | Noti Configuration File Format
 % variadico
 % 2018/03/25
 
@@ -134,7 +134,7 @@ numberFrom
 # GCHAT
 
 appurl
-: This parameter defines the URL for the Google Chat webhook. 
+: This parameter defines the URL for the Google Chat webhook.
 
 template
 : This parameter defines the template combining the title and the message. The default is: '*{{.title}}*: {{.message}}'
