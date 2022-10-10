@@ -16,6 +16,8 @@ jobs:
         run: |
           make release/noti.darwinrelease
       - name: Set tag env var
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
         run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/*/}
       - name: Stash release
         uses: actions/upload-artifact@v2
@@ -40,6 +42,8 @@ jobs:
           draft: true
           prerelease: false
       - name: Set tag env var
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
         run: echo ::set-env name=GIT_TAG::${GITHUB_REF#refs/*/}
       - name: Download Darwin release
         uses: actions/download-artifact@v2
