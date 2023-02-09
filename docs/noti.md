@@ -19,21 +19,24 @@ when it's done. You can receive messages on your computer or phone.
 
 Noti can send notifications on a number of services.
 
-```
-           | macOS | Linux | Windows
---------------------------------------
-Banner     |   ✔   |   ✔   |    ✔
-Speech     |   ✔   |   ✔   |    ✔
-BearyChat  |   ✔   |   ✔   |    ✔
-Keybase    |   ✔   |   ✔   |    ✔
-Pushbullet |   ✔   |   ✔   |    ✔
-Pushover   |   ✔   |   ✔   |    ✔
-Pushsafer  |   ✔   |   ✔   |    ✔
-Simplepush |   ✔   |   ✔   |    ✔
-Slack      |   ✔   |   ✔   |    ✔
-Twilio     |   ✔   |   ✔   |    ✔
-GChat      |   ✔   |   ✔   |    ✔
-```
+
+| Service    | macOS | Linux | Windows |
+| ---------- | :---: | :---: | :-----: |
+| Banner     |   ✔   |   ✔   |    ✔    |
+| Speech     |   ✔   |   ✔   |    ✔    |
+| BearyChat  |   ✔   |   ✔   |    ✔    |
+| Keybase    |   ✔   |   ✔   |    ✔    |
+| Mattermost |   ✔   |   ✔   |    ✔    |
+| Pushbullet |   ✔   |   ✔   |    ✔    |
+| Pushover   |   ✔   |   ✔   |    ✔    |
+| Pushsafer  |   ✔   |   ✔   |    ✔    |
+| Simplepush |   ✔   |   ✔   |    ✔    |
+| Slack      |   ✔   |   ✔   |    ✔    |
+| Telegram   |   ✔   |   ✔   |    ✔    |
+| Zulip      |   ✔   |   ✔   |    ✔    |
+| Twilio     |   ✔   |   ✔   |    ✔    |
+| GChat      |   ✔   |   ✔   |    ✔    |
+
 
 ## Installation
 
@@ -163,6 +166,7 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_TWILIO_AUTHTOKEN`
 * `NOTI_TELEGRAM_CHATID`
 * `NOTI_TELEGRAM_TOKEN`
+* `NOTI_TELEGRAM_TOPIC`
 * `NOTI_GCHAT_APPURL`
 * `NOTI_GCHAT_TEMPLATE`
 
@@ -374,6 +378,7 @@ slack:
 telegram:
   token: 1234567890abcdefg
   chatId: '@notifier'
+  topic: 12345
 twilio:
   numberto: +972542877978
   numberfrom: +18111119711

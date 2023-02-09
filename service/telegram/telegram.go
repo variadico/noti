@@ -28,6 +28,7 @@ type apiResponse struct {
 // Notification is a Telegram notification.
 type Notification struct {
 	ChatID  string       `json:"chat_id"`
+	Topic   string       `json:"message_thread_id"`
 	Message string       `json:"text"`
 	Token   string       `json:"-"`
 	Client  *http.Client `json:"-"`
