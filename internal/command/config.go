@@ -66,6 +66,7 @@ var baseDefaults = map[string]interface{}{
 
 	"telegram.chatId": "",
 	"telegram.token":  "",
+	"telegram.topic":  "",
 
 	"zulip.key":        "",
 	"zulip.botAddress": "",
@@ -129,6 +130,7 @@ var keyEnvBindings = map[string]string{
 
 	"telegram.chatId": "NOTI_TELEGRAM_CHATID",
 	"telegram.token":  "NOTI_TELEGRAM_TOKEN",
+	"telegram.topic":  "NOTI_TELEGRAM_TOPIC",
 
 	"zulip.key":        "NOTI_ZULIP_KEY",
 	"zulip.botAddress": "NOTI_ZULIP_BOTADDRESS",

@@ -138,6 +138,7 @@ func getTelegram(title, message string, v *viper.Viper) notification {
 	return &telegram.Notification{
 		ChatID:  v.GetString("telegram.chatId"),
 		Token:   v.GetString("telegram.token"),
+		Topic:   v.GetString("telegram.topic"),
 		Message: fmt.Sprintf("<b>%s %s</b>\n%s", html.EscapeString(title), "🚀:", message),
 
 		Client: httpClient,

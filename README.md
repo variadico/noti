@@ -13,24 +13,22 @@ when it's done. You can receive messages on your computer or phone.
 
 Noti can send notifications on a number of services.
 
-```
-           | macOS | Linux | Windows
---------------------------------------
-Banner     |   ✔   |   ✔   |    ✔
-Speech     |   ✔   |   ✔   |    ✔
-BearyChat  |   ✔   |   ✔   |    ✔
-Keybase    |   ✔   |   ✔   |    ✔
-Mattermost |   ✔   |   ✔   |    ✔
-Pushbullet |   ✔   |   ✔   |    ✔
-Pushover   |   ✔   |   ✔   |    ✔
-Pushsafer  |   ✔   |   ✔   |    ✔
-Simplepush |   ✔   |   ✔   |    ✔
-Slack      |   ✔   |   ✔   |    ✔
-Telegram   |   ✔   |   ✔   |    ✔
-Zulip      |   ✔   |   ✔   |    ✔
-Twilio     |   ✔   |   ✔   |    ✔
-GChat      |   ✔   |   ✔   |    ✔
-```
+| Service    | macOS | Linux | Windows |
+| ---------- | :---: | :---: | :-----: |
+| Banner     |   ✔   |   ✔   |    ✔    |
+| Speech     |   ✔   |   ✔   |    ✔    |
+| BearyChat  |   ✔   |   ✔   |    ✔    |
+| Keybase    |   ✔   |   ✔   |    ✔    |
+| Mattermost |   ✔   |   ✔   |    ✔    |
+| Pushbullet |   ✔   |   ✔   |    ✔    |
+| Pushover   |   ✔   |   ✔   |    ✔    |
+| Pushsafer  |   ✔   |   ✔   |    ✔    |
+| Simplepush |   ✔   |   ✔   |    ✔    |
+| Slack      |   ✔   |   ✔   |    ✔    |
+| Telegram   |   ✔   |   ✔   |    ✔    |
+| Zulip      |   ✔   |   ✔   |    ✔    |
+| Twilio     |   ✔   |   ✔   |    ✔    |
+| GChat      |   ✔   |   ✔   |    ✔    |
 
 Checkout the [screenshots] directory to see what the notifications look like on
 different platforms.
@@ -70,20 +68,20 @@ details, checkout the [docs].
 
 Display a notification when `tar` finishes compressing files.
 
-```
+```sh
 noti tar -cjf music.tar.bz2 Music/
 ```
 
 Add `noti` after a command, in case you forgot at the beginning.
 
-```
+```sh
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 ```
 
 If you already started a command, but forgot to use `noti`, then you can do
 this to get notified when that process' PID disappears.
 
-```
+```sh
 noti --pwatch 1234
 ```
 
@@ -103,12 +101,11 @@ $ fg; noti
 
 Additionally, `noti` can send a message piped from stdin with `-`.
 
-```
+```sh
 $ make test 2>&1 | tail --lines 5 | noti -t "Test Results" -m -
 ```
 
-
-[macOS Banner Notification]: https://raw.githubusercontent.com/variadico/noti/main/docs/screenshots/macos_banner.png
+[macos banner notification]: https://raw.githubusercontent.com/variadico/noti/main/docs/screenshots/macos_banner.png
 [screenshots]: https://github.com/variadico/noti/tree/main/docs/screenshots
 [latest release]: https://github.com/variadico/noti/releases/latest
 [docs]: https://github.com/variadico/noti/blob/main/docs/noti.md
