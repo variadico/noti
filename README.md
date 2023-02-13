@@ -1,6 +1,6 @@
 # noti
 
-![Go](https://github.com/variadico/noti/workflows/Go/badge.svg)
+![Testing](https://github.com/variadico/noti/actions/workflows/testing.yaml/badge.svg)
 
 Monitor a process and trigger a notification.
 
@@ -30,8 +30,7 @@ Noti can send notifications on a number of services.
 | Twilio     |   ✔   |   ✔   |    ✔    |
 | GChat      |   ✔   |   ✔   |    ✔    |
 
-Checkout the [screenshots] directory to see what the notifications look like on
-different platforms.
+Check the [screenshots] directory to see what the notifications look like on different platforms.
 
 ## Installation
 
@@ -48,11 +47,11 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | awk '/browser_download_url/ { print $2 }' | grep 'linux-amd64' | sed 's/"//g') | tar -xz
 ```
 
-Or download with your browser from the [latest release] page.
+Or download it with your browser from the [latest release] page.
 
 ### From source
 
-If you want to build from source, then build like this.
+If you want to build from the source, then build like this.
 
 ```shell
 # build binary
@@ -63,8 +62,7 @@ make install
 
 ## Examples
 
-Just put `noti` at the beginning or end of your regular commands. For more
-details, checkout the [docs].
+Just put `noti` at the beginning or end of your regular commands. For more details, check the [docs].
 
 Display a notification when `tar` finishes compressing files.
 
@@ -78,15 +76,13 @@ Add `noti` after a command, in case you forgot at the beginning.
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 ```
 
-If you already started a command, but forgot to use `noti`, then you can do
-this to get notified when that process' PID disappears.
+If you already started a command but forgot to use `noti`, then you can do this to get notified when that process' PID disappears.
 
 ```sh
 noti --pwatch 1234
 ```
 
-You can also press `ctrl+z` after you started a process. This will temporarily
-suspend the process, but you can resume it with `noti`.
+You can also press `ctrl+z` after you started a process. This will temporarily suspend the process, but you can resume it with `noti`.
 
 ```
 $ dd if=/dev/zero of=foo bs=1M count=2000
