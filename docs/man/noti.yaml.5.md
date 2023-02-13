@@ -1,4 +1,4 @@
-% NOTI.YAML(5) noti 3.6.0 | Noti Configuration File Format
+% NOTI.YAML(5) noti 3.7.0 | Noti Configuration File Format
 % variadico
 % 2018/03/25
 
