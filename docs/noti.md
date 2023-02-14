@@ -6,7 +6,7 @@ noti - monitor a process and trigger a notification
 
 ## Synopsis
 
-```
+```sh
 noti [flags] [utility [args...]]
 ```
 
@@ -50,8 +50,7 @@ go get -u github.com/variadico/noti/cmd/noti
 brew install noti
 ```
 
-If you don't want to build from source or install anything extra, just download
-the latest binary.
+If you don't want to build from source or install anything extra, just download the latest binary.
 
 ```shell
 # macOS
@@ -286,6 +285,9 @@ token
 chatId
     Telegram message destination: Can be either a chat or a channel
 
+topic
+    Telegram thread id: If defined message will be posted in the thread, if omitted, will use default.
+
 TWILIO
 
 AuthToken
@@ -320,26 +322,25 @@ template
 
 Display a notification when `tar` finishes compressing files.
 
-```
+```sh
 noti tar -cjf music.tar.bz2 Music/
 ```
 
 Add `noti` after a command, in case you forgot at the beginning.
 
-```
+```sh
 clang foo.c -Wall -lm -L/usr/X11R6/lib -lX11 -o bizz; noti
 ```
 
-If you already started a command, but forgot to use `noti`, then you can do
-this to get notified when that process' PID disappears.
+If you already started a command, but forgot to use `noti`, then you can do this to get notified when that process' PID disappears.
 
-```
+```sh
 noti --pwatch $(pgrep docker-machine)
 ```
 
 Receive your message from stdin with `-`.
 
-```
+```sh
 rsync -az --stats ~/  server:/backups/homedir | noti -t "backup stats" -m -
 ```
 
@@ -394,34 +395,26 @@ gchat:
 ### BearyChat
 
 Log into your BearyChat account. Then create an [incoming robot][bc-incoming].
-Next, look for the "Hook Address" (or "Hook 地址" in Chinese), this is what
-you'll set `bearychat.incomingHookURI` to.
+Next, look for the "Hook Address" (or "Hook 地址" in Chinese), this is what you'll set `bearychat.incomingHookURI` to.
 
 ### Keybase
 
 Log into your [Keybase] account and go to the Chat section.
-Pick a team or user to send to, and set your `keybase.conversation` to that
-name. For teams, you can also specify a channel with `keybase.channel` or have
-it send to `general`. You can also send notifications that auto-delete with
-`keybase.explodingLifetime` set between `30s` (seconds) to `168h` (hours).
+Pick a team or user to send to, and set your `keybase.conversation` to that name. For teams, you can also specify a channel with `keybase.channel` or have it send to `general`. You can also send notifications that auto-delete with `keybase.explodingLifetime` set between `30s` (seconds) to `168h` (hours).
 
-As long as the keybase service is running and the `keybase` binary is in your
-system path, you should be all set.
+As long as the keybase service is running and the `keybase` binary is in your system path, you should be all set.
 
 ### Pushbullet
 
 Log into your Pushbullet account. Next, click on [Settings] on the left sidebar.
-Scroll down to "Access Tokens" and click "Create Access Token". The text that
-appears will be what you'll set `pushbullet.accessToken` to.
+Scroll down to "Access Tokens" and click "Create Access Token". The text that appears will be what you'll set `pushbullet.accessToken` to.
 
 ### Pushover
 
-Log into your [Pushover] account. Next, look for the "User Key". That's what
-you'll set `pushover.userKey` to.
+Log into your [Pushover] account. Next, look for the "User Key". That's what you'll set `pushover.userKey` to.
 
 Next [create a new application]. Fill in the fields. Under "Type", select
-"Script". Finally, go to the application page. Look for "API Token/Key". This is
-what you'll set `pushover.apiToken` to.
+"Script". Finally, go to the application page. Look for "API Token/Key". This is what you'll set `pushover.apiToken` to.
 
 ### Pushsafer
 
@@ -434,8 +427,7 @@ Install the Simplepush Android app to get your Simplepush key.
 That's the key you'll set to `simplepush.key`.
 Simplepush requires no registration and sending notifications is completely free.
 
-In the app you can create events to customize ringtone and vibration patterns for
-different kinds of notifications.
+In the app you can create events to customize ringtone and vibration patterns for different kinds of notifications.
 The event id you can set in the app, translates to `simplepush.event` in noti.
 
 ### Slack

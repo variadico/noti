@@ -1,7 +1,6 @@
 # Noti release
 
-This is the internal process I go through to release a version of Noti. I'm
-just writing this down for myself.
+This is the internal process I go through to release a version of Noti. I'm just writing this down for myself.
 
 ## Tests
 
@@ -19,7 +18,7 @@ Don't forget to `make man` to generate the updated man pages.
 
 ## Merge to master
 
-```
+```sh
 git checkout master
 git merge dev --ff-only
 git push origin master
@@ -33,14 +32,13 @@ https://github.com/variadico/noti/actions?query=workflow%3ATesting
 
 ## Double check
 
-Fix anything that might have broken like CI or URLs in docs. Last chance to
-change anything.
+Fix anything that might have broken like CI or URLs in docs. Last chance to change anything.
 
 ## Tag release
 
 Once everything is ready, tag the release.
 
-```
+```sh
 git tag 1.2.3
 git push origin 1.2.3
 ```
