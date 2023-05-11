@@ -19,6 +19,7 @@ import (
 	"github.com/variadico/noti/service/telegram"
 	"github.com/variadico/noti/service/twilio"
 	"github.com/variadico/noti/service/zulip"
+	"github.com/variadico/noti/service/chanify"
 )
 
 var httpClient = &http.Client{Timeout: 30 * time.Second}
@@ -164,5 +165,19 @@ func getTwilio(title, message string, v *viper.Viper) notification {
 		NumberFrom: v.GetString("twilio.numberFrom"),
 		AccountSid: v.GetString("twilio.accountSid"),
 		AuthToken:  v.GetString("twilio.authToken"),
+	}
+}
+
+func getChanify(title, message string, v *viper.Viper) notification {
+	return &chanify.Notification{
+
+		ChannelURL:        v.GetString("chanify.channelURL")
+
+		Text:              message,
+		Title:             title,
+		Sound:             v.GetBool("chanify.sound"),
+		Priority:          v.GetInt("chanify.priority"),
+		InterruptionLevel: v.GetString("chanify.interruptionLevel"),
+		Client:            httpClient,
 	}
 }

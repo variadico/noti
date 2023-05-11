@@ -78,6 +78,11 @@ var baseDefaults = map[string]interface{}{
 	"twilio.numberFrom": "",
 	"twilio.accountSid": "",
 	"twilio.authToken":  "",
+
+	"chanify.channelURL":        "",
+	"chanify.sound":             false,
+	"chanify.priority":          10,
+	"chanify.interruptionLevel": "active",
 }
 
 func setNotiDefaults(v *viper.Viper) {
@@ -142,6 +147,11 @@ var keyEnvBindings = map[string]string{
 	"twilio.numberFrom": "NOTI_TWILIO_FROM",
 	"twilio.accountSid": "NOTI_TWILIO_ACCOUNTSID",
 	"twilio.authToken":  "NOTI_TWILIO_AUTHTOKEN",
+
+	"chanify.channelURL":        "NOTI_CHANIFY_CHANNELURL",
+	"chanify.sound":             "NOTI_CHANIFY_SOUND",
+	"chanify.priority":          "NOTI_CHANIFY_PRIORITY",
+	"chanify.interruptionLevel": "NOTI_CHANIFY_INTERUPTIONLEVEL",
 }
 
 var keyEnvBindingsDeprecated = map[string]string{
@@ -265,6 +275,7 @@ func enabledFromSlice(defaults []string) map[string]bool {
 		"telegram":   false,
 		"zulip":      false,
 		"twilio":     false,
+		"chanify":    false,
 	}
 
 	for _, name := range defaults {
@@ -294,6 +305,7 @@ func hasServiceFlags(flags *pflag.FlagSet) bool {
 		"telegram":   false,
 		"zulip":      false,
 		"twilio":     false,
+		"chanify":    false,
 	}
 
 	flags.Visit(func(f *pflag.Flag) {
@@ -326,6 +338,7 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 		"telegram":   false,
 		"zulip":      false,
 		"twilio":     false,
+		"chanify":    false,
 	}
 
 	// Visit flags that have been set.
@@ -428,6 +441,10 @@ func getNotifications(v *viper.Viper, services map[string]struct{}) []notificati
 
 	if _, ok := services["twilio"]; ok {
 		notis = append(notis, getTwilio(title, message, v))
+	}
+
+	if _, ok := services["chanify"]; ok {
+		notis = append(notis, getChanify(title, message, v))
 	}
 
 	return notis
