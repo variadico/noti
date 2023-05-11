@@ -29,6 +29,7 @@ Noti can send notifications on a number of services.
 | Zulip      |   ✔   |   ✔   |    ✔    |
 | Twilio     |   ✔   |   ✔   |    ✔    |
 | GChat      |   ✔   |   ✔   |    ✔    |
+| Chanify    |   ✔   |   ✔   |    ✔    |
 
 Check the [screenshots] directory to see what the notifications look like on different platforms.
 
