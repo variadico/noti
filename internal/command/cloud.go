@@ -170,9 +170,7 @@ func getTwilio(title, message string, v *viper.Viper) notification {
 
 func getChanify(title, message string, v *viper.Viper) notification {
 	return &chanify.Notification{
-
-		ChannelURL:        v.GetString("chanify.channelURL")
-
+		ChannelURL:        v.GetString("chanify.channelURL"),
 		Text:              message,
 		Title:             title,
 		Sound:             v.GetBool("chanify.sound"),
