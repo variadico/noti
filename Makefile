@@ -7,7 +7,7 @@ branch := $(shell git rev-parse --abbrev-ref HEAD)
 tag := $(shell git describe --abbrev=0 --tags)
 rev := $(shell git rev-parse --short HEAD)
 
-golangci-lint := ./tools/golangci-lint-1.47.2-$(shell go env GOOS)-amd64
+golangci-lint := ./tools/golangci-lint-1.52.2-$(shell go env GOOS)-amd64
 
 gosrc := $(shell find cmd internal service -name "*.go")
 
