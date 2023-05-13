@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -76,7 +75,7 @@ func TestLatestRelease(t *testing.T) {
 			t.Errorf("have=%s; want=%s", r.Method, "GET")
 		}
 
-		data, err := ioutil.ReadFile("testdata/github_latest_release.json")
+		data, err := os.ReadFile("testdata/github_latest_release.json")
 		if err != nil {
 			t.Error(err)
 		}

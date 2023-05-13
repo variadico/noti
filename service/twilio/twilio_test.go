@@ -2,7 +2,7 @@ package twilio
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -25,7 +25,7 @@ func TestTwilioSend(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		hitServer = true
 
-		body, err1 := ioutil.ReadAll(r.Body)
+		body, err1 := io.ReadAll(r.Body)
 		if err1 != nil {
 			log.Printf("Error reading body: %v", err1)
 			return

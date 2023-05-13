@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -119,7 +118,7 @@ func rootMain(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	} else if msg, _ := cmd.Flags().GetString("message"); msg == "-" {
-		buf, err := ioutil.ReadAll(os.Stdin)
+		buf, err := io.ReadAll(os.Stdin)
 		if err != nil {
 			// buffer overflow
 			return err

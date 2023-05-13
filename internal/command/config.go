@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -217,7 +216,7 @@ func setupConfigFile(fileFlag string, v *viper.Viper) error {
 	var config io.Reader
 	var errMsg []string
 	for _, p := range configPaths {
-		data, err := ioutil.ReadFile(p)
+		data, err := os.ReadFile(p)
 		if err != nil {
 			errMsg = append(errMsg, err.Error())
 			continue

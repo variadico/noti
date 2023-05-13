@@ -2,7 +2,7 @@ package pushbullet
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -33,7 +33,7 @@ func TestSend(t *testing.T) {
 			t.Error("content type should be application/json")
 		}
 
-		b, err := ioutil.ReadAll(r.Body)
+		b, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Error(err)
 		}

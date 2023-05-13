@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -82,7 +82,7 @@ func (n *Notification) Send() error {
 
 	if resp.StatusCode != http.StatusOK {
 
-		b, err := ioutil.ReadAll(resp.Body)
+		b, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return fmt.Errorf("Chanify: error reading response %w", err)
 		}

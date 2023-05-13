@@ -2,7 +2,7 @@ package zulip
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -45,7 +45,7 @@ func TestSend(t *testing.T) {
 			t.Error("missing auth")
 		}
 
-		b, err := ioutil.ReadAll(r.Body)
+		b, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Error(err)
 		}
