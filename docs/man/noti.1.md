@@ -57,6 +57,9 @@ when it's done. You can receive messages on your computer or phone.
 -n,\--gchat
 : Trigger a Google Chat notification. This requires `gchat.appurl` to be set.
 
+-i,\--chanify
+: Trigger a Chanify notification. This requires `chanify.channelURL` to be set.
+
 -k, \--slack
 : Trigger a Slack notification. This requires `slack.appurl` (for Slack apps)
   or `slack.token` and `slack.channel` (for legacy tokens) to be set.

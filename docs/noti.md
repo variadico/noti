@@ -111,6 +111,9 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 -n, --gchat
     Trigger a Google Chat notification.  This requires gchat.appurl to be set.
 
+-i,--chanify
+    Trigger a Chanify notification. This requires `chanify.channelURL` to be set.
+
 -g, --telegram
     Trigger a Telegram notification.  This requires telegeram.token and
     telegram.chatId to be set.
@@ -168,6 +171,10 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_TELEGRAM_TOPIC`
 * `NOTI_GCHAT_APPURL`
 * `NOTI_GCHAT_TEMPLATE`
+* `NOTI_CHANIFY_CHANNELURL`
+* `NOTI_CHANIFY_SOUND`
+* `NOTI_CHANIFY_PRIORITY`
+* `NOTI_CHANIFY_INTERUPTIONLEVEL`
 
 
 ## Files
@@ -316,6 +323,22 @@ appurl
 template
 	This parameter is the golang template used for producing the message text. It can include the title and message.
 
+CHANIFY
+
+channelURL
+    Chanify sender webhook url. Create one from the app.
+
+sound
+    Turns on and off the sound (not in silent mode) when notification is receved
+
+priority
+    Magic number from 1 to 10 used by iOS to order and display relevant notification
+    Just use 10
+
+interruptionLevel
+    How the notification appears. Show in DnD or not.
+    Use active, passive, time-sensitive
+
 ```
 
 ## Examples
@@ -388,6 +411,11 @@ twilio:
 gchat:
   appurl: 'https://chat.googleapis.com/v1/spaces/example/messages?key=keyexample'
   template: '*{{.title}}*: {{.message}}'
+chanify:
+  channelURL: ''
+  sound: true
+  priority: 10
+  interruptionLevel: 'active'
 ```
 
 ## Setting up cloud accounts
@@ -451,6 +479,11 @@ Log into your [Twilio] account. Next go to the "Project info" tab. look for "ACC
 ### Google Chat
 
 Configure a Google Spaces webhook (see [setting up webhooks](https://developers.google.com/chat/how-tos/webhooks)) and use the webhook URL as `gchat.appurl`
+
+### Chanify
+
+Open up Chanify on your device, pick a channel and create a token. You have an option of token with best-by date or token with no expiration. Set the token as `chanify.channelURL` with the default host `api.chanify.net`. Your `chanify.channelURL` should look like this: `https://api.chanify.net/v1/sender/<TOKEN>`
+To create token's expiration click on the ![Shield button](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAcCAYAAACdz7SqAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAHaADAAQAAAABAAAAHAAAAADjGz/hAAADAklEQVRIDeVVTShEURT+5keJkgXSFJlSFhSRNNlYkGLBLDVFWVIaYaMkpSibWdhZMQ2JjYWIMpOiJguUn2k2itUsSKKmEcc9J2+aN97MvEnZOPV6752/75x77/muBQCp50/F+qdo32D/B9Sez/LW1NSgq6sLjY2NeHx8RCgUwsnJCRKJRD5pYFHeWQ9SVVUVenp65Kmrq5PkT09PKCkpgd1ux+vrKyYnJwX8/f3dFLghaGFhIfr6+uB2u9HU1CSJYrEYDg4OsLe3h/PzcwHt7u5Gb28v2tra8PLygv39fWxubuL6+jonOHeqewKBAEUiETo+Pqbp6Wlqbm4mi8Wi80mN8Xg8tLa2Rjc3N3R7e0sdHR0Zfb/j9ICs5EC/309WqzVXsM7OxXGx4+PjOn1qgfxtODKqKzw/P+Pz81P5ZBdVGJxOpzjxXrNwfDbJ6/QaJRocHJTTe3d3Z2Q21P0KlEfI6/WipaVFkptZGXY0XF7D8tKUvKyLi4uylB8fH2nW7L+mQPv7+8HzmirDw8MyTj6fL6nmQsxITi+e2bm5OaiRQFlZmeSsra3F2NgYzs7OsLq6agZH55MRVKs6Ho9DzSoqKyuxvLyMoqIiLCwsgNmH9an7qMUQ8cRkFsODxNSmdcWhu7u7cDgcmJiYwM7Ojiz1zMwMHh4edJnLy8vl/+3tTadP/zHsNBqNoqGhQbrTAlZWVrC+vi6ATPRbW1uaKfnu7OyUb47PJT/YQ/GuMIvaL1J7mrQzFTLrpOpUcrG3t7fT1dUVHR4eUkFBQTJGs6e9f9IgJ19aWhLg7e1tqq6uzppkaGhIAC8uLkhde1l9v8F/grLBZrPR1NSU8PDl5SWNjIwYdlhfXy/FBYNBUltiBpB9jEE1fWtrK6nrTBIfHR2RusoksTpoND8/LzfL7OwsFRcXmwUkZmZBZvRMwpf1wMAARkdHUVpaivv7e1RUVIBn+PT0FEwU+YrpCrkbRQoUDodpY2ODXC6X6VhVVNLXVKf5dpHL33BOcwX91v5/QL8AnJm6qDdN5A0AAAAASUVORK5CYII=) Shield button
 
 ## Reporting bugs
 

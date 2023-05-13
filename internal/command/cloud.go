@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
+	"github.com/variadico/noti/service/chanify"
 	"github.com/variadico/noti/service/gchat"
 	"github.com/variadico/noti/service/keybase"
 	"github.com/variadico/noti/service/mattermost"
@@ -164,5 +165,17 @@ func getTwilio(title, message string, v *viper.Viper) notification {
 		NumberFrom: v.GetString("twilio.numberFrom"),
 		AccountSid: v.GetString("twilio.accountSid"),
 		AuthToken:  v.GetString("twilio.authToken"),
+	}
+}
+
+func getChanify(title, message string, v *viper.Viper) notification {
+	return &chanify.Notification{
+		ChannelURL:        v.GetString("chanify.channelURL"),
+		Text:              message,
+		Title:             title,
+		Sound:             v.GetBool("chanify.sound"),
+		Priority:          v.GetInt("chanify.priority"),
+		InterruptionLevel: v.GetString("chanify.interruptionLevel"),
+		Client:            httpClient,
 	}
 }
