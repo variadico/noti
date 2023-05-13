@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/variadico/noti/service/bearychat"
+	"github.com/variadico/noti/service/chanify"
 	"github.com/variadico/noti/service/gchat"
 	"github.com/variadico/noti/service/keybase"
 	"github.com/variadico/noti/service/mattermost"
@@ -19,7 +20,6 @@ import (
 	"github.com/variadico/noti/service/telegram"
 	"github.com/variadico/noti/service/twilio"
 	"github.com/variadico/noti/service/zulip"
-	"github.com/variadico/noti/service/chanify"
 )
 
 var httpClient = &http.Client{Timeout: 30 * time.Second}

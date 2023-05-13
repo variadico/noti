@@ -11,7 +11,8 @@ import (
 
 // Notification is a Chanify notification.
 type Notification struct {
-	// ChannelURL is the URL of the Chanify server (https://api.chanify.net/v1/sender/<TOKEN> or any other for 3rd party instances)
+	// ChannelURL is the URL of the Chanify server
+	// usually https://api.chanify.net/v1/sender/<TOKEN>
 	ChannelURL string
 
 	// Text is the notification's message.
