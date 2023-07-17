@@ -82,6 +82,9 @@ var baseDefaults = map[string]interface{}{
 	"chanify.sound":             false,
 	"chanify.priority":          10,
 	"chanify.interruptionLevel": "active",
+
+	"ntfy.url":  "https://ntfy.sh/",
+	"ntfy.topic": "",
 }
 
 func setNotiDefaults(v *viper.Viper) {
@@ -151,6 +154,9 @@ var keyEnvBindings = map[string]string{
 	"chanify.sound":             "NOTI_CHANIFY_SOUND",
 	"chanify.priority":          "NOTI_CHANIFY_PRIORITY",
 	"chanify.interruptionLevel": "NOTI_CHANIFY_INTERUPTIONLEVEL",
+
+	"ntfy.url":   "NOTI_NTFY_URL",
+	"ntfy.topic": "NOTI_NTFY_TOPIC",
 }
 
 var keyEnvBindingsDeprecated = map[string]string{
@@ -275,6 +281,7 @@ func enabledFromSlice(defaults []string) map[string]bool {
 		"zulip":      false,
 		"twilio":     false,
 		"chanify":    false,
+		"ntfy":       false,
 	}
 
 	for _, name := range defaults {
@@ -305,6 +312,7 @@ func hasServiceFlags(flags *pflag.FlagSet) bool {
 		"zulip":      false,
 		"twilio":     false,
 		"chanify":    false,
+		"ntfy":       false,
 	}
 
 	flags.Visit(func(f *pflag.Flag) {
@@ -338,6 +346,7 @@ func enabledFromFlags(flags *pflag.FlagSet) map[string]bool {
 		"zulip":      false,
 		"twilio":     false,
 		"chanify":    false,
+		"ntfy":       false,
 	}
 
 	// Visit flags that have been set.
@@ -444,6 +453,10 @@ func getNotifications(v *viper.Viper, services map[string]struct{}) []notificati
 
 	if _, ok := services["chanify"]; ok {
 		notis = append(notis, getChanify(title, message, v))
+	}
+
+	if _, ok := services["ntfy"]; ok {
+		notis = append(notis, getNtfy(title, message, v))
 	}
 
 	return notis
