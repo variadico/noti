@@ -36,7 +36,7 @@ Noti can send notifications on a number of services.
 | Zulip      |   ✔   |   ✔   |    ✔    |
 | Twilio     |   ✔   |   ✔   |    ✔    |
 | GChat      |   ✔   |   ✔   |    ✔    |
-| Ntfy       |   ✔   |   ✔   |    ✔    |
+| ntfy       |   ✔   |   ✔   |    ✔    |
 
 
 ## Installation
@@ -124,8 +124,8 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
     twilio.numberFrom and twilio.numberTo to be set.
 
 --ntfy
-    Trigger a Ntfy notification.  This requires ntfy.topic be set.  Optionally, 
-    ntfy.url can also be set to use a different Ntfy server.
+    Trigger a ntfy notification.  This requires `ntfy.topic` be set.  Optionally, 
+    `ntfy.url` can also be set to use a different ntfy server.
 
 -w , --pwatch
     Monitor a process by PID and trigger a notification when the pid
@@ -157,6 +157,8 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_KEYBASE_CHANNEL`
 * `NOTI_KEYBASE_PUBLIC`
 * `NOTI_KEYBASE_EXPLODINGLIFETIME`
+* `NOTI_NTFY_TOPIC`
+* `NOTI_NTFY_URL`
 * `NOTI_PUSHBULLET_ACCESSTOKEN`
 * `NOTI_PUSHBULLET_DEVICEIDEN`
 * `NOTI_PUSHOVER_APITOKEN`
@@ -180,8 +182,6 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_CHANIFY_SOUND`
 * `NOTI_CHANIFY_PRIORITY`
 * `NOTI_CHANIFY_INTERUPTIONLEVEL`
-* `NOTI_NTFY_TOPIC`
-* `NOTI_NTFY_URL`
 
 
 ## Files
@@ -349,7 +349,7 @@ interruptionLevel
 NTFY
 
 url
-    Ntfy server URL. Defaults to https://ntfy.sh/
+    ntfy server URL. Defaults to https://ntfy.sh/
 
 topic
     Topic ID to send messages to
