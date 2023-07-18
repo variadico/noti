@@ -12,6 +12,7 @@ import (
 	"github.com/variadico/noti/service/gchat"
 	"github.com/variadico/noti/service/keybase"
 	"github.com/variadico/noti/service/mattermost"
+	"github.com/variadico/noti/service/ntfy"
 	"github.com/variadico/noti/service/pushbullet"
 	"github.com/variadico/noti/service/pushover"
 	"github.com/variadico/noti/service/pushsafer"
@@ -20,7 +21,6 @@ import (
 	"github.com/variadico/noti/service/telegram"
 	"github.com/variadico/noti/service/twilio"
 	"github.com/variadico/noti/service/zulip"
-	"github.com/variadico/noti/service/ntfy"
 )
 
 var httpClient = &http.Client{Timeout: 30 * time.Second}
@@ -183,10 +183,10 @@ func getChanify(title, message string, v *viper.Viper) notification {
 
 func getNtfy(title, message string, v *viper.Viper) notification {
 	return &ntfy.Notification{
-		URL: v.GetString("ntfy.url"),
-		Topic: v.GetString("ntfy.topic"),
-		Title: title,
+		URL:     v.GetString("ntfy.url"),
+		Topic:   v.GetString("ntfy.topic"),
+		Title:   title,
 		Message: message,
-		Client: httpClient,
+		Client:  httpClient,
 	}
 }

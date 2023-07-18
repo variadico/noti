@@ -8,13 +8,13 @@ import (
 	"time"
 )
 
-func TestSend (t *testing.T) {
-	n := Notification {
-		URL: "https://ntfy.sh/",
-		Topic: "topic",
+func TestSend(t *testing.T) {
+	n := Notification{
+		URL:     "https://ntfy.sh/",
+		Topic:   "topic",
 		Message: "Message body test",
-		Title: "Test Message",
-		Client: &http.Client{Timeout: 3 * time.Second},
+		Title:   "Test Message",
+		Client:  &http.Client{Timeout: 3 * time.Second},
 	}
 
 	var mockResp apiResponse
@@ -22,7 +22,7 @@ func TestSend (t *testing.T) {
 
 	ts := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		hitServer = true
-		
+
 		if r.Method != "POST" {
 			t.Error("HTTP method should be POST")
 		}
@@ -43,7 +43,7 @@ func TestSend (t *testing.T) {
 		}
 
 		json.NewEncoder(rw).Encode(mockResp)
-	})) 
+	}))
 	defer ts.Close()
 
 	n.URL = ts.URL

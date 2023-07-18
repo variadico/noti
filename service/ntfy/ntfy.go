@@ -23,7 +23,7 @@ type apiResponse struct {
 	// Topic ID
 	Topic string `json:"topic"`
 
-	//Message title
+	// Message title
 	Title string `json:"title"`
 
 	// Message body
@@ -64,7 +64,7 @@ func (n *Notification) Send() error {
 	if err != nil {
 		return err
 	}
-	
+
 	defer resp.Body.Close()
 
 	var r apiResponse
@@ -72,5 +72,5 @@ func (n *Notification) Send() error {
 		return err
 	}
 
-	return nil;
+	return nil
 }

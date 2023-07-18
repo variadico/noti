@@ -83,7 +83,7 @@ var baseDefaults = map[string]interface{}{
 	"chanify.priority":          10,
 	"chanify.interruptionLevel": "active",
 
-	"ntfy.url":  "https://ntfy.sh/",
+	"ntfy.url":   "https://ntfy.sh/",
 	"ntfy.topic": "",
 }
 
