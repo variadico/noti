@@ -36,6 +36,7 @@ Noti can send notifications on a number of services.
 | Zulip      |   ✔   |   ✔   |    ✔    |
 | Twilio     |   ✔   |   ✔   |    ✔    |
 | GChat      |   ✔   |   ✔   |    ✔    |
+| ntfy       |   ✔   |   ✔   |    ✔    |
 
 
 ## Installation
@@ -122,6 +123,10 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
     Trigger a Twilio notification.  This requires twilio.authToken, twilio.accountSid, 
     twilio.numberFrom and twilio.numberTo to be set.
 
+--ntfy
+    Trigger a ntfy notification.  This requires `ntfy.topic` be set.  Optionally, 
+    `ntfy.url` can also be set to use a different ntfy server.
+
 -w , --pwatch
     Monitor a process by PID and trigger a notification when the pid
     disappears.
@@ -152,6 +157,8 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_KEYBASE_CHANNEL`
 * `NOTI_KEYBASE_PUBLIC`
 * `NOTI_KEYBASE_EXPLODINGLIFETIME`
+* `NOTI_NTFY_TOPIC`
+* `NOTI_NTFY_URL`
 * `NOTI_PUSHBULLET_ACCESSTOKEN`
 * `NOTI_PUSHBULLET_DEVICEIDEN`
 * `NOTI_PUSHOVER_APITOKEN`
@@ -339,6 +346,14 @@ interruptionLevel
     How the notification appears. Show in DnD or not.
     Use active, passive, time-sensitive
 
+NTFY
+
+url
+    ntfy server URL. Defaults to https://ntfy.sh/
+
+topic
+    Topic ID to send messages to
+
 ```
 
 ## Examples
@@ -416,6 +431,9 @@ chanify:
   sound: true
   priority: 10
   interruptionLevel: 'active'
+ntfy:
+  url: https://my.ntfy.url.com
+  topic: 'xxxxxxxxxxxxxxxx'
 ```
 
 ## Setting up cloud accounts

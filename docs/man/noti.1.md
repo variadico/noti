@@ -67,6 +67,9 @@ when it's done. You can receive messages on your computer or phone.
 --twilio
 : Trigger a Twilio notification. This requires `twilio.authToken`, `twilio.accountSid`, `twilio.numberFrom` and `twilio.numberTo` to be set.
 
+--ntfy
+: Trigger a ntfy notification.  This requires `ntfy.topic` be set.  Optionally, `ntfy.url` can also be set to use a different Ntfy server.
+
 -w <pid>, \--pwatch <pid>
 : Monitor a process by PID and trigger a notification when the pid disappears.
 
@@ -95,6 +98,8 @@ when it's done. You can receive messages on your computer or phone.
 * `NOTI_KEYBASE_CHANNEL`
 * `NOTI_KEYBASE_PUBLIC`
 * `NOTI_KEYBASE_EXPLODINGLIFETIME`
+* `NOTI_NTFY_TOPIC`
+* `NOTI_NTFY_URL`
 * `NOTI_PUSHBULLET_ACCESSTOKEN`
 * `NOTI_PUSHBULLET_DEVICEIDEN`
 * `NOTI_PUSHOVER_APITOKEN`

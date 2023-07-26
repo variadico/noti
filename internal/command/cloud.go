@@ -12,6 +12,7 @@ import (
 	"github.com/variadico/noti/service/gchat"
 	"github.com/variadico/noti/service/keybase"
 	"github.com/variadico/noti/service/mattermost"
+	"github.com/variadico/noti/service/ntfy"
 	"github.com/variadico/noti/service/pushbullet"
 	"github.com/variadico/noti/service/pushover"
 	"github.com/variadico/noti/service/pushsafer"
@@ -177,5 +178,15 @@ func getChanify(title, message string, v *viper.Viper) notification {
 		Priority:          v.GetInt("chanify.priority"),
 		InterruptionLevel: v.GetString("chanify.interruptionLevel"),
 		Client:            httpClient,
+	}
+}
+
+func getNtfy(title, message string, v *viper.Viper) notification {
+	return &ntfy.Notification{
+		URL:     v.GetString("ntfy.url"),
+		Topic:   v.GetString("ntfy.topic"),
+		Title:   title,
+		Message: message,
+		Client:  httpClient,
 	}
 }
