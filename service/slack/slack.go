@@ -110,7 +110,6 @@ func (n *Notification) Send() error {
 		vals.Set("unfurl_links", fmt.Sprintf("%t", n.UnfurlLinks))
 		vals.Set("unfurl_media", fmt.Sprintf("%t", n.UnfurlMedia))
 		vals.Set("username", n.Username)
-		vals.Set("as_user", fmt.Sprintf("%t", n.AsUser))
 		vals.Set("icon_url", n.IconURL)
 		vals.Set("icon_emoji", n.IconEmoji)
 
