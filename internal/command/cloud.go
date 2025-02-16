@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
+	"github.com/variadico/noti/service/bark"
 	"github.com/variadico/noti/service/bearychat"
 	"github.com/variadico/noti/service/chanify"
 	"github.com/variadico/noti/service/gchat"
@@ -188,5 +189,15 @@ func getNtfy(title, message string, v *viper.Viper) notification {
 		Title:   title,
 		Message: message,
 		Client:  httpClient,
+	}
+}
+
+func getBark(title, message string, v *viper.Viper) notification {
+	return &bark.Notification{
+		URL:       v.GetString("bark.apiurl"),
+		DeviceKey: v.GetString("bark.key"),
+		Title:     title,
+		Body:      message,
+		Client:    httpClient,
 	}
 }
