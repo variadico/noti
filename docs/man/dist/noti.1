@@ -80,7 +80,7 @@ This requires \f[CR]twilio.authToken\f[R], \f[CR]twilio.accountSid\f[R],
 Trigger a ntfy notification.
 This requires \f[CR]ntfy.topic\f[R] be set.
 Optionally, \f[CR]ntfy.url\f[R] can also be set to use a different Ntfy
-server.
+server. For private Ntfy topics, access token authentication can be provided via \f[CR]ntfy.token\f[R].
 .TP
 \-w , \-\-pwatch 
 Monitor a process by PID and trigger a notification when the pid
@@ -124,6 +124,8 @@ Print \f[CR]noti\f[R] help and exit.
 \f[CR]NOTI_NTFY_TOPIC\f[R]
 .IP \[bu] 2
 \f[CR]NOTI_NTFY_URL\f[R]
+.IP \[bu] 2
+\f[CR]NOTI_NTFY_TOKEN\f[R]
 .IP \[bu] 2
 \f[CR]NOTI_PUSHBULLET_ACCESSTOKEN\f[R]
 .IP \[bu] 2

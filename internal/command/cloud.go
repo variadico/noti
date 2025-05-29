@@ -185,6 +185,7 @@ func getChanify(title, message string, v *viper.Viper) notification {
 func getNtfy(title, message string, v *viper.Viper) notification {
 	return &ntfy.Notification{
 		URL:     v.GetString("ntfy.url"),
+		Token:   v.GetString("ntfy.token"),
 		Topic:   v.GetString("ntfy.topic"),
 		Title:   title,
 		Message: message,

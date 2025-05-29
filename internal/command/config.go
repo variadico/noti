@@ -84,6 +84,7 @@ var baseDefaults = map[string]interface{}{
 	"chanify.interruptionLevel": "active",
 
 	"ntfy.url":   "https://ntfy.sh/",
+	"ntfy.token": "",
 	"ntfy.topic": "",
 
 	"bark.apiurl": "https://api.day.app/push",
@@ -159,6 +160,7 @@ var keyEnvBindings = map[string]string{
 	"chanify.interruptionLevel": "NOTI_CHANIFY_INTERUPTIONLEVEL",
 
 	"ntfy.url":   "NOTI_NTFY_URL",
+	"ntfy.token": "NOTI_NTFY_TOKEN",
 	"ntfy.topic": "NOTI_NTFY_TOPIC",
 
 	"bark.apiurl": "NOTI_BARK_APIURL",

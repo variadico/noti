@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 
+* Add access token support for ntfy
+
 ## [3.8.0] - 2025-03-06
 
 ### Added

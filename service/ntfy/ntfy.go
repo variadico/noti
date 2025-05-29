@@ -34,6 +34,9 @@ type Notification struct {
 	// Base Ntfy URL
 	URL string
 
+	// Ntfy bearer access token (https://docs.ntfy.sh/publish/#access-tokens)
+	Token string
+
 	// Ntfy topic to publish to
 	Topic string `json:"topic"`
 
@@ -46,6 +49,7 @@ type Notification struct {
 	Client *http.Client `json:"-"`
 }
 
+// Send sends a ntfy notification to the configured url + topic.
 func (n *Notification) Send() error {
 	if n.URL == "" {
 		return errors.New("missing Ntfy url")
@@ -60,11 +64,20 @@ func (n *Notification) Send() error {
 		return err
 	}
 
-	resp, err := n.Client.Post(n.URL, "application/json", bytes.NewReader(payload))
+	req, err := http.NewRequest("POST", n.URL, bytes.NewReader(payload))
 	if err != nil {
 		return err
 	}
 
+	req.Header.Set("Content-Type", "application/json")
+	if n.Token != "" {
+		req.Header.Set("Authorization", "Bearer "+n.Token)
+	}
+
+	resp, err := n.Client.Do(req)
+	if err != nil {
+		return err
+	}
 	defer resp.Body.Close()
 
 	var r apiResponse

@@ -126,7 +126,7 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 
 --ntfy
     Trigger a ntfy notification.  This requires `ntfy.topic` be set.  Optionally, 
-    `ntfy.url` can also be set to use a different ntfy server.
+    `ntfy.url` can also be set to use a different ntfy server. For private Ntfy topics, access token authentication can be provided via `ntfy.token`.
 
 --bark
     Trigger a Bark notification.  This requires `bark.key` to be set. Optionally, 
@@ -164,6 +164,7 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 * `NOTI_KEYBASE_EXPLODINGLIFETIME`
 * `NOTI_NTFY_TOPIC`
 * `NOTI_NTFY_URL`
+* `NOTI_NTFY_TOKEN`
 * `NOTI_PUSHBULLET_ACCESSTOKEN`
 * `NOTI_PUSHBULLET_DEVICEIDEN`
 * `NOTI_PUSHOVER_APITOKEN`
@@ -360,6 +361,9 @@ url
 
 topic
     Topic ID to send messages to
+    
+token
+    [Bearer access token](https://docs.ntfy.sh/publish/#access-tokens) for authentication on private topics. 
 
 Bark
 
@@ -448,6 +452,7 @@ chanify:
   interruptionLevel: 'active'
 ntfy:
   url: https://my.ntfy.url.com
+  token: ''
   topic: 'xxxxxxxxxxxxxxxx'
 bark:
   url: https://my.bark.url.com

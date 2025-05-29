@@ -11,6 +11,7 @@ import (
 func TestSend(t *testing.T) {
 	n := Notification{
 		URL:     "https://ntfy.sh/",
+		Token:   "",
 		Topic:   "topic",
 		Message: "Message body test",
 		Title:   "Test Message",
