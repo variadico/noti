@@ -23,9 +23,6 @@ vendor: go.mod go.sum
 out/noti: go.mod go.sum vendor $(go_src)
 	cd cmd/noti && go build -o ../../$@ $(ld_flags_dev)
 
-out/noti.darwin.rel: go.mod go.sum vendor $(go_src)
-	cd cmd/noti && GOOS=darwin GOARCH=amd64 \
-		go build -o ../../$@ $(ld_flags_rel)
 out/noti.%.rel: go.mod go.sum vendor $(go_src)
 	cd cmd/noti && CGO_ENABLED=0 GOOS=$* GOARCH=amd64 \
 		go build -o ../../$@ $(ld_flags_rel)
