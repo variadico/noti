@@ -338,6 +338,90 @@ func TestEnabledServices(t *testing.T) {
 	})
 }
 
+func TestBannerIconConfig(t *testing.T) {
+	orig := getNotiEnv(t)
+	defer setNotiEnv(t, orig)
+
+	t.Run("default is empty", func(t *testing.T) {
+		clearNotiEnv(t)
+
+		v := viper.New()
+		flags := pflag.NewFlagSet("testbannericon", pflag.ContinueOnError)
+		InitFlags(flags)
+
+		if err := configureApp(v, flags); err != nil {
+			t.Error(err)
+		}
+
+		have := v.GetString("banner.icon")
+		if have != "" {
+			t.Errorf("have=%q; want=%q", have, "")
+		}
+	})
+
+	t.Run("env var", func(t *testing.T) {
+		clearNotiEnv(t)
+
+		const want = "/tmp/icon.png"
+		os.Setenv("NOTI_BANNER_ICON", want)
+		defer os.Unsetenv("NOTI_BANNER_ICON")
+
+		v := viper.New()
+		flags := pflag.NewFlagSet("testbannericon", pflag.ContinueOnError)
+		InitFlags(flags)
+
+		if err := configureApp(v, flags); err != nil {
+			t.Error(err)
+		}
+
+		have := v.GetString("banner.icon")
+		if have != want {
+			t.Errorf("have=%q; want=%q", have, want)
+		}
+	})
+
+	t.Run("flag", func(t *testing.T) {
+		clearNotiEnv(t)
+
+		const want = "/tmp/flag-icon.png"
+		v := viper.New()
+		flags := pflag.NewFlagSet("testbannericon", pflag.ContinueOnError)
+		InitFlags(flags)
+		flags.Set("icon", want)
+
+		if err := configureApp(v, flags); err != nil {
+			t.Error(err)
+		}
+
+		have := v.GetString("banner.icon")
+		if have != want {
+			t.Errorf("have=%q; want=%q", have, want)
+		}
+	})
+
+	t.Run("flag overrides env", func(t *testing.T) {
+		clearNotiEnv(t)
+
+		const want = "/tmp/flag-wins.png"
+		os.Setenv("NOTI_BANNER_ICON", "/tmp/env-loses.png")
+		defer os.Unsetenv("NOTI_BANNER_ICON")
+
+		v := viper.New()
+		flags := pflag.NewFlagSet("testbannericon", pflag.ContinueOnError)
+		InitFlags(flags)
+		flags.Set("icon", want)
+
+		if err := configureApp(v, flags); err != nil {
+			t.Error(err)
+		}
+
+		have := v.GetString("banner.icon")
+		if have != want {
+			t.Errorf("have=%q; want=%q", have, want)
+		}
+	})
+}
+
 func TestGetNotifications(t *testing.T) {
 	services := []string{
 		"banner",

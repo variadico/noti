@@ -23,6 +23,13 @@ in the following order.
 If $XDG_CONFIG_HOME is empty, then $HOME/.config will be used as its default
 value and noti will check $HOME/.config/noti/noti.yaml.
 
+# BANNER
+
+icon
+: Path to notification icon image. On macOS, accepts PNG or JPEG. On Linux,
+  accepts an image path or a freedesktop icon theme name. On Windows, accepts
+  an .ico file path.
+
 # NSUSER
 
 soundName
@@ -143,6 +150,8 @@ template
 # EXAMPLES
 
     ---
+    banner:
+      icon: /path/to/icon.png
     nsuser:
       soundName: Ping
       soundNameFail: Basso

@@ -28,6 +28,11 @@ when it's done. You can receive messages on your computer or phone.
   service, set this flag to false. This will be either `nsuser`, `freedesktop`,
   or `notifyicon` notification, depending on the OS.
 
+\--icon \<string\>
+: Path to notification icon image. On macOS, accepts PNG or JPEG. On Linux,
+  accepts an image path or a freedesktop icon theme name. On Windows, accepts
+  an .ico file path.
+
 -s, \--speech
 : Trigger a speech notification. This will be either `say`, `espeak`, or
   `speechsynthesizer` notification, depending on the OS.
@@ -88,6 +93,7 @@ when it's done. You can receive messages on your computer or phone.
 # ENVIRONMENT
 
 * `NOTI_DEFAULT`
+* `NOTI_BANNER_ICON`
 * `NOTI_NSUSER_SOUNDNAME`
 * `NOTI_NSUSER_SOUNDNAMEFAIL`
 * `NOTI_SAY_VOICE`

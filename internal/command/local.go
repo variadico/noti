@@ -12,11 +12,15 @@ import (
 )
 
 func getBanner(title, message string, v *viper.Viper) notification {
+	icon := v.GetString("banner.icon")
+	if icon == "" {
+		icon = "utilities-terminal"
+	}
 	return &freedesktop.Notification{
 		Summary:       title,
 		Body:          message,
 		ExpireTimeout: 5000,
-		AppIcon:       "utilities-terminal",
+		AppIcon:       icon,
 	}
 }
 
