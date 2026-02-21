@@ -32,10 +32,10 @@ type apiResponse struct {
 
 type Notification struct {
 	// Base Ntfy URL
-	URL string
+	URL string `json:"-"`
 
 	// Ntfy bearer access token (https://docs.ntfy.sh/publish/#access-tokens)
-	Token string
+	Token string `json:"-"`
 
 	// Ntfy topic to publish to
 	Topic string `json:"topic"`
