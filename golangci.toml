@@ -22,7 +22,6 @@ checks = ["-ST1005"]
 [formatters]
 enable = [
 	"goimports",
-	"gofmt",
 ]
 
 [run]
