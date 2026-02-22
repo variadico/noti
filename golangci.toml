@@ -26,7 +26,4 @@ disable = [
 ]
 
 [run]
-timeout = "60s"
-
-[issues]
-max-same-issues = 0
+timeout = "90s"
