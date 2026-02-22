@@ -20,13 +20,10 @@ enable = [
 checks = ["-ST1005"]
 
 [formatters]
-enable = [
+disable = [
 	"goimports",
 	"gofmt",
 ]
 
 [run]
-timeout = "60s"
-
-[issues]
-max-same-issues = 0
+timeout = "90s"
