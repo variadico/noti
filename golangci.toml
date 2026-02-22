@@ -20,8 +20,9 @@ enable = [
 checks = ["-ST1005"]
 
 [formatters]
-enable = [
+disable = [
 	"goimports",
+	"gofmt",
 ]
 
 [run]
