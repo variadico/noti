@@ -47,29 +47,10 @@ build: out/noti
 
 .PHONY: lint
 lint: goos := $(strip $(shell go env GOOS))
-lint: golangci_lint := ./tools/golangci-lint-1.64.6-$(goos)-amd64
+lint: golangci_lint := ./tools/golangci-lint-2.10.1-$(goos)-amd64
 lint:
-	# Seems like there's some Windows bug with gofmt
 	go vet ./...
-	$(golangci_lint) run --no-config --exclude-use-default=false \
-		--max-same-issues=0 \
-		--timeout 60s \
-		--disable errcheck \
-		--disable stylecheck \
-		--disable bodyclose \
-		--$(if $(filter windows,$(goos)),disable,enable) gofmt \
-		--$(if $(filter windows,$(goos)),disable,enable) goimports \
-		--enable unconvert \
-		--enable dupl \
-		--enable gocyclo \
-		--enable misspell \
-		--enable lll \
-		--enable unparam \
-		--enable nakedret \
-		--enable prealloc \
-		--enable gocritic \
-		--enable gochecknoinits \
-		./...
+	$(golangci_lint) run --config=./golangci.toml --color=never ./...
 
 .PHONY: test
 test:
