@@ -197,8 +197,9 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 
 ## Files
 
-If not explicitly set with `--file`, then `noti` will check the following paths,
-in the following order.
+If `--file` is set, `noti` first attempts to read configuration from the path
+provided. If `--file` is not set, or the specified file cannot be read, then
+`noti` will check the following paths, in the following order.
 
 - `./.noti.yaml`
 - `$XDG_CONFIG_HOME/noti/noti.yaml`
