@@ -68,8 +68,11 @@ Noti reads configuration from a YAML file.
 It uses the following search order (unless overridden by the --file flag):
 
 - `./.noti.yaml`
-- `$XDG_CONFIG_HOME/noti/noti.yaml`
-- `$HOME/.config/noti/noti.yaml`
+- Then:
+  - If `$XDG_CONFIG_HOME` is set:
+    - `$XDG_CONFIG_HOME/noti/noti.yaml`
+  - Otherwise:
+    - `$HOME/.config/noti/noti.yaml`
 
 There is an example configuration file, and a JSON schema for it, in the [docs](docs) directory.
 
