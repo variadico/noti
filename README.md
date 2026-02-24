@@ -61,6 +61,24 @@ If you want to build from the source, then build like this.
 make build
 ```
 
+## Configuration
+
+Noti reads configuration from a YAML file.
+
+It uses the following search order (unless overridden by the --file flag):
+
+- `./.noti.yaml`
+- Then:
+  - If `$XDG_CONFIG_HOME` is set:
+    - `$XDG_CONFIG_HOME/noti/noti.yaml`
+  - Otherwise:
+    - `$HOME/.config/noti/noti.yaml`
+
+There is an example configuration file, and a JSON schema for it, in the [docs](docs) directory.
+
+- [docs/noti.example.yaml](docs/noti.example.yaml)
+- [docs/noti.schema.json](docs/noti.schema.json)
+
 ## Examples
 
 Just put `noti` at the beginning or end of your regular commands. For more details, check the [docs].
