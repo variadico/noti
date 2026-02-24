@@ -143,3 +143,17 @@ bark:
   apiurl: "https://api.day.app/push"
   # Device key to send messages to.
   key: ""
+
+zulip:
+  # Zulip bot API key. Create a bot in your Zulip organization and copy its API key.
+  key: ""
+  # Zulip bot email address (e.g., bot-name-bot@example.zulipchat.com).
+  botAddress: ""
+  # Zulip server URL (e.g., https://example.zulipchat.com).
+  uri: ""
+  # Message type. Can be "private" (default) or "stream".
+  type: private
+  # Message destination:
+  # - For "private": comma-separated list of recipient email addresses.
+  # - For "stream": stream name.
+  to: ""
