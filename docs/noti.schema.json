@@ -11,6 +11,43 @@
       "description": "URL of the JSON Schema for this configuration file.",
       "format": "uri"
     },
+    "defaults": {
+      "type": "array",
+      "description": "Default notification services to enable when none are explicitly selected.",
+      "default": ["banner"],
+      "items": {
+        "type": "string",
+        "enum": [
+          "banner",
+          "speech",
+          "bearychat",
+          "keybase",
+          "pushbullet",
+          "pushover",
+          "pushsafer",
+          "simplepush",
+          "slack",
+          "gchat",
+          "mattermost",
+          "telegram",
+          "zulip",
+          "twilio",
+          "chanify",
+          "ntfy",
+          "bark"
+        ]
+      }
+    },
+    "message": {
+      "type": "string",
+      "description": "Default notification message.",
+      "default": "Done!"
+    },
+    "time": {
+      "type": "boolean",
+      "description": "Show command execution time in the notification message.",
+      "default": false
+    },
     "banner": {
       "type": "object",
       "description": "Desktop banner notification settings.",
@@ -213,6 +250,11 @@
         "username": {
           "type": "string",
           "description": "Noti bot username."
+        },
+        "appurl": {
+          "type": "string",
+          "description": "Slack app webhook URL.",
+          "format": "uri"
         }
       }
     },
