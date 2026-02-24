@@ -92,7 +92,7 @@ telegram:
   chatId: ""
   # Telegram thread ID. If defined, the message will be posted in the thread;
   # if omitted, the default thread will be used.
-  topic: 0
+  topic: ""
 
 twilio:
   # Twilio access token. Log into your Twilio account and copy the auth token
