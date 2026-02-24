@@ -1,0 +1,346 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/variadico/noti/raw/main/noti.schema.json",
+  "title": "noti configuration",
+  "description": "Configuration schema for noti, a CLI tool that triggers notifications when a utility finishes.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "banner": {
+      "type": "object",
+      "description": "Desktop banner notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "icon": {
+          "type": "string",
+          "description": "Path to notification icon image. On macOS, accepts PNG or JPEG. On Linux, accepts an image path or a freedesktop icon theme name. On Windows, accepts an .ico file path."
+        }
+      }
+    },
+    "nsuser": {
+      "type": "object",
+      "description": "macOS NSUserNotification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "soundName": {
+          "type": "string",
+          "description": "Banner success sound. See /System/Library/Sounds for available sounds.",
+          "default": "Ping",
+          "enum": [
+            "Basso",
+            "Blow",
+            "Bottle",
+            "Frog",
+            "Funk",
+            "Glass",
+            "Hero",
+            "Morse",
+            "Ping",
+            "Pop",
+            "Purr",
+            "Sosumi",
+            "Submarine",
+            "Tink"
+          ]
+        },
+        "soundNameFail": {
+          "type": "string",
+          "description": "Banner failure sound. See /System/Library/Sounds for available sounds.",
+          "default": "Basso",
+          "enum": [
+            "Basso",
+            "Blow",
+            "Bottle",
+            "Frog",
+            "Funk",
+            "Glass",
+            "Hero",
+            "Morse",
+            "Ping",
+            "Pop",
+            "Purr",
+            "Sosumi",
+            "Submarine",
+            "Tink"
+          ]
+        }
+      }
+    },
+    "say": {
+      "type": "object",
+      "description": "macOS say command speech notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "voice": {
+          "type": "string",
+          "description": "Name of voice used for speech notifications."
+        }
+      }
+    },
+    "espeak": {
+      "type": "object",
+      "description": "Linux eSpeak speech notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "voiceName": {
+          "type": "string",
+          "description": "Name of voice used for speech notifications."
+        }
+      }
+    },
+    "speechsynthesizer": {
+      "type": "object",
+      "description": "Windows SpeechSynthesizer notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "voice": {
+          "type": "string",
+          "description": "Name of voice used for speech notifications."
+        }
+      }
+    },
+    "bearychat": {
+      "type": "object",
+      "description": "BearyChat notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "incomingHookURI": {
+          "type": "string",
+          "description": "BearyChat incoming URI.",
+          "format": "uri"
+        }
+      }
+    },
+    "keybase": {
+      "type": "object",
+      "description": "Keybase notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "conversation": {
+          "type": "string",
+          "description": "Keybase message destination. Can be either users (comma-separated) or team."
+        },
+        "channel": {
+          "type": "string",
+          "description": "Keybase team's chat channel to send to. Conversation must be a team. If empty, the team's default channel will be used (typically \"general\")."
+        },
+        "explodingLifetime": {
+          "type": "string",
+          "description": "Keybase self-destructing message, after the specified time. Times are written like 30s (30 seconds), 15m (15 minutes), 24h (24 hours).",
+          "pattern": "^\\d+[smh]$"
+        },
+        "public": {
+          "type": "boolean",
+          "description": "Enables broadcasting a message to everyone (when conversation is your username), or to teams (when conversation is your team name).",
+          "default": false
+        }
+      }
+    },
+    "pushbullet": {
+      "type": "object",
+      "description": "Pushbullet notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "accessToken": {
+          "type": "string",
+          "description": "Pushbullet access token. Log into your Pushbullet account and retrieve a token from the Account Settings page."
+        },
+        "deviceIden": {
+          "type": "string",
+          "description": "Pushbullet device iden of the target device, if sending to a single device."
+        }
+      }
+    },
+    "pushover": {
+      "type": "object",
+      "description": "Pushover notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "apiToken": {
+          "type": "string",
+          "description": "Pushover access token. Log into your Pushover account and create a token from the Create New Application/Plugin page."
+        },
+        "userKey": {
+          "type": "string",
+          "description": "Pushover message destination. Should be your User Key."
+        }
+      }
+    },
+    "pushsafer": {
+      "type": "object",
+      "description": "Pushsafer notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Pushsafer private or alias key. Log into your Pushsafer account and note your private or alias key."
+        }
+      }
+    },
+    "simplepush": {
+      "type": "object",
+      "description": "Simplepush notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Simplepush key. Install the Simplepush app and retrieve your key there."
+        },
+        "event": {
+          "type": "string",
+          "description": "Customise ringtone and vibration."
+        }
+      }
+    },
+    "slack": {
+      "type": "object",
+      "description": "Slack notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "Slack access token. Log into your Slack account and retrieve a token from the Slack Web API page."
+        },
+        "channel": {
+          "type": "string",
+          "description": "Slack message destination. Can be either a #channel or a @username."
+        },
+        "username": {
+          "type": "string",
+          "description": "Noti bot username."
+        }
+      }
+    },
+    "telegram": {
+      "type": "object",
+      "description": "Telegram notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "Telegram access token. The token can be retrieved using the BotFather (https://telegram.me/botfather)."
+        },
+        "chatId": {
+          "type": "string",
+          "description": "Telegram message destination. Can be either a chat or a channel."
+        },
+        "topic": {
+          "type": "integer",
+          "description": "Telegram thread ID. If defined, the message will be posted in the thread; if omitted, the default thread will be used."
+        }
+      }
+    },
+    "twilio": {
+      "type": "object",
+      "description": "Twilio SMS notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "authtoken": {
+          "type": "string",
+          "description": "Twilio access token. Log into your Twilio account and copy the auth token from your project dashboard."
+        },
+        "accountsid": {
+          "type": "string",
+          "description": "Twilio account ID. Log into your Twilio account and copy the account SID from your project dashboard."
+        },
+        "numberto": {
+          "type": "string",
+          "description": "Destination phone number for your SMS message. Format this number with a '+' and a country code, e.g., +16175551212.",
+          "pattern": "^\\+\\d+$"
+        },
+        "numberfrom": {
+          "type": "string",
+          "description": "The Twilio phone number, short code, or Messaging Service that sends this message. Must be a Twilio phone number that you own, formatted with a '+' and country code, e.g. +16175551212 (E.164 format).",
+          "pattern": "^\\+\\d+$"
+        }
+      }
+    },
+    "gchat": {
+      "type": "object",
+      "description": "Google Chat notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "appurl": {
+          "type": "string",
+          "description": "Google Chat Webhook URL.",
+          "format": "uri"
+        },
+        "template": {
+          "type": "string",
+          "description": "Golang template used for producing the message text. It can include the title and message."
+        }
+      }
+    },
+    "chanify": {
+      "type": "object",
+      "description": "Chanify notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "channelURL": {
+          "type": "string",
+          "description": "Chanify sender webhook URL. Create one from the app.",
+          "format": "uri"
+        },
+        "sound": {
+          "type": "boolean",
+          "description": "Turns on and off the sound (not in silent mode) when a notification is received.",
+          "default": false
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Priority number from 1 to 10 used by iOS to order and display relevant notifications.",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 10
+        },
+        "interruptionLevel": {
+          "type": "string",
+          "description": "How the notification appears (whether to show in DnD or not).",
+          "enum": [
+            "active",
+            "passive",
+            "time-sensitive"
+          ]
+        }
+      }
+    },
+    "ntfy": {
+      "type": "object",
+      "description": "ntfy notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "ntfy server URL.",
+          "format": "uri",
+          "default": "https://ntfy.sh/"
+        },
+        "topic": {
+          "type": "string",
+          "description": "Topic ID to send messages to."
+        },
+        "token": {
+          "type": "string",
+          "description": "Bearer access token for authentication on private topics. See https://docs.ntfy.sh/publish/#access-tokens."
+        }
+      }
+    },
+    "bark": {
+      "type": "object",
+      "description": "Bark notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "apiurl": {
+          "type": "string",
+          "description": "Bark server URL.",
+          "format": "uri",
+          "default": "https://api.day.app/push"
+        },
+        "key": {
+          "type": "string",
+          "description": "Device key to send messages to."
+        }
+      }
+    }
+  }
+}
