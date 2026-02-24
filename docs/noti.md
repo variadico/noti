@@ -467,7 +467,7 @@ ntfy:
   token: ""
   topic: "xxxxxxxxxxxxxxxx"
 bark:
-  url: https://my.bark.url.com
+  apiurl: https://my.bark.url.com
   key: "1234567890abcdefg"
 ```
 
