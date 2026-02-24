@@ -97,17 +97,17 @@ telegram:
 twilio:
   # Twilio access token. Log into your Twilio account and copy the auth token
   # from your project dashboard.
-  authtoken: ""
+  authToken: ""
   # Twilio account ID. Log into your Twilio account and copy the account SID
   # from your project dashboard.
-  accountsid: ""
+  accountSid: ""
   # Destination phone number for your SMS message.
   # Format this number with a '+' and a country code, e.g., +16175551212.
-  numberto: ""
+  numberTo: ""
   # The Twilio phone number, short code, or Messaging Service that sends
   # this message. Must be a Twilio phone number that you own,
   # formatted with a '+' and country code, e.g. +16175551212 (E.164 format).
-  numberfrom: ""
+  numberFrom: ""
 
 gchat:
   # Google Chat Webhook URL.
