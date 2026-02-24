@@ -83,6 +83,8 @@ slack:
   channel: ""
   # Noti bot username.
   username: ""
+  # Slack app URL for deep links (supports NOTI_SLACK_APPURL). Optional.
+  appurl: ""
 
 telegram:
   # Telegram access token. The token can be retrieved using the BotFather
