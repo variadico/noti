@@ -225,7 +225,7 @@
           "description": "Telegram message destination. Can be either a chat or a channel."
         },
         "topic": {
-          "type": "integer",
+          "type": "string",
           "description": "Telegram thread ID. If defined, the message will be posted in the thread; if omitted, the default thread will be used."
         }
       }
