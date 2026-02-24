@@ -157,3 +157,19 @@ zulip:
   # - For "private": comma-separated list of recipient email addresses.
   # - For "stream": stream name.
   to: ""
+
+mattermost:
+  # Mattermost bot username displayed in the notification. Default is noti.
+  username: noti
+  # Mattermost channel to post to (e.g., town-square). If empty, the
+  # webhook's default channel will be used.
+  channel: ""
+  # Mattermost incoming webhook URL. Create one in your Mattermost instance
+  # under Integrations > Incoming Webhooks.
+  incomingHookURI: ""
+  # URL of the icon to display for the bot. Overrides the webhook's default
+  # icon image.
+  iconurl: ""
+  # Mattermost post type. Leave empty for standard messages. Can be used to
+  # set a custom post type (e.g., for plugin integrations).
+  type: ""

@@ -6,6 +6,11 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "URL of the JSON Schema for this configuration file.",
+      "format": "uri"
+    },
     "banner": {
       "type": "object",
       "description": "Desktop banner notification settings.",
@@ -235,20 +240,20 @@
       "description": "Twilio SMS notification settings.",
       "additionalProperties": false,
       "properties": {
-        "authtoken": {
+        "authToken": {
           "type": "string",
           "description": "Twilio access token. Log into your Twilio account and copy the auth token from your project dashboard."
         },
-        "accountsid": {
+        "accountSid": {
           "type": "string",
           "description": "Twilio account ID. Log into your Twilio account and copy the account SID from your project dashboard."
         },
-        "numberto": {
+        "numberTo": {
           "type": "string",
           "description": "Destination phone number for your SMS message. Format this number with a '+' and a country code, e.g., +16175551212.",
           "pattern": "^\\+\\d+$"
         },
-        "numberfrom": {
+        "numberFrom": {
           "type": "string",
           "description": "The Twilio phone number, short code, or Messaging Service that sends this message. Must be a Twilio phone number that you own, formatted with a '+' and country code, e.g. +16175551212 (E.164 format).",
           "pattern": "^\\+\\d+$"
@@ -335,6 +340,67 @@
         "key": {
           "type": "string",
           "description": "Device key to send messages to."
+        }
+      }
+    },
+    "zulip": {
+      "type": "object",
+      "description": "Zulip notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Zulip bot API key. Create a bot in your Zulip organization and copy its API key."
+        },
+        "botAddress": {
+          "type": "string",
+          "description": "Zulip bot email address (e.g., bot-name-bot@example.zulipchat.com).",
+          "format": "email"
+        },
+        "uri": {
+          "type": "string",
+          "description": "Zulip server URL (e.g., https://example.zulipchat.com).",
+          "format": "uri"
+        },
+        "type": {
+          "type": "string",
+          "description": "Message type. Can be \"private\" (default) or \"stream\".",
+          "default": "private",
+          "enum": ["private", "stream"]
+        },
+        "to": {
+          "type": "string",
+          "description": "Message destination. For \"private\": comma-separated list of recipient email addresses. For \"stream\": stream name."
+        }
+      }
+    },
+    "mattermost": {
+      "type": "object",
+      "description": "Mattermost incoming webhook notification settings.",
+      "additionalProperties": false,
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "Mattermost bot username displayed in the notification.",
+          "default": "noti"
+        },
+        "channel": {
+          "type": "string",
+          "description": "Mattermost channel to post to (e.g., town-square). If empty, the webhook's default channel will be used."
+        },
+        "incomingHookURI": {
+          "type": "string",
+          "description": "Mattermost incoming webhook URL. Create one in your Mattermost instance under Integrations > Incoming Webhooks.",
+          "format": "uri"
+        },
+        "iconurl": {
+          "type": "string",
+          "description": "URL of the icon to display for the bot. Overrides the webhook's default icon image.",
+          "format": "uri"
+        },
+        "type": {
+          "type": "string",
+          "description": "Mattermost post type. Leave empty for standard messages. Can be used to set a custom post type (e.g., for plugin integrations)."
         }
       }
     }
