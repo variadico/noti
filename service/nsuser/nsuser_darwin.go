@@ -25,14 +25,14 @@ func (n *Notification) Send() error {
 	if n.ContentImage != "" {
 		log.Println("nsuser: ContentImage is not supported with osascript notifications; ignoring")
 	}
-	script := buildScript(n)
+	script := buildAppleScript(n)
 	cmd := exec.Command("osascript", "-e", script)
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
 }
 
-// escapeAS escapes a string for use in an AppleScript double-quoted string.
-func escapeAS(s string) string {
+// escapeAppleScript escapes a string for use in an AppleScript double-quoted string.
+func escapeAppleScript(s string) string {
 	s = strings.ReplaceAll(s, `\`, `\\`)
 	s = strings.ReplaceAll(s, `"`, `\"`)
 	s = strings.ReplaceAll(s, "\n", " ")
@@ -41,17 +41,17 @@ func escapeAS(s string) string {
 	return s
 }
 
-func buildScript(n *Notification) string {
+func buildAppleScript(n *Notification) string {
 	var parts []string
-	parts = append(parts, fmt.Sprintf(`display notification "%s"`, escapeAS(n.InformativeText)))
+	parts = append(parts, fmt.Sprintf(`display notification "%s"`, escapeAppleScript(n.InformativeText)))
 	if n.Title != "" {
-		parts = append(parts, fmt.Sprintf(`with title "%s"`, escapeAS(n.Title)))
+		parts = append(parts, fmt.Sprintf(`with title "%s"`, escapeAppleScript(n.Title)))
 	}
 	if n.Subtitle != "" {
-		parts = append(parts, fmt.Sprintf(`subtitle "%s"`, escapeAS(n.Subtitle)))
+		parts = append(parts, fmt.Sprintf(`subtitle "%s"`, escapeAppleScript(n.Subtitle)))
 	}
 	if n.SoundName != "" {
-		parts = append(parts, fmt.Sprintf(`sound name "%s"`, escapeAS(n.SoundName)))
+		parts = append(parts, fmt.Sprintf(`sound name "%s"`, escapeAppleScript(n.SoundName)))
 	}
 	return strings.Join(parts, " ")
 }

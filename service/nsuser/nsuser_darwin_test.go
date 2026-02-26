@@ -2,7 +2,7 @@ package nsuser
 
 import "testing"
 
-func TestEscapeAS(t *testing.T) {
+func TestEscapeAppleScript(t *testing.T) {
 	tests := []struct {
 		name string
 		in   string
@@ -21,15 +21,15 @@ func TestEscapeAS(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := escapeAS(tt.in)
+			got := escapeAppleScript(tt.in)
 			if got != tt.want {
-				t.Errorf("escapeAS(%q) = %q, want %q", tt.in, got, tt.want)
+				t.Errorf("escapeAppleScript(%q) = %q, want %q", tt.in, got, tt.want)
 			}
 		})
 	}
 }
 
-func TestBuildScript(t *testing.T) {
+func TestBuildAppleScript(t *testing.T) {
 	tests := []struct {
 		name string
 		n    Notification
@@ -78,9 +78,9 @@ func TestBuildScript(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := buildScript(&tt.n)
+			got := buildAppleScript(&tt.n)
 			if got != tt.want {
-				t.Errorf("buildScript() =\n  %q\nwant:\n  %q", got, tt.want)
+				t.Errorf("buildAppleScript() =\n  %q\nwant:\n  %q", got, tt.want)
 			}
 		})
 	}
