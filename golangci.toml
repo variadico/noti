@@ -1,0 +1,29 @@
+version = "2"
+
+[linters]
+disable = ["errcheck", "bodyclose"]
+
+enable = [
+	"unconvert",
+	"dupl",
+	"gocyclo",
+	"misspell",
+	"lll",
+	"unparam",
+	"nakedret",
+	"prealloc",
+	"gocritic",
+	"gochecknoinits",
+]
+
+[linters.settings.staticcheck]
+checks = ["-ST1005"]
+
+[formatters]
+disable = [
+	"goimports",
+	"gofmt",
+]
+
+[run]
+timeout = "90s"
