@@ -1,43 +1,57 @@
 package nsuser
 
-/*
-// Compiler flags.
-#cgo CFLAGS: -Wall -x objective-c -std=gnu99 -fobjc-arc
-// Linker flags.
-#cgo LDFLAGS: -framework Foundation -framework Cocoa
+import (
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"strings"
+)
 
-#import "nsuser_darwin.h"
-*/
-import "C"
-import "unsafe"
-
-// Notification is an NSUserNotification.
+// Notification is a macOS banner notification.
 type Notification struct {
 	Title    string
 	Subtitle string
 	// InformativeText is the notification message.
 	InformativeText string
-	// ContentImage is the primary notification icon.
+	// ContentImage is unused but kept for API compatibility.
 	ContentImage string
 	// SoundName is the name of the sound that fires with a notification.
 	SoundName string
 }
 
-// Send displays a NSUserNotification on macOS.
+// Send displays a macOS banner notification via osascript.
 func (n *Notification) Send() error {
-	t := C.CString(n.Title)
-	s := C.CString(n.Subtitle)
-	i := C.CString(n.InformativeText)
-	c := C.CString(n.ContentImage)
-	sn := C.CString(n.SoundName)
+	if n.ContentImage != "" {
+		log.Println("nsuser: ContentImage is not supported with osascript notifications; ignoring")
+	}
+	script := buildScript(n)
+	cmd := exec.Command("osascript", "-e", script)
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
 
-	defer C.free(unsafe.Pointer(t))
-	defer C.free(unsafe.Pointer(s))
-	defer C.free(unsafe.Pointer(i))
-	defer C.free(unsafe.Pointer(c))
-	defer C.free(unsafe.Pointer(sn))
+// escapeAS escapes a string for use in an AppleScript double-quoted string.
+func escapeAS(s string) string {
+	s = strings.ReplaceAll(s, `\`, `\\`)
+	s = strings.ReplaceAll(s, `"`, `\"`)
+	s = strings.ReplaceAll(s, "\n", " ")
+	s = strings.ReplaceAll(s, "\r", " ")
+	s = strings.ReplaceAll(s, "\t", " ")
+	return s
+}
 
-	C.Send(t, s, i, c, sn)
-
-	return nil
+func buildScript(n *Notification) string {
+	var parts []string
+	parts = append(parts, fmt.Sprintf(`display notification "%s"`, escapeAS(n.InformativeText)))
+	if n.Title != "" {
+		parts = append(parts, fmt.Sprintf(`with title "%s"`, escapeAS(n.Title)))
+	}
+	if n.Subtitle != "" {
+		parts = append(parts, fmt.Sprintf(`subtitle "%s"`, escapeAS(n.Subtitle)))
+	}
+	if n.SoundName != "" {
+		parts = append(parts, fmt.Sprintf(`sound name "%s"`, escapeAS(n.SoundName)))
+	}
+	return strings.Join(parts, " ")
 }
