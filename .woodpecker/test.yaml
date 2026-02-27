@@ -1,0 +1,7 @@
+steps:
+  build:
+    when:
+      event: [push, pull_request]
+    image: golang:1.26
+    commands:
+      - make lint test test-integration
