@@ -1,6 +1,6 @@
 # Noti Manual
 
-##  Name
+## Name
 
 noti - monitor a process and trigger a notification
 
@@ -18,7 +18,6 @@ when it's done. You can receive messages on your computer or phone.
 ## Services
 
 Noti can send notifications on a number of services.
-
 
 | Service    | macOS | Linux | Windows |
 | ---------- | :---: | :---: | :-----: |
@@ -38,7 +37,6 @@ Noti can send notifications on a number of services.
 | GChat      |   ✔   |   ✔   |    ✔    |
 | ntfy       |   ✔   |   ✔   |    ✔    |
 | Bark       |   ✔   |   ✔   |    ✔    |
-
 
 ## Installation
 
@@ -126,15 +124,15 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
     telegram.chatId to be set.
 
 --twilio
-    Trigger a Twilio notification.  This requires twilio.authToken, twilio.accountSid, 
+    Trigger a Twilio notification.  This requires twilio.authToken, twilio.accountSid,
     twilio.numberFrom and twilio.numberTo to be set.
 
 --ntfy
-    Trigger a ntfy notification.  This requires `ntfy.topic` be set.  Optionally, 
+    Trigger a ntfy notification.  This requires `ntfy.topic` be set.  Optionally,
     `ntfy.url` can also be set to use a different ntfy server. For private Ntfy topics, access token authentication can be provided via `ntfy.token`.
 
 --bark
-    Trigger a Bark notification.  This requires `bark.key` to be set. Optionally, 
+    Trigger a Bark notification.  This requires `bark.key` to be set. Optionally,
     `bark.apiurl` can also be set to use a different bark server.
 
 -w , --pwatch
@@ -156,55 +154,66 @@ curl -L $(curl -s https://api.github.com/repos/variadico/noti/releases/latest | 
 
 ## Environment
 
-* `NOTI_DEFAULT`
-* `NOTI_BANNER_ICON`
-* `NOTI_NSUSER_SOUNDNAME`
-* `NOTI_NSUSER_SOUNDNAMEFAIL`
-* `NOTI_SAY_VOICE`
-* `NOTI_ESPEAK_VOICENAME`
-* `NOTI_SPEECHSYNTHESIZER_VOICE`
-* `NOTI_BEARYCHAT_INCOMINGHOOKURI`
-* `NOTI_KEYBASE_CONVERSATION`
-* `NOTI_KEYBASE_CHANNEL`
-* `NOTI_KEYBASE_PUBLIC`
-* `NOTI_KEYBASE_EXPLODINGLIFETIME`
-* `NOTI_NTFY_TOPIC`
-* `NOTI_NTFY_URL`
-* `NOTI_NTFY_TOKEN`
-* `NOTI_PUSHBULLET_ACCESSTOKEN`
-* `NOTI_PUSHBULLET_DEVICEIDEN`
-* `NOTI_PUSHOVER_APITOKEN`
-* `NOTI_PUSHOVER_USERKEY`
-* `NOTI_PUSHSAFER_KEY`
-* `NOTI_SIMPLEPUSH_KEY`
-* `NOTI_SIMPLEPUSH_EVENT`
-* `NOTI_SLACK_TOKEN`
-* `NOTI_SLACK_CHANNEL`
-* `NOTI_SLACK_USERNAME`
-* `NOTI_TWILIO_TO`
-* `NOTI_TWILIO_FROM`
-* `NOTI_TWILIO_ACCOUNTSID`
-* `NOTI_TWILIO_AUTHTOKEN`
-* `NOTI_TELEGRAM_CHATID`
-* `NOTI_TELEGRAM_TOKEN`
-* `NOTI_TELEGRAM_TOPIC`
-* `NOTI_GCHAT_APPURL`
-* `NOTI_GCHAT_TEMPLATE`
-* `NOTI_CHANIFY_CHANNELURL`
-* `NOTI_CHANIFY_SOUND`
-* `NOTI_CHANIFY_PRIORITY`
-* `NOTI_CHANIFY_INTERUPTIONLEVEL`
-* `NOTI_BARK_KEY`
-* `NOTI_BARK_APIURL`
-
+- `NOTI_DEFAULT`
+- `NOTI_BANNER_ICON`
+- `NOTI_NSUSER_SOUNDNAME`
+- `NOTI_NSUSER_SOUNDNAMEFAIL`
+- `NOTI_SAY_VOICE`
+- `NOTI_ESPEAK_VOICENAME`
+- `NOTI_SPEECHSYNTHESIZER_VOICE`
+- `NOTI_BEARYCHAT_INCOMINGHOOKURI`
+- `NOTI_KEYBASE_CONVERSATION`
+- `NOTI_KEYBASE_CHANNEL`
+- `NOTI_KEYBASE_PUBLIC`
+- `NOTI_KEYBASE_EXPLODINGLIFETIME`
+- `NOTI_NTFY_TOPIC`
+- `NOTI_NTFY_URL`
+- `NOTI_NTFY_TOKEN`
+- `NOTI_PUSHBULLET_ACCESSTOKEN`
+- `NOTI_PUSHBULLET_DEVICEIDEN`
+- `NOTI_PUSHOVER_APITOKEN`
+- `NOTI_PUSHOVER_USERKEY`
+- `NOTI_PUSHSAFER_KEY`
+- `NOTI_SIMPLEPUSH_KEY`
+- `NOTI_SIMPLEPUSH_EVENT`
+- `NOTI_SLACK_TOKEN`
+- `NOTI_SLACK_CHANNEL`
+- `NOTI_SLACK_USERNAME`
+- `NOTI_SLACK_APPURL`
+- `NOTI_TWILIO_TO`
+- `NOTI_TWILIO_FROM`
+- `NOTI_TWILIO_ACCOUNTSID`
+- `NOTI_TWILIO_AUTHTOKEN`
+- `NOTI_TELEGRAM_CHATID`
+- `NOTI_TELEGRAM_TOKEN`
+- `NOTI_TELEGRAM_TOPIC`
+- `NOTI_GCHAT_APPURL`
+- `NOTI_GCHAT_TEMPLATE`
+- `NOTI_MATTERMOST_USERNAME`
+- `NOTI_MATTERMOST_INCOMINGHOOKURI`
+- `NOTI_MATTERMOST_CHANNEL`
+- `NOTI_MATTERMOST_ICONURL`
+- `NOTI_MATTERMOST_TYPE`
+- `NOTI_ZULIP_KEY`
+- `NOTI_ZULIP_BOTADDRESS`
+- `NOTI_ZULIP_URI`
+- `NOTI_ZULIP_TYPE`
+- `NOTI_ZULIP_TO`
+- `NOTI_CHANIFY_CHANNELURL`
+- `NOTI_CHANIFY_SOUND`
+- `NOTI_CHANIFY_PRIORITY`
+- `NOTI_CHANIFY_INTERUPTIONLEVEL`
+- `NOTI_BARK_KEY`
+- `NOTI_BARK_APIURL`
 
 ## Files
 
-If not explicitly set with `--file`, then `noti` will check the following paths,
-in the following order.
+If `--file` is set, `noti` first attempts to read configuration from the path
+provided. If `--file` is not set, or the specified file cannot be read, then
+`noti` will check the following paths, in the following order.
 
-* `./.noti.yaml`
-* `$XDG_CONFIG_HOME/noti/noti.yaml`
+- `./.noti.yaml`
+- `$XDG_CONFIG_HOME/noti/noti.yaml`
 
 If `$XDG_CONFIG_HOME` is empty, then `$HOME/.config` will be used as its default
 value and `noti` will check `$HOME/.config/noti/noti.yaml`.
@@ -326,19 +335,19 @@ topic
 TWILIO
 
 AuthToken
-    Twilio access token. Log into your Twilio account and copy the AuthToken from your 
+    Twilio access token. Log into your Twilio account and copy the AuthToken from your
     project dashboard.
 
 accountSid
-    Twilio account id. Log into your Twilio account and copy the accountSid from your 
+    Twilio account id. Log into your Twilio account and copy the accountSid from your
     project dashboard.
 
 numberTo
-    This parameter determines the destination phone number for your SMS message. 
+    This parameter determines the destination phone number for your SMS message.
     Format this number with a '+' and a country code, e.g., +16175551212
 
 numberFrom
-    From specifies the Twilio phone number, short code, or Messaging Service that sends 
+    From specifies the Twilio phone number, short code, or Messaging Service that sends
     this message.
     This must be a Twilio phone number that you own,
     formatted with a '+' and country code, e.g. +16175551212 (E.164 format)
@@ -374,9 +383,9 @@ url
 
 topic
     Topic ID to send messages to
-    
+
 token
-    [Bearer access token](https://docs.ntfy.sh/publish/#access-tokens) for authentication on private topics. 
+    [Bearer access token](https://docs.ntfy.sh/publish/#access-tokens) for authentication on private topics.
 
 Bark
 
@@ -446,11 +455,11 @@ simplepush:
   event: 1234567890abcdefg
 slack:
   token: 1234567890abcdefg
-  channel: '@jaime'
+  channel: "@jaime"
   username: noti
 telegram:
   token: 1234567890abcdefg
-  chatId: '@notifier'
+  chatId: "@notifier"
   topic: 12345
 twilio:
   numberto: +972542877978
@@ -458,20 +467,20 @@ twilio:
   accountsid: 1234567890abcdefg
   authtoken: 1234567890abcdefg
 gchat:
-  appurl: 'https://chat.googleapis.com/v1/spaces/example/messages?key=keyexample'
-  template: '*{{.title}}*: {{.message}}'
+  appurl: "https://chat.googleapis.com/v1/spaces/example/messages?key=keyexample"
+  template: "*{{.title}}*: {{.message}}"
 chanify:
-  channelURL: ''
+  channelURL: ""
   sound: true
   priority: 10
-  interruptionLevel: 'active'
+  interruptionLevel: "active"
 ntfy:
   url: https://my.ntfy.url.com
-  token: ''
-  topic: 'xxxxxxxxxxxxxxxx'
+  token: ""
+  topic: "xxxxxxxxxxxxxxxx"
 bark:
-  url: https://my.bark.url.com
-  key: '1234567890abcdefg'
+  apiurl: https://my.bark.url.com
+  key: "1234567890abcdefg"
 ```
 
 ## Setting up cloud accounts
@@ -549,7 +558,6 @@ Next, fill `your_key` in `bark.key` to.
 ## Reporting bugs
 
 Report bugs on GitHub at https://github.com/variadico/noti/issues.
-
 
 [Settings]: https://www.pushbullet.com/#settings
 [Pushover]: https://pushover.net
